@@ -74,16 +74,16 @@
         TEXTURES (CSS only — leather grain & parchment)
         ============================================================ */
     .policyPage #pymnt-terms-hero-section {
-            margin-top: 112px;
+            margin-top: 0;
     }
     @media (max-width: 900px) {
         .policyPage #pymnt-terms-hero-section {
-            margin-top: 72px;
+            margin-top: 0;
         }
     }
     @media (max-width: 600px) {
         .policyPage #pymnt-terms-hero-section {
-            margin-top: 80px;
+            margin-top: 0;
         }
     }
     .leather-texture {
@@ -112,6 +112,11 @@
             ),
             radial-gradient(circle at 20% 10%, rgba(201, 148, 58, 0.05), transparent 50%),
             radial-gradient(circle at 80% 90%, rgba(160, 114, 74, 0.05), transparent 50%);
+    }
+
+    /* Ensure hero content starts below fixed header */
+    .policyPage #pymnt-terms-hero-section .hero__frame {
+        padding-top: 5rem; /* header height (h-20) */
     }
  
     .parchment-mid-texture {

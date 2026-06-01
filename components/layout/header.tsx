@@ -174,17 +174,22 @@ export function Header() {
     pathname?.startsWith("/catalog") || pathname?.startsWith("/custom-manufacturing")
   const isPaymentsTradeTermsPage = pathname === "/payments-and-trade-terms"
   const isReturnPolicyPage = pathname === "/return-policy"
+  const isTermsPage = pathname === "/terms"
   const isTopOverlayPage = (pathname === "/" || isPaymentsTradeTermsPage || isReturnPolicyPage) && !isScrolled
-  const showDarkLogo = isTopOverlayPage && !isMobileMenuOpen
 
+  // Determine nav link classes based on scroll and overlay page state.
+  // When on payments/return pages and scrolled, use light/dark-aware colors
+  // so links are dark on a white background and light on the leather/dark background.
   const getNavLinkClass = (isActive: boolean) => {
-    if (isScrolled) {
-      if (isPaymentsTradeTermsPage || isReturnPolicyPage) {
-        return isActive
-          ? "text-[hsl(40_20%_92%)] hover:text-[hsl(40_20%_92%)] dark:text-foreground dark:hover:text-foreground"
-          : "text-[hsl(30_10%_60%)] hover:text-[hsl(40_20%_92%)] dark:text-muted-foreground dark:hover:text-foreground"
-      }
+    // For payments and return pages, always ensure contrast: dark text in light mode,
+    // light text in dark mode, regardless of scroll position.
+    if (isPaymentsTradeTermsPage || isReturnPolicyPage || isTermsPage) {
+      return isActive
+        ? "text-foreground dark:text-[hsl(40_20%_92%)] hover:text-foreground dark:hover:text-[hsl(40_20%_92%)]"
+        : "text-muted-foreground dark:text-[hsl(30_10%_60%)] hover:text-foreground dark:hover:text-[hsl(40_20%_92%)]"
+    }
 
+    if (isScrolled) {
       return isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
     }
 
@@ -202,8 +207,10 @@ export function Header() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out ${
-        isPaymentsTradeTermsPage || isReturnPolicyPage
-          ? "bg-[hsl(17_47%_12%)] border-b border-[rgba(212,184,150,0.28)] shadow-sm"
+        // For payments, return, and terms pages, always show white in light mode and brown in dark mode
+        // to preserve the leather/brown header in dark theme and white in light theme.
+        (isPaymentsTradeTermsPage || isReturnPolicyPage || isTermsPage)
+          ? "bg-white dark:bg-[hsl(17_47%_12%)] border-b border-[rgba(212,184,150,0.28)] shadow-sm"
           : isScrolled || isMobileMenuOpen
           ? "bg-background/95 backdrop-blur-sm border-b border-border shadow-sm"
           : "bg-transparent"
@@ -213,24 +220,20 @@ export function Header() {
         <div className="flex items-center h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 min-w-0 lg:min-w-[180px]">
-            <Image
-              src="/new_logo.png"
-              alt="Pure Grain Logo Light"
-              width={180}
-              height={50}
-              className={`object-contain hover:opacity-90 transition-opacity ${
-                showDarkLogo ? "hidden" : "block dark:hidden"
-              }`}
-            />
-            <Image
-              src="/temp_logo.png"
-              alt="Pure Grain Logo Dark"
-              width={180}
-              height={50}
-              className={`object-contain hover:opacity-90 transition-opacity ${
-                showDarkLogo ? "block" : "hidden"
-              } dark:block`}
-            />
+              <Image
+                src="/new_logo.png"
+                alt="Pure Grain Logo Light"
+                width={180}
+                height={50}
+                className="object-contain hover:opacity-90 transition-opacity block dark:hidden"
+              />
+              <Image
+                src="/temp_logo.png"
+                alt="Pure Grain Logo Dark"
+                width={180}
+                height={50}
+                className="object-contain hover:opacity-90 transition-opacity hidden dark:block"
+              />
           </Link>
 
           {/* Desktop Navigation */}

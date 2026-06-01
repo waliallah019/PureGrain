@@ -1,14 +1,14 @@
 .policyPage #terms-hero-section {
-  margin-top: 112px;
+  margin-top: 0;
 }
 @media (max-width: 900px) {
   .policyPage #terms-hero-section {
-    margin-top: 72px;
+    margin-top: 0;
   }
 }
 @media (max-width: 600px) {
   .policyPage #terms-hero-section {
-    margin-top: 80px;
+    margin-top: 0;
   }
 }
 
@@ -24,6 +24,11 @@
 }
 .policyPage #terms-hero-section .hero__sub {
   color: var(--text-on-dark-mute);
+}
+
+/* Ensure hero content starts below fixed header */
+.policyPage #terms-hero-section .hero__frame {
+  padding-top: 5rem; /* header height (h-20) */
 }
 
 /* ============================================================

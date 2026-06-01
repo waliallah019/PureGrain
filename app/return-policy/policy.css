@@ -243,6 +243,10 @@
             border-top: 1px solid rgba(201, 148, 58, 0.35);
             border-bottom: 1px solid rgba(201, 148, 58, 0.35);
         }
+        /* Ensure hero content sits below fixed header */
+        .policyPage .hero__frame{
+            padding-top: calc(60px + 5rem);
+        }
         .policyPage .hero__frame::before, .policyPage .hero__frame::after{
             content: ""; position: absolute; top: -1px; bottom: -1px; width: 1px;
             background: linear-gradient(180deg, transparent, rgba(201, 148, 58, 0.5) 20%,
@@ -289,7 +293,7 @@
         .policyPage .hero__trust i{ color: var(--accent-gold); }
         @media (max-width: 700px) {
             .policyPage .hero{ padding: 70px 0 80px; }
-            .policyPage .hero__frame{ padding: 40px 22px; }
+            .policyPage .hero__frame{ padding: 40px 22px; padding-top: calc(40px + 5rem); }
             .policyPage .hero__frame::before{ left: 22px; }
             .policyPage .hero__frame::after{ right: 22px; }
             .policyPage .hero__trust span{ border-right: none; width: 100%; justify-content: center; }
