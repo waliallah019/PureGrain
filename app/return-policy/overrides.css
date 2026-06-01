@@ -1,0 +1,77 @@
+/* ============================================================
+     SITE INTEGRATION OVERRIDES (loaded after policy.css)
+     - clear the fixed site header (h-20 + announcement bar)
+     - swap hero from pure espresso (matches navbar/footer) to a warmer
+         mid-leather brown that's clearly distinct from both
+     - DO NOT override or change the navbar color here!
+     ============================================================ */
+
+/* Top spacing — clears the fixed Header.
+   Header is h-20 (80px) plus an announcement bar (~36px). */
+.policyPage {
+    padding-top: 110px;
+}
+@media (max-width: 1023px) {
+    .policyPage {
+        padding-top: 112px;
+    }
+}
+@media (max-width: 767px) {
+    .policyPage {
+        padding-top: 96px;
+    }
+}
+
+/* Hero — warm mid-brown with leather grain + gold hairline separators.
+   Distinct from the espresso navbar/footer; reads as a leather panel. */
+.policyPage .hero.leather-texture {
+    background-color: var(--bg-primary);
+    background-image:
+        repeating-linear-gradient(
+            45deg,
+            rgba(255, 240, 220, 0.018) 0 2px,
+            transparent 2px 6px
+        ),
+        repeating-linear-gradient(
+            -45deg,
+            rgba(0, 0, 0, 0.04) 0 1px,
+            transparent 1px 4px
+        ),
+        radial-gradient(ellipse at top left, rgba(201, 148, 58, 0.06), transparent 60%),
+        radial-gradient(ellipse at bottom right, rgba(0, 0, 0, 0.25), transparent 60%);
+    color: var(--text-on-dark);
+    border-top: 1px solid rgba(201, 148, 58, 0.55);
+    border-bottom: 1px solid rgba(212, 184, 150, 0.25);
+    padding-top: 80px;
+    padding-bottom: 90px;
+}
+@media (max-width: 1023px) {
+    .policyPage .hero.leather-texture {
+        padding-top: 64px;
+        padding-bottom: 72px;
+    }
+}
+@media (max-width: 767px) {
+    .policyPage .hero.leather-texture {
+        padding-top: 56px;
+        padding-bottom: 64px;
+    }
+}
+
+/* Restore on-dark text colors inside the hero */
+.policyPage .hero.leather-texture h1 {
+    color: var(--text-on-dark);
+}
+.policyPage .hero.leather-texture .hero__sub {
+    color: var(--text-on-dark-mute);
+}
+.policyPage .hero.leather-texture .hero__trust span {
+    color: var(--text-on-dark-mute);
+}
+.policyPage .hero.leather-texture .hero__trust i {
+    color: var(--accent-gold);
+}
+.policyPage .hero.leather-texture .updated-badge {
+    background: rgba(201, 148, 58, 0.18);
+    color: var(--accent-gold-soft);
+}

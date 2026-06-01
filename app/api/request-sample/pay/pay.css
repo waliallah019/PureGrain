@@ -1,0 +1,540 @@
+/* app/request-sample/pay/pay.css
+   Scoped to .pgPayPage — premium B2B leather palette aligned with /catalog. */
+
+.pgPayPage {
+  --bg-primary: #2c1810;
+  --bg-secondary: #3d2314;
+  --bg-cream: #faf7f4;
+  --bg-parchment: #f0e8dc;
+  --accent-gold: #c49a6c;
+  --accent-gold-deep: #a87a4f;
+  --accent-gold-soft: #d4b896;
+  --border-soft: #e8ddd5;
+  --text-dark: #2c1810;
+  --text-mute: #7a6558;
+  --text-on-dark: #fdf8f3;
+  --text-on-dark-mute: #d4b896;
+  --shadow-card: 0 4px 24px rgba(44, 24, 16, 0.08);
+  --shadow-card-hover: 0 12px 40px rgba(44, 24, 16, 0.14);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --container: 1180px;
+  --font-head: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-body: "Jost", "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg-cream);
+  color: var(--text-dark);
+  font-family: var(--font-body);
+}
+
+.pgPayPage,
+.pgPayPage *::before,
+.pgPayPage *::after {
+  box-sizing: border-box;
+}
+
+.pgPayPage main {
+  overflow-x: clip;
+}
+
+.pgPayPage .pgContainer {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 28px;
+}
+@media (max-width: 600px) {
+  .pgPayPage .pgContainer { padding: 0 18px; }
+}
+
+/* ------------------------------ Hero ------------------------------ */
+.pgPayPage .pgHero {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(44, 24, 16, 0.92) 0%, rgba(44, 24, 16, 0.96) 100%),
+    radial-gradient(circle at 20% 0%, rgba(196, 154, 108, 0.18), transparent 50%),
+    radial-gradient(circle at 80% 100%, rgba(168, 122, 79, 0.15), transparent 55%);
+  color: var(--text-on-dark);
+  padding: 110px 0 72px;
+}
+.pgPayPage .pgHero__frame {
+  border: 1px solid rgba(196, 154, 108, 0.45);
+  border-radius: var(--radius-lg);
+  padding: 36px 32px;
+  max-width: 880px;
+  margin: 0 auto;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(2px);
+}
+.pgPayPage .pgHero__eyebrow {
+  font-family: var(--font-body);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: var(--accent-gold-soft);
+  margin: 0 0 12px;
+}
+.pgPayPage .pgHero__title {
+  font-family: var(--font-head);
+  font-weight: 500;
+  font-size: clamp(2rem, 4.2vw, 3rem);
+  line-height: 1.12;
+  margin: 0 0 14px;
+  color: var(--text-on-dark);
+}
+.pgPayPage .pgHero__subtitle {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text-on-dark-mute);
+  max-width: 640px;
+  margin: 0 auto;
+}
+@media (max-width: 600px) {
+  .pgPayPage .pgHero { padding: 90px 0 56px; }
+  .pgPayPage .pgHero__frame { padding: 26px 20px; }
+}
+
+/* --------------------- Transparency Banner ----------------------- */
+.pgPayPage .sample-transparency-banner {
+  background: var(--bg-primary);
+  color: #fff;
+  border-radius: var(--radius-md);
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  box-shadow: var(--shadow-card);
+  margin-top: -36px;
+  position: relative;
+  z-index: 2;
+}
+.pgPayPage .sample-transparency-banner__left {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  flex: 1 1 0;
+}
+.pgPayPage .sample-transparency-banner__icon {
+  color: var(--accent-gold);
+  font-size: 2rem;
+  line-height: 1;
+  margin-top: 4px;
+}
+.pgPayPage .sample-transparency-banner__title {
+  font-family: var(--font-head);
+  font-size: 1.4rem;
+  font-weight: 500;
+  margin: 0 0 0.4rem;
+  color: #fff;
+}
+.pgPayPage .sample-transparency-banner__text {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  color: #d4b896;
+  margin: 0;
+}
+.pgPayPage .sample-transparency-banner__pills {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.pgPayPage .sample-transparency-banner__pill {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-family: var(--font-body);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  color: #fff;
+}
+.pgPayPage .sample-transparency-banner__pill i {
+  color: var(--accent-gold);
+}
+@media (max-width: 860px) {
+  .pgPayPage .sample-transparency-banner {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1.25rem;
+    margin-top: -24px;
+  }
+  .pgPayPage .sample-transparency-banner__pills {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+/* --------------------- Shipping Timeline ----------------------- */
+.pgPayPage .pgSection {
+  padding: 60px 0;
+}
+.pgPayPage .pgSection__head {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 36px;
+}
+.pgPayPage .pgSection__title {
+  font-family: var(--font-head);
+  font-size: clamp(1.65rem, 3vw, 2.25rem);
+  font-weight: 500;
+  margin: 0 0 10px;
+  color: var(--text-dark);
+}
+.pgPayPage .pgSection__sub {
+  font-size: 14px;
+  color: var(--text-mute);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.pgPayPage .sample-shipping-timeline {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  position: relative;
+}
+.pgPayPage .sample-shipping-timeline::before {
+  content: "";
+  position: absolute;
+  top: 20px;
+  left: 12.5%;
+  right: 12.5%;
+  height: 2px;
+  background: var(--border-soft);
+  z-index: 0;
+}
+.pgPayPage .pgStep {
+  position: relative;
+  z-index: 1;
+  padding: 0 14px;
+  text-align: center;
+}
+.pgPayPage .pgStep__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-primary);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+  font-size: 16px;
+  border: 3px solid var(--bg-cream);
+  box-shadow: 0 0 0 1px var(--border-soft);
+}
+.pgPayPage .pgStep__label {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0 0 6px;
+}
+.pgPayPage .pgStep__desc {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--text-mute);
+  margin: 0;
+  line-height: 1.55;
+}
+@media (max-width: 760px) {
+  .pgPayPage .sample-shipping-timeline {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding-left: 28px;
+  }
+  .pgPayPage .sample-shipping-timeline::before {
+    top: 0;
+    bottom: 0;
+    left: 19px;
+    right: auto;
+    width: 2px;
+    height: auto;
+  }
+  .pgPayPage .pgStep {
+    text-align: left;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 14px;
+    align-items: start;
+  }
+  .pgPayPage .pgStep__icon { margin: 0; }
+}
+
+.pgPayPage .pgCustomsNote {
+  margin-top: 28px;
+  background: var(--bg-cream);
+  border-left: 3px solid var(--accent-gold);
+  padding: 0.75rem 1rem;
+  font-size: 13px;
+  color: #4a3728;
+  border-radius: 0 6px 6px 0;
+  line-height: 1.55;
+}
+
+/* --------------------------- Layout grid -------------------------- */
+.pgPayPage .pgFlowGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+@media (max-width: 960px) {
+  .pgPayPage .pgFlowGrid { grid-template-columns: 1fr; }
+}
+
+.pgPayPage .pgCard {
+  background: #fff;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+}
+.pgPayPage .pgCard__head {
+  padding: 22px 26px 8px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.pgPayPage .pgCard__title {
+  font-family: var(--font-head);
+  font-weight: 500;
+  font-size: 1.5rem;
+  margin: 0 0 6px;
+  color: var(--text-dark);
+}
+.pgPayPage .pgCard__sub {
+  font-size: 13px;
+  color: var(--text-mute);
+  margin: 0 0 14px;
+}
+.pgPayPage .pgCard__body { padding: 22px 26px; }
+@media (max-width: 600px) {
+  .pgPayPage .pgCard__head, .pgPayPage .pgCard__body { padding-left: 18px; padding-right: 18px; }
+}
+
+/* --------------------------- Form fields -------------------------- */
+.pgPayPage .pgGrid2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+@media (max-width: 600px) {
+  .pgPayPage .pgGrid2 { grid-template-columns: 1fr; }
+}
+.pgPayPage .pgField { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.pgPayPage .pgField:last-child { margin-bottom: 0; }
+.pgPayPage .pgLabel {
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-dark);
+}
+.pgPayPage .pgLabel .req { color: #b8361a; margin-left: 2px; }
+.pgPayPage .pgInput,
+.pgPayPage .pgSelect,
+.pgPayPage .pgTextarea {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-dark);
+  background: #fff;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 11px 13px;
+  width: 100%;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.pgPayPage .pgInput:focus,
+.pgPayPage .pgSelect:focus,
+.pgPayPage .pgTextarea:focus {
+  outline: none;
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 3px rgba(196, 154, 108, 0.18);
+}
+.pgPayPage .pgTextarea { min-height: 96px; resize: vertical; }
+.pgPayPage .pgError {
+  font-size: 12px;
+  color: #b8361a;
+  margin: 4px 0 0;
+}
+.pgPayPage .pgFieldHint {
+  font-size: 12px;
+  color: var(--text-mute);
+  margin-top: 4px;
+}
+
+/* ---------------------- Product summary card ---------------------- */
+.pgPayPage .pgProduct {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  background: var(--bg-cream);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-bottom: 18px;
+}
+.pgPayPage .pgProduct__img {
+  width: 64px; height: 64px;
+  border-radius: 6px;
+  object-fit: cover;
+  background: #ece1d3;
+  border: 1px solid var(--border-soft);
+}
+.pgPayPage .pgProduct__meta { display: flex; flex-direction: column; gap: 2px; }
+.pgPayPage .pgProduct__label {
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--accent-gold-deep);
+}
+.pgPayPage .pgProduct__name {
+  font-family: var(--font-head); font-size: 1.15rem; font-weight: 500;
+  color: var(--text-dark); line-height: 1.2;
+}
+.pgPayPage .pgProduct__sub { font-size: 12.5px; color: var(--text-mute); }
+
+/* ----------------------- Right rail / pay panel ------------------- */
+.pgPayPage .pgFeeCard__row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 14px; color: var(--text-dark); padding: 6px 0;
+}
+.pgPayPage .pgFeeCard__row--muted { color: var(--text-mute); font-size: 13px; }
+.pgPayPage .pgFeeCard__row--total {
+  font-family: var(--font-head);
+  font-size: 1.5rem; font-weight: 500;
+  border-top: 1px dashed var(--border-soft);
+  margin-top: 10px; padding-top: 12px;
+  color: var(--text-dark);
+}
+.pgPayPage .pgFeeCard__total-amount { color: var(--accent-gold-deep); }
+.pgPayPage .pgFreeStrip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(196, 154, 108, 0.14);
+  color: var(--accent-gold-deep);
+  border: 1px solid rgba(196, 154, 108, 0.35);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 11.5px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+.pgPayPage .pgFeeCard__placeholder {
+  font-size: 13px;
+  color: var(--text-mute);
+  background: var(--bg-cream);
+  border: 1px dashed var(--border-soft);
+  border-radius: 6px;
+  padding: 14px;
+  text-align: center;
+}
+
+.pgPayPage .pgPayBox {
+  margin-top: 18px;
+  background: #fff;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+}
+.pgPayPage .pgPayBox--locked {
+  background: var(--bg-cream);
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-mute);
+}
+.pgPayPage .pgTrustList {
+  list-style: none; padding: 0; margin: 14px 0 0;
+  display: flex; flex-direction: column; gap: 6px;
+  font-size: 12px; color: var(--text-mute);
+}
+.pgPayPage .pgTrustList li { display: flex; align-items: center; gap: 8px; }
+.pgPayPage .pgTrustList i { color: var(--accent-gold-deep); }
+
+/* --------------------------- Policy block ------------------------- */
+.pgPayPage .pgPolicyGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+@media (max-width: 880px) {
+  .pgPayPage .pgPolicyGrid { grid-template-columns: 1fr; }
+}
+.pgPayPage .pgPolicyCard {
+  background: #fff;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  padding: 22px;
+  box-shadow: var(--shadow-card);
+}
+.pgPayPage .pgPolicyCard__icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(196, 154, 108, 0.14);
+  color: var(--accent-gold-deep);
+  margin-bottom: 12px;
+}
+.pgPayPage .pgPolicyCard__title {
+  font-family: var(--font-head); font-size: 1.25rem; font-weight: 500;
+  margin: 0 0 8px; color: var(--text-dark);
+}
+.pgPayPage .pgPolicyCard__body { font-size: 13.5px; color: var(--text-mute); line-height: 1.6; margin: 0; }
+.pgPayPage .pgPolicyCard__body ul { padding-left: 18px; margin: 6px 0 0; }
+.pgPayPage .pgPolicyCard__body li { margin: 4px 0; }
+
+/* ------------------------------ Success --------------------------- */
+.pgPayPage .pgSuccess {
+  text-align: center;
+  padding: 56px 28px;
+  background: #fff;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+}
+.pgPayPage .pgSuccess__icon {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: rgba(36, 130, 73, 0.12);
+  color: #2a8e4a;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  margin-bottom: 18px;
+}
+.pgPayPage .pgSuccess__title {
+  font-family: var(--font-head); font-size: 2rem; font-weight: 500;
+  margin: 0 0 10px;
+}
+.pgPayPage .pgSuccess__sub { color: var(--text-mute); font-size: 14px; line-height: 1.6; }
+.pgPayPage .pgSuccess__ref {
+  display: inline-block; margin-top: 18px;
+  background: var(--bg-cream);
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 13px;
+  color: var(--text-dark);
+}
+.pgPayPage .pgSuccess__ref strong { color: var(--accent-gold-deep); margin-left: 6px; }
+.pgPayPage .pgSuccess__cta {
+  display: inline-block;
+  margin-top: 22px;
+  background: var(--bg-primary);
+  color: #fff;
+  text-decoration: none;
+  padding: 12px 22px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* PayPal button container — give it breathing room */
+.pgPayPage .pgPaypalContainer { min-height: 50px; }
+.pgPayPage .pgInlineSpinner {
+  display: inline-block; width: 14px; height: 14px;
+  border: 2px solid rgba(44,24,16,0.2); border-top-color: var(--accent-gold-deep);
+  border-radius: 50%; animation: pgSpin 0.7s linear infinite; margin-right: 6px;
+}
+@keyframes pgSpin { to { transform: rotate(360deg); } }

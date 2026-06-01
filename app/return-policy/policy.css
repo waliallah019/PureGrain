@@ -1,0 +1,918 @@
+        /* ============================================================
+           DESIGN TOKENS
+           ============================================================ */
+        .policyPage{
+            --bg-primary:        #2C1810;
+            --bg-secondary:      #3D2314;
+            --bg-cream:          #FAF6F0;
+            --bg-parchment:      #F0E8DC;
+            --accent-gold:       #C9943A;
+            --accent-gold-soft:  #e0b86b;
+            --accent-tan:        #A0724A;
+            --text-on-dark:      #FDF8F3;
+            --text-on-dark-mute: #d8c8b8;
+            --text-on-light:     #1A0F09;
+            --text-on-light-mute:#5a4632;
+            --border-tan:        #D4B896;
+            --border-tan-soft:   #e8dcc4;
+            --warning-amber:     #D4820A;
+            --success-olive:     #6B7C4A;
+            --success-olive-soft:#e6ebd9;
+            --reject-brick:      #8B3A2A;
+            --reject-brick-soft: #f1dcd6;
+
+            --shadow-card:       0 4px 24px rgba(44, 24, 16, 0.08);
+            --shadow-card-hover: 0 12px 40px rgba(44, 24, 16, 0.14);
+
+            --radius:            6px;
+            --radius-lg:         10px;
+
+            --container:         1240px;
+
+            --font-head: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+            --font-body: "Jost", "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* ============================================================
+           RESETS / BASE
+           ============================================================ */
+        .policyPage, .policyPage *::before, .policyPage *::after{ box-sizing: border-box; }
+
+        .policyPage{
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        .policyPage{
+            margin: 0;
+            font-family: var(--font-body);
+            font-weight: 400;
+            color: var(--text-on-light);
+            background: var(--bg-cream);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .policyPage a{ color: inherit; text-decoration: none; }
+        .policyPage button{ font-family: inherit; cursor: pointer; }
+
+        .policyPage h1, .policyPage h2, .policyPage h3, .policyPage h4{
+            font-family: var(--font-head);
+            font-weight: 600;
+            color: var(--text-on-light);
+            line-height: 1.2;
+            margin: 0 0 .6em;
+            letter-spacing: -0.005em;
+        }
+
+        .policyPage h1{ font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 500; }
+        .policyPage h2{ font-size: clamp(1.9rem, 3.4vw, 2.8rem); }
+        .policyPage h3{ font-size: clamp(1.3rem, 2vw, 1.6rem); }
+        .policyPage h4{ font-size: 1.1rem; }
+
+        .policyPage p{ margin: 0 0 1em; }
+
+        .policyPage .container{
+            width: 100%;
+            max-width: var(--container);
+            margin: 0 auto;
+            padding: 0 28px;
+        }
+        @media (max-width: 600px) {
+            .policyPage .container{ padding: 0 20px; }
+        }
+
+        /* ============================================================
+           CSS-ONLY TEXTURES
+           ============================================================ */
+        .policyPage .leather-texture{
+            background-color: var(--bg-primary);
+            background-image:
+                repeating-linear-gradient(
+                    45deg,
+                    rgba(255, 240, 220, 0.018) 0 2px,
+                    transparent 2px 6px
+                ),
+                repeating-linear-gradient(
+                    -45deg,
+                    rgba(0, 0, 0, 0.04) 0 1px,
+                    transparent 1px 4px
+                ),
+                radial-gradient(ellipse at top left, rgba(201, 148, 58, 0.06), transparent 60%),
+                radial-gradient(ellipse at bottom right, rgba(0, 0, 0, 0.25), transparent 60%);
+        }
+        .policyPage .parchment-texture{
+            background-color: var(--bg-cream);
+            background-image:
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(160, 114, 74, 0.025) 0 1px,
+                    transparent 1px 3px
+                ),
+                radial-gradient(circle at 20% 10%, rgba(201, 148, 58, 0.05), transparent 50%),
+                radial-gradient(circle at 80% 90%, rgba(160, 114, 74, 0.05), transparent 50%);
+        }
+        .policyPage .parchment-mid-texture{
+            background-color: var(--bg-parchment);
+            background-image:
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(160, 114, 74, 0.03) 0 1px,
+                    transparent 1px 4px
+                ),
+                radial-gradient(circle at 70% 20%, rgba(201, 148, 58, 0.06), transparent 60%);
+        }
+
+        /* ============================================================
+           HEADER / NAV
+           ============================================================ */
+        .policyPage .site-header{
+            position: sticky; top: 0; z-index: 100;
+            background: var(--bg-primary);
+            transition: box-shadow .25s ease, border-color .25s ease;
+            border-bottom: 1px solid transparent;
+        }
+        .policyPage .site-header.is-scrolled{
+            border-bottom-color: var(--border-tan);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+        }
+        .policyPage .nav-wrap{
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 24px; padding: 18px 0;
+        }
+        .policyPage .brand{ display: inline-flex; flex-direction: column; align-items: flex-start; }
+        .policyPage .brand__name{
+            font-family: var(--font-head);
+            font-size: 1.4rem; font-weight: 600;
+            color: var(--accent-gold);
+            letter-spacing: 0.04em; line-height: 1;
+        }
+        .policyPage .brand__line{
+            margin-top: 6px; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent 0%, var(--accent-tan) 15%,
+                var(--accent-gold) 50%, var(--accent-tan) 85%, transparent 100%);
+            opacity: .8;
+        }
+        .policyPage .nav{ display: flex; align-items: center; gap: 30px; }
+        .policyPage .nav__links{
+            display: flex; gap: 26px; list-style: none; margin: 0; padding: 0;
+        }
+        .policyPage .nav__links a{
+            color: var(--text-on-dark);
+            font-size: 0.92rem; font-weight: 400;
+            position: relative; padding: 6px 0;
+            transition: color .2s ease;
+        }
+        .policyPage .nav__links a::after{
+            content: ""; position: absolute; left: 0; bottom: 0;
+            width: 0; height: 1px; background: var(--accent-gold);
+            transition: width .25s ease;
+        }
+        .policyPage .nav__links a:hover, .policyPage .nav__links a.is-active{ color: var(--accent-gold); }
+        .policyPage .nav__links a:hover::after, .policyPage .nav__links a.is-active::after{ width: 100%; }
+
+        .policyPage .nav__cta{
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 11px 22px;
+            background: var(--accent-gold); color: var(--bg-primary);
+            font-weight: 600; font-size: 0.9rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--accent-gold);
+            transition: background .2s ease, transform .2s ease;
+            white-space: nowrap;
+        }
+        .policyPage .nav__cta:hover{ background: var(--accent-gold-soft); transform: translateY(-1px); }
+
+        .policyPage .nav-toggle{
+            display: none;
+            background: transparent;
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            width: 42px; height: 42px;
+            border-radius: var(--radius);
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 1024px) {
+            .policyPage .nav{ display: none; position: absolute; top: 100%; left: 0; right: 0;
+                background: var(--bg-primary); border-bottom: 1px solid var(--border-tan);
+                flex-direction: column; align-items: stretch; padding: 20px 28px 28px;
+                gap: 16px; }
+            .policyPage .nav.is-open{ display: flex; }
+            .policyPage .nav__links{ flex-direction: column; gap: 8px; }
+            .policyPage .nav__links a{ padding: 12px 0; border-bottom: 1px solid rgba(212, 184, 150, 0.15); }
+            .policyPage .nav__cta{ justify-content: center; }
+            .policyPage .nav-toggle{ display: inline-flex; align-items: center; justify-content: center; }
+        }
+
+        /* ============================================================
+           BUTTONS
+           ============================================================ */
+        .policyPage .btn{
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 14px 28px;
+            font-family: var(--font-body);
+            font-size: 0.95rem; font-weight: 500;
+            border-radius: var(--radius);
+            border: 1px solid transparent;
+            transition: all .2s ease;
+            cursor: pointer; line-height: 1;
+            letter-spacing: 0.02em;
+        }
+        .policyPage .btn--gold{ background: var(--accent-gold); color: var(--bg-primary); border-color: var(--accent-gold); }
+        .policyPage .btn--gold:hover{ background: var(--accent-gold-soft); border-color: var(--accent-gold-soft); transform: translateY(-2px); box-shadow: 0 8px 22px rgba(201, 148, 58, 0.25); }
+        .policyPage .btn--gold-outline{ background: transparent; color: var(--accent-gold); border-color: var(--accent-gold); }
+        .policyPage .btn--gold-outline:hover{ background: var(--accent-gold); color: var(--bg-primary); transform: translateY(-2px); }
+
+        /* ============================================================
+           HERO
+           ============================================================ */
+        .policyPage .hero{
+            position: relative;
+            color: var(--text-on-dark);
+            padding: 100px 0 110px;
+            overflow: hidden;
+        }
+        .policyPage .hero__frame{
+            position: relative;
+            max-width: 980px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 60px 40px;
+            border-top: 1px solid rgba(201, 148, 58, 0.35);
+            border-bottom: 1px solid rgba(201, 148, 58, 0.35);
+        }
+        .policyPage .hero__frame::before, .policyPage .hero__frame::after{
+            content: ""; position: absolute; top: -1px; bottom: -1px; width: 1px;
+            background: linear-gradient(180deg, transparent, rgba(201, 148, 58, 0.5) 20%,
+                rgba(201, 148, 58, 0.5) 80%, transparent);
+        }
+        .policyPage .hero__frame::before{ left: 40px; }
+        .policyPage .hero__frame::after{ right: 40px; }
+        .policyPage .hero__eyebrow{
+            display: inline-block;
+            font-size: 0.78rem; letter-spacing: 0.32em;
+            text-transform: uppercase; color: var(--accent-gold);
+            font-weight: 500; margin-bottom: 22px;
+        }
+        .policyPage .hero h1{ color: var(--text-on-dark); font-weight: 500; margin-bottom: 22px; }
+        .policyPage .hero__sub{
+            font-weight: 300;
+            font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+            color: var(--text-on-dark-mute);
+            max-width: 760px; margin: 0 auto 28px;
+            line-height: 1.75;
+        }
+        .policyPage .updated-badge{
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 7px 16px;
+            background: rgba(201, 148, 58, 0.1);
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            font-size: 0.82rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-radius: 999px;
+            margin-bottom: 36px;
+        }
+        .policyPage .hero__trust{
+            display: flex; justify-content: center; flex-wrap: wrap; align-items: center;
+            gap: 0; font-size: 0.88rem; color: var(--text-on-dark-mute);
+        }
+        .policyPage .hero__trust span{
+            padding: 6px 22px; display: inline-flex; align-items: center; gap: 8px;
+            border-right: 1px solid rgba(201, 148, 58, 0.4);
+        }
+        .policyPage .hero__trust span:last-child{ border-right: none; }
+        .policyPage .hero__trust i{ color: var(--accent-gold); }
+        @media (max-width: 700px) {
+            .policyPage .hero{ padding: 70px 0 80px; }
+            .policyPage .hero__frame{ padding: 40px 22px; }
+            .policyPage .hero__frame::before{ left: 22px; }
+            .policyPage .hero__frame::after{ right: 22px; }
+            .policyPage .hero__trust span{ border-right: none; width: 100%; justify-content: center; }
+        }
+
+        /* ============================================================
+           SECTION BASE
+           ============================================================ */
+        .policyPage section.block{ padding: 110px 0; position: relative; }
+        @media (max-width: 700px) { .policyPage section.block{ padding: 70px 0; } }
+
+        .policyPage .section-head{ text-align: center; max-width: 800px; margin: 0 auto 60px; }
+        .policyPage .section-head--left{ text-align: left; margin-left: 0; }
+        .policyPage .section-head h2{ margin-bottom: 14px; }
+        .policyPage .gold-rule{
+            width: 70px; height: 2px;
+            margin: 18px auto 0;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+        }
+        .policyPage .section-head--left .gold-rule{ margin-left: 0; }
+        .policyPage .section-sub{
+            color: var(--text-on-light-mute);
+            font-size: 1.05rem; margin: 0;
+        }
+
+        /* ============================================================
+           NATURAL LEATHER NOTICE
+           ============================================================ */
+        .policyPage .nl-notice{
+            background: #fff;
+            border-left: 5px solid var(--accent-gold);
+            border-radius: var(--radius-lg);
+            padding: 44px 48px;
+            box-shadow: var(--shadow-card);
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+        @media (max-width: 600px) { .policyPage .nl-notice{ padding: 32px 24px; } }
+        .policyPage .nl-notice h2{ font-size: clamp(1.6rem, 2.6vw, 2.2rem); margin-bottom: 18px; }
+        .policyPage .nl-notice > p{
+            color: var(--text-on-light-mute);
+            font-size: 1.02rem;
+            margin-bottom: 24px;
+        }
+        .policyPage .leather-list{
+            list-style: none;
+            padding: 0;
+            margin: 0 0 24px;
+            display: grid;
+            gap: 14px;
+        }
+        .policyPage .leather-list li{
+            display: flex; gap: 14px;
+            padding: 14px 18px;
+            background: var(--bg-cream);
+            border-radius: var(--radius);
+            font-size: 0.97rem;
+            color: var(--text-on-light);
+        }
+        .policyPage .leather-list li::before{
+            content: "";
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: var(--accent-tan);
+            margin-top: 9px;
+            flex-shrink: 0;
+            box-shadow: 0 0 0 3px rgba(160, 114, 74, 0.18);
+        }
+        .policyPage .amber-callout{
+            display: flex; gap: 14px;
+            background: #fdf3e0;
+            border-left: 4px solid var(--warning-amber);
+            padding: 18px 22px;
+            border-radius: var(--radius);
+            color: #6e4406;
+            font-size: 0.96rem;
+        }
+        .policyPage .amber-callout i{
+            color: var(--warning-amber);
+            font-size: 1.1rem; margin-top: 4px; flex-shrink: 0;
+        }
+
+        /* ============================================================
+           CORE POLICY THREE-CARDS
+           ============================================================ */
+        .policyPage .policy-grid{
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+        @media (max-width: 980px) { .policyPage .policy-grid{ grid-template-columns: 1fr; } }
+
+        .policyPage .policy-card{
+            background: #fff;
+            border-radius: var(--radius-lg);
+            padding: 36px 32px;
+            box-shadow: var(--shadow-card);
+            display: flex; flex-direction: column;
+            transition: transform .25s ease, box-shadow .25s ease;
+            border-top: 4px solid var(--accent-gold);
+        }
+        .policyPage .policy-card:hover{ transform: translateY(-4px); box-shadow: var(--shadow-card-hover); }
+        .policyPage .policy-card--reject{ border-top-color: var(--reject-brick); }
+        .policyPage .policy-card--accept{ border-top-color: var(--success-olive); }
+
+        .policyPage .policy-card__icon{
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            display: grid; place-items: center;
+            font-size: 1.4rem;
+            margin-bottom: 18px;
+            background: var(--bg-cream);
+            border: 1px solid var(--border-tan-soft);
+        }
+        .policyPage .policy-card--reject .policy-card__icon{ color: var(--reject-brick); }
+        .policyPage .policy-card--accept .policy-card__icon{ color: var(--success-olive); }
+        .policyPage .policy-card__icon.is-gold{ color: var(--accent-gold); }
+
+        .policyPage .policy-card h3{ margin-bottom: 14px; }
+        .policyPage .status-badge{
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .policyPage .status-badge--reject{ background: var(--reject-brick-soft); color: var(--reject-brick); }
+        .policyPage .status-badge--accept{ background: var(--success-olive-soft); color: var(--success-olive); }
+        .policyPage .status-badge--gold{ background: rgba(201, 148, 58, 0.15); color: #8a6320; }
+
+        .policyPage .policy-card p{ color: var(--text-on-light-mute); font-size: 0.97rem; margin: 0; }
+
+        /* ============================================================
+           VALID vs NOT-ACCEPTED
+           ============================================================ */
+        .policyPage .claims-grid{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+        }
+        @media (max-width: 900px) { .policyPage .claims-grid{ grid-template-columns: 1fr; } }
+
+        .policyPage .claims-col{
+            background: #fff;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+            overflow: hidden;
+        }
+        .policyPage .claims-col__head{
+            padding: 24px 30px;
+            color: #fff;
+            display: flex; align-items: center; gap: 14px;
+        }
+        .policyPage .claims-col__head h3{
+            color: #fff; margin: 0;
+            font-size: 1.4rem;
+        }
+        .policyPage .claims-col__head i{ font-size: 1.4rem; }
+        .policyPage .claims-col--accept .claims-col__head{ background: var(--success-olive); }
+        .policyPage .claims-col--reject .claims-col__head{ background: var(--reject-brick); }
+
+        .policyPage .claims-list{
+            list-style: none; padding: 26px 30px; margin: 0;
+            display: grid; gap: 14px;
+        }
+        .policyPage .claims-list li{
+            display: flex; gap: 14px;
+            font-size: 0.97rem;
+            color: var(--text-on-light);
+            line-height: 1.6;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-tan-soft);
+        }
+        .policyPage .claims-list li:last-child{ border-bottom: none; padding-bottom: 0; }
+        .policyPage .claims-list i{ font-size: 0.9rem; margin-top: 6px; flex-shrink: 0; }
+        .policyPage .claims-col--accept .claims-list i{ color: var(--success-olive); }
+        .policyPage .claims-col--reject .claims-list i{ color: var(--reject-brick); }
+
+        /* ============================================================
+           INSPECTION WINDOW
+           ============================================================ */
+        .policyPage .inspection{
+            color: var(--text-on-dark);
+        }
+        .policyPage .inspection h2{ color: var(--text-on-dark); }
+        .policyPage .inspection .section-head p{ color: var(--text-on-dark-mute); }
+        .policyPage .inspection-frame{
+            border: 1px solid rgba(201, 148, 58, 0.35);
+            border-radius: var(--radius-lg);
+            padding: 50px 44px;
+            background: rgba(201, 148, 58, 0.04);
+            position: relative;
+        }
+        .policyPage .inspection-frame::before, .policyPage .inspection-frame::after{
+            content: "";
+            position: absolute;
+            width: 30px; height: 30px;
+            border: 2px solid var(--accent-gold);
+        }
+        .policyPage .inspection-frame::before{
+            top: -2px; left: -2px;
+            border-right: none; border-bottom: none;
+        }
+        .policyPage .inspection-frame::after{
+            bottom: -2px; right: -2px;
+            border-left: none; border-top: none;
+        }
+        @media (max-width: 600px) { .policyPage .inspection-frame{ padding: 36px 22px; } }
+
+        .policyPage .inspection-frame > p{
+            color: var(--text-on-dark-mute);
+            font-size: 1.02rem;
+            line-height: 1.85;
+            margin: 0 0 36px;
+        }
+        .policyPage .windows{
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+            margin-bottom: 30px;
+        }
+        @media (max-width: 900px) { .policyPage .windows{ grid-template-columns: 1fr; } }
+
+        .policyPage .window-card{
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 32px 26px;
+            text-align: center;
+            border: 1px solid rgba(201, 148, 58, 0.25);
+            transition: transform .25s ease, border-color .25s ease;
+        }
+        .policyPage .window-card:hover{
+            transform: translateY(-4px);
+            border-color: var(--accent-gold);
+        }
+        .policyPage .window-card__icon{
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            background: rgba(201, 148, 58, 0.12);
+            color: var(--accent-gold);
+            display: grid; place-items: center;
+            font-size: 1.2rem;
+            margin: 0 auto 18px;
+        }
+        .policyPage .window-card__num{
+            font-family: var(--font-head);
+            font-weight: 700;
+            font-size: clamp(2.6rem, 5vw, 3.6rem);
+            color: var(--accent-gold);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+        .policyPage .window-card__label{
+            color: var(--text-on-dark-mute);
+            font-size: 0.88rem;
+            margin-bottom: 14px;
+        }
+        .policyPage .window-card__title{
+            font-family: var(--font-head);
+            color: var(--text-on-dark);
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .policyPage .window-card__note{
+            color: var(--text-on-dark-mute);
+            font-size: 0.86rem;
+            line-height: 1.55;
+            padding-top: 14px;
+            border-top: 1px solid rgba(201, 148, 58, 0.2);
+        }
+        .policyPage .window-card__note a{ color: var(--accent-gold); }
+
+        .policyPage .inspection-warning{
+            display: flex; gap: 16px;
+            background: rgba(212, 130, 10, 0.12);
+            border-left: 4px solid var(--warning-amber);
+            padding: 22px 26px;
+            border-radius: var(--radius);
+            color: #f0ce8a;
+        }
+        .policyPage .inspection-warning i{
+            font-size: 1.4rem; color: var(--warning-amber);
+            margin-top: 2px; flex-shrink: 0;
+        }
+        .policyPage .inspection-warning p{ margin: 0; font-size: 0.96rem; line-height: 1.7; }
+
+        /* ============================================================
+           CLAIM SUBMISSION TIMELINE
+           ============================================================ */
+        .policyPage .timeline{
+            position: relative;
+            max-width: 920px;
+            margin: 0 auto;
+        }
+        .policyPage .timeline-step{
+            position: relative;
+            padding-left: 86px;
+            padding-bottom: 40px;
+        }
+        .policyPage .timeline-step:last-child{ padding-bottom: 0; }
+        .policyPage .timeline-step__num{
+            position: absolute;
+            left: 0; top: 0;
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-gold), #b07d24);
+            color: var(--bg-primary);
+            display: grid; place-items: center;
+            font-family: var(--font-head);
+            font-weight: 700;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 14px rgba(201, 148, 58, 0.35);
+            border: 3px solid var(--bg-cream);
+            z-index: 2;
+        }
+        .policyPage .timeline-step h3{ margin: 6px 0 8px; color: var(--bg-primary); }
+        .policyPage .timeline-step p{ color: var(--text-on-light-mute); margin: 0 0 8px; }
+        .policyPage .timeline-step ul{
+            margin: 8px 0 0; padding-left: 18px;
+            color: var(--text-on-light-mute); font-size: 0.95rem;
+        }
+        .policyPage .timeline-step ul li{ margin-bottom: 4px; }
+        .policyPage .timeline-step code{
+            background: var(--bg-parchment);
+            color: var(--bg-primary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: ui-monospace, "SF Mono", Menlo, monospace;
+            font-size: 0.88rem;
+        }
+        @media (max-width: 600px) {
+            .policyPage .timeline-step{ padding-left: 64px; }
+            .policyPage .timeline-step__num{ width: 44px; height: 44px; font-size: 1.1rem; }
+        }
+
+        /* ============================================================
+           PAYPAL SAMPLE SECTION
+           ============================================================ */
+        .policyPage .paypal-grid{
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+        @media (max-width: 900px) { .policyPage .paypal-grid{ grid-template-columns: 1fr; } }
+        .policyPage .paypal-grid p{
+            color: var(--text-on-light-mute);
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .policyPage .ref-box{
+            background: #fff;
+            border: 1px solid var(--accent-gold);
+            border-left: 4px solid var(--accent-gold);
+            border-radius: var(--radius-lg);
+            padding: 30px 32px;
+            box-shadow: var(--shadow-card);
+        }
+        .policyPage .ref-box h4{
+            font-family: var(--font-head);
+            font-size: 1.3rem;
+            color: var(--bg-primary);
+            margin-bottom: 18px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .policyPage .ref-box h4 i{ color: var(--accent-gold); }
+        .policyPage .ref-box ul{ list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+        .policyPage .ref-box li{
+            display: flex; gap: 12px;
+            font-size: 0.95rem;
+            color: var(--text-on-light);
+            padding-bottom: 12px;
+            border-bottom: 1px dashed var(--border-tan-soft);
+        }
+        .policyPage .ref-box li:last-child{ border-bottom: none; padding-bottom: 0; }
+        .policyPage .ref-box li::before{
+            content: "›";
+            color: var(--accent-gold);
+            font-weight: 700;
+            font-size: 1.1rem;
+            line-height: 1.2;
+        }
+        .policyPage .ref-box strong{ color: var(--bg-primary); }
+
+        /* ============================================================
+           LC WHOLESALE SECTION
+           ============================================================ */
+        .policyPage .prose p{
+            color: var(--text-on-light-mute);
+            font-size: 1rem;
+            line-height: 1.85;
+            margin-bottom: 18px;
+        }
+        .policyPage .prose{ max-width: 920px; margin: 0 auto; }
+
+        .policyPage .gold-highlight{
+            margin-top: 26px;
+            background: rgba(201, 148, 58, 0.1);
+            border: 1px solid var(--accent-gold);
+            border-left: 4px solid var(--accent-gold);
+            border-radius: var(--radius);
+            padding: 22px 26px;
+            display: flex; gap: 16px;
+            color: #6b4e1c;
+        }
+        .policyPage .gold-highlight i{
+            color: var(--accent-gold);
+            font-size: 1.3rem;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+        .policyPage .gold-highlight p{ margin: 0; font-size: 0.96rem; line-height: 1.7; }
+
+        /* ============================================================
+           NON-RETURNABLE GRID
+           ============================================================ */
+        .policyPage .nonret{
+            color: var(--text-on-dark);
+        }
+        .policyPage .nonret h2{ color: var(--text-on-dark); }
+        .policyPage .nonret .section-head p{ color: var(--text-on-dark-mute); }
+
+        .policyPage .nonret-grid{
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        @media (max-width: 980px) { .policyPage .nonret-grid{ grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 640px)  { .policyPage .nonret-grid{ grid-template-columns: 1fr; } }
+
+        .policyPage .nonret-card{
+            background: var(--bg-secondary);
+            border-top: 4px solid var(--reject-brick);
+            border-radius: var(--radius-lg);
+            padding: 32px 28px;
+            transition: transform .25s ease, box-shadow .25s ease;
+        }
+        .policyPage .nonret-card:hover{
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+        }
+        .policyPage .nonret-card__icon{
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            background: rgba(139, 58, 42, 0.18);
+            color: #d97a66;
+            display: grid; place-items: center;
+            font-size: 1.2rem;
+            margin-bottom: 18px;
+        }
+        .policyPage .nonret-card h3{
+            color: var(--text-on-dark);
+            font-size: 1.25rem;
+            margin-bottom: 12px;
+        }
+        .policyPage .nonret-card p{
+            color: var(--text-on-dark-mute);
+            font-size: 0.94rem;
+            margin: 0;
+            line-height: 1.7;
+        }
+
+        /* ============================================================
+           GOVERNING LAW
+           ============================================================ */
+        .policyPage .gov-card{
+            background: #fff;
+            border-radius: var(--radius-lg);
+            padding: 50px 48px;
+            box-shadow: var(--shadow-card);
+            max-width: 1000px;
+            margin: 0 auto;
+            border-top: 4px solid var(--accent-tan);
+        }
+        @media (max-width: 600px) { .policyPage .gov-card{ padding: 36px 26px; } }
+        .policyPage .gov-card p{
+            color: var(--text-on-light-mute);
+            font-size: 1rem;
+            line-height: 1.85;
+            margin-bottom: 18px;
+        }
+        .policyPage .gov-note{
+            margin-top: 26px;
+            padding: 18px 22px;
+            background: var(--bg-cream);
+            border-left: 3px solid var(--accent-gold);
+            border-radius: 0 var(--radius) var(--radius) 0;
+            font-style: italic;
+            color: var(--text-on-light-mute);
+            font-size: 0.96rem;
+        }
+
+        /* ============================================================
+           CONTACT CARDS
+           ============================================================ */
+        .policyPage .contact{
+            color: var(--text-on-dark);
+        }
+        .policyPage .contact h2{ color: var(--text-on-dark); }
+        .policyPage .contact .section-head p{ color: var(--text-on-dark-mute); }
+
+        .policyPage .contact-grid{
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        @media (max-width: 900px) { .policyPage .contact-grid{ grid-template-columns: 1fr; } }
+
+        .policyPage .contact-card{
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 36px 30px;
+            text-align: center;
+            border-top: 3px solid var(--accent-gold);
+            transition: transform .25s ease, box-shadow .25s ease;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .policyPage .contact-card:hover{
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+        }
+        .policyPage .contact-card__icon{
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            background: rgba(201, 148, 58, 0.12);
+            color: var(--accent-gold);
+            display: grid; place-items: center;
+            font-size: 1.5rem;
+            margin-bottom: 18px;
+            border: 1px solid var(--accent-gold);
+        }
+        .policyPage .contact-card h3{ color: var(--text-on-dark); margin-bottom: 10px; font-size: 1.3rem; }
+        .policyPage .contact-card p{ color: var(--text-on-dark-mute); font-size: 0.93rem; margin-bottom: 16px; }
+        .policyPage .contact-card a{
+            color: var(--accent-gold);
+            font-weight: 500;
+            font-size: 0.98rem;
+            border-bottom: 1px solid transparent;
+            transition: border-color .2s ease;
+            word-break: break-all;
+        }
+        .policyPage .contact-card a:hover{ border-bottom-color: var(--accent-gold); }
+        .policyPage .contact-card__resp{
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(201, 148, 58, 0.2);
+            font-size: 0.84rem;
+            color: var(--text-on-dark-mute);
+            width: 100%;
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .policyPage .footer{
+            background: var(--bg-primary);
+            color: var(--text-on-dark-mute);
+            padding: 60px 0 28px;
+            position: relative;
+        }
+        .policyPage .footer::before{
+            content: ""; position: absolute; top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+        }
+        .policyPage .footer-grid{
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1.1fr;
+            gap: 48px;
+            margin-bottom: 36px;
+        }
+        @media (max-width: 820px) { .policyPage .footer-grid{ grid-template-columns: 1fr; gap: 36px; } }
+
+        .policyPage .footer h4{
+            font-family: var(--font-head);
+            color: var(--accent-gold);
+            font-size: 1.15rem;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+        .policyPage .footer__brand-name{
+            font-family: var(--font-head);
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+            margin-bottom: 6px;
+        }
+        .policyPage .footer__tag{ font-style: italic; color: var(--text-on-dark-mute); margin-bottom: 14px; }
+        .policyPage .footer p{ font-size: 0.92rem; line-height: 1.65; margin: 0 0 8px; }
+        .policyPage .footer ul{ list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+        .policyPage .footer ul a{ color: var(--text-on-dark-mute); font-size: 0.93rem; transition: color .2s ease; }
+        .policyPage .footer ul a:hover{ color: var(--accent-gold); }
+        .policyPage .footer__contact a{ color: var(--text-on-dark); }
+        .policyPage .footer__contact a:hover{ color: var(--accent-gold); }
+        .policyPage .footer__bottom{
+            border-top: 1px solid rgba(212, 184, 150, 0.18);
+            padding-top: 22px;
+            display: flex; justify-content: space-between;
+            flex-wrap: wrap; gap: 12px;
+            font-size: 0.85rem;
+            color: var(--text-on-dark-mute);
+        }
+        .policyPage .footer__bottom-links{ display: flex; gap: 18px; flex-wrap: wrap; }
+        .policyPage .footer__bottom-links a:hover{ color: var(--accent-gold); }
+
+        /* ============================================================
+           SCROLL REVEAL
+           ============================================================ */
+        .policyPage .reveal{
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity .7s ease, transform .7s ease;
+            will-change: opacity, transform;
+        }
+        .policyPage .reveal.is-visible{ opacity: 1; transform: translateY(0); }
+
+        @media (prefers-reduced-motion: reduce) {
+            .policyPage{ scroll-behavior: auto; }
+            .policyPage .reveal{ opacity: 1; transform: none; transition: none; }
+            .policyPage{ animation: none !important; transition: none !important; }
+        }
