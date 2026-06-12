@@ -52,12 +52,12 @@ export default function RawLeatherCard({ rawLeather, viewMode = 'grid' }: RawLea
       <Card className="group overflow-hidden border-0 shadow-leather hover-lift transition-premium h-full flex flex-col bg-gradient-to-br from-background to-muted/30">
         <div className="relative overflow-hidden">
           {/* Image */}
-          <div className="aspect-video bg-gradient-to-br from-amber-100 to-amber-200 dark:from-amber-900 dark:to-amber-800 relative">
+          <div className="w-full h-[180px] sm:h-[200px] md:h-[220px] overflow-hidden flex-shrink-0 bg-gradient-to-br from-amber-100 to-amber-200 dark:from-amber-900 dark:to-amber-800 relative">
             {images && images.length > 0 ? (
               <img
                 src={images[0]}
                 alt={name}
-                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                className="w-full h-full object-cover object-center block transition-transform duration-700 group-hover:scale-110"
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center">
@@ -184,12 +184,12 @@ export default function RawLeatherCard({ rawLeather, viewMode = 'grid' }: RawLea
   return (
     <Card className="group overflow-hidden border-0 shadow-leather hover-lift transition-premium">
       <div className="flex gap-6">
-        <div className="relative w-48 h-48 flex-shrink-0 overflow-hidden rounded-lg">
+        <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 flex-shrink-0 overflow-hidden rounded-lg">
           {images && images.length > 0 ? (
             <img
               src={images[0]}
               alt={name}
-              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+              className="w-full h-full object-cover object-center block transition-transform duration-700 group-hover:scale-110"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-amber-100 to-amber-200 dark:from-amber-900 dark:to-amber-800">

@@ -1,0 +1,81 @@
+// lib/stores/sampleTrayStore.ts
+//
+// Zustand store backing the new sample-tray feature.
+//
+// Scope: HIDES ONLY. Finished products never enter the tray — they go
+// straight to the unified review page via a deep link.
+//
+// State is persisted to localStorage (key `pge-sample-tray`) so the tray
+// survives a refresh.
+"use client";
+
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+
+export const SAMPLE_TRAY_LIMIT = 3;
+
+export interface SampleTrayItem {
+  productId: string;
+  productName: string;
+  hideType: string;
+  grade?: string;
+  thickness?: string;
+  tanningMethod?: string;
+  finish?: string;
+  image?: string;
+}
+
+interface SampleTrayState {
+  items: SampleTrayItem[];
+  addHide: (hide: SampleTrayItem) => boolean;
+  removeHide: (productId: string) => void;
+  clearTray: () => void;
+  isFull: () => boolean;
+  isInTray: (productId: string) => boolean;
+}
+
+export const useSampleTrayStore = create<SampleTrayState>()(
+  persist(
+    (set, get) => ({
+      items: [],
+
+      addHide: (hide) => {
+        const { items } = get();
+        if (items.length >= SAMPLE_TRAY_LIMIT) return false;
+        if (items.some((i) => i.productId === hide.productId)) return false;
+        set({ items: [...items, hide] });
+        return true;
+      },
+
+      removeHide: (productId) => {
+        set({ items: get().items.filter((i) => i.productId !== productId) });
+      },
+
+      clearTray: () => set({ items: [] }),
+
+      isFull: () => get().items.length >= SAMPLE_TRAY_LIMIT,
+
+      isInTray: (productId) => get().items.some((i) => i.productId === productId),
+    }),
+    {
+      name: "pge-sample-tray",
+      storage: createJSONStorage(() => {
+        // Defensive: localStorage is unavailable on the server and during
+        // certain privacy-mode browsers. Falling back to an in-memory shim
+        // keeps the store usable without crashing.
+        if (typeof window === "undefined") {
+          return {
+            getItem: () => null,
+            setItem: () => {},
+            removeItem: () => {},
+          } as Storage;
+        }
+        return window.localStorage;
+      }),
+      // Only persist the items array. Methods are part of the store but
+      // should not be serialized.
+      partialize: (state) => ({ items: state.items }),
+      version: 1,
+    }
+  )
+);

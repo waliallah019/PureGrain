@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 import { IRawLeather } from "@/types/rawLeather";
 import RawLeatherCard from "@/components/raw-leather-details/RawLeatherCard";
+import AddToSampleTrayButton from "@/components/sample-request/AddToSampleTrayButton";
+import SampleTrayBar from "@/components/sample-request/SampleTrayBar";
 
 interface RawLeatherDetailContentProps {
   rawLeather: IRawLeather;
@@ -256,13 +258,18 @@ export default function RawLeatherDetailContent({
               {/* CTA */}
               <div className="flex flex-col sm:flex-row gap-4">
                 {rawLeather.sampleAvailable && (
-                  <Link
-                    href={`/request-sample/pay?productId=${rawLeather._id}&productTypeCategory=raw-leather`}
-                    className="btn-brass w-full sm:w-auto justify-center"
-                  >
-                    <ShoppingCart className="mr-2 h-4 w-4" />
-                    Request Sample
-                  </Link>
+                  <AddToSampleTrayButton
+                    className="w-full sm:w-auto"
+                    hide={{
+                      productId: String(rawLeather._id),
+                      productName: rawLeather.name,
+                      hideType: rawLeather.animal,
+                      grade: rawLeather.leatherType,
+                      thickness: rawLeather.thickness,
+                      finish: rawLeather.finish,
+                      image: rawLeather.images?.[0],
+                    }}
+                  />
                 )}
                 <Link
                   href={`/quote-request?itemId=${rawLeather._id}&itemName=${encodeURIComponent(rawLeather.name)}&itemTypeCategory=raw-leather`}
@@ -315,11 +322,11 @@ export default function RawLeatherDetailContent({
                     href={`/catalog/raw-leather/${rl._id}`}
                     className="group block card-industrial"
                   >
-                    <div className="aspect-square overflow-hidden">
+                    <div className="w-full h-[180px] sm:h-[200px] md:h-[220px] overflow-hidden flex-shrink-0">
                       <img
                         src={rl.images?.[0] || "/placeholder-image.jpg"}
                         alt={rl.name}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="w-full h-full object-cover object-center block transition-transform duration-500 group-hover:scale-105"
                       />
                     </div>
                     <div className="p-6">
@@ -441,6 +448,8 @@ export default function RawLeatherDetailContent({
           </div>
         </div>
       )}
+      {/* Tray bar — only mounted on hide pages, per spec. */}
+      <SampleTrayBar />
     </>
   );
 }

@@ -19,9 +19,32 @@ const optionalString = (schema: z.ZodType) =>
     return val;
   }, schema.optional());
 
+const sampleRequestItemSchema = z.object({
+  productId: optionalString(z.string().max(64)),
+  productName: optionalString(z.string().max(200)),
+  productType: optionalString(z.string().max(60)),
+  hideType: optionalString(z.string().max(60)),
+  grade: optionalString(z.string().max(60)),
+  thickness: optionalString(z.string().max(60)),
+  tanningMethod: optionalString(z.string().max(60)),
+  finish: optionalString(z.string().max(60)),
+  variantId: optionalString(z.string().max(64)),
+  variantName: optionalString(z.string().max(120)),
+});
+
 const createSampleRequestBodySchema = z.object({
   // FIX: Add requestNumber as optional in validation, generated in service
   requestNumber: optionalString(z.string().max(20)), // Allow optional short string
+  // New (additive) fields for the unified review flow.
+  orderRef: optionalString(z.string().max(40)),
+  requestType: optionalString(z.enum(['HIDE', 'FINISHED_PRODUCT'])),
+  items: z.array(sampleRequestItemSchema).max(3).optional(),
+  estimatedDays: optionalString(z.string().max(60)),
+  industry: optionalString(z.string().max(80)),
+  website: optionalString(z.string().max(200)),
+  notes: optionalString(z.string().max(300)),
+  trackingNumber: optionalString(z.string().max(80)),
+  courierName: optionalString(z.string().max(80)),
   companyName: z.string().min(1, 'Company Name is required.').max(100, 'Company Name is too long.'),
   contactPerson: z.string().min(1, 'Contact Person is required.').max(100, 'Contact Person is too long.'),
   email: z.string().email('Invalid email format.').max(100, 'Email is too long.'),
@@ -70,6 +93,8 @@ const updateSampleRequestAdminBodySchema = z.object({
   requestNumber: optionalString(z.string().max(20)),
   status: z.enum(['pending', 'paid', 'processing', 'shipped', 'delivered', 'cancelled', 'failed', 'refunded']),
   shippingTrackingLink: optionalString(z.string().url("Invalid URL format for tracking link.")),
+  trackingNumber: optionalString(z.string().max(64)),
+  courierName: optionalString(z.string().max(64)),
 });
 
 const sampleRequestIdParamSchema = z.object({

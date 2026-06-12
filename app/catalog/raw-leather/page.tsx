@@ -27,6 +27,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { IRawLeather, IRawLeatherType } from "@/types/rawLeather"
+import AddToSampleTrayButton from "@/components/sample-request/AddToSampleTrayButton"
+import SampleTrayBar from "@/components/sample-request/SampleTrayBar"
 import "../catalog.css"
 
 const FALLBACK_IMAGE = "/placeholder-image.jpg"
@@ -208,7 +210,7 @@ export default function RawLeatherPage() {
                         id="raw-leather-search"
                         value={searchTerm}
                         onChange={(event) => setSearchTerm(event.target.value)}
-                        placeholder="by name, animal, or finish"
+                        placeholder="Search by name, animal, or finish"
                         className="pl-9"
                       />
                     </div>
@@ -400,6 +402,32 @@ export default function RawLeatherPage() {
                             <span key={tag}>{tag}</span>
                           ))}
                         </div>
+                        {product.sampleAvailable && (
+                          <div
+                            className="mt-3"
+                            onClick={(e) => {
+                              // The whole card is wrapped in a <Link>; stop the
+                              // click here so adding to the tray doesn't also
+                              // navigate to the detail page.
+                              e.preventDefault();
+                              e.stopPropagation();
+                            }}
+                          >
+                            <AddToSampleTrayButton
+                              stopPropagation
+                              hide={{
+                                productId: String(product._id),
+                                productName: product.name,
+                                hideType: product.animal,
+                                grade: product.leatherType,
+                                thickness: product.thickness,
+                                finish: product.finish,
+                                image: product.images?.[0],
+                              }}
+                              className="!px-4 !py-2 !text-xs"
+                            />
+                          </div>
+                        )}
                         <span className="catalogFeatureCard__link">
                           View Details
                           <ArrowRight className="h-4 w-4" />
@@ -444,6 +472,8 @@ export default function RawLeatherPage() {
         </section>
       </main>
       <Footer />
+      {/* Persistent sample-tray bar — only mounted on hide pages. */}
+      <SampleTrayBar />
     </div>
   )
 }

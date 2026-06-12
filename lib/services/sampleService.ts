@@ -36,6 +36,27 @@ class SampleService {
   }
 
   /**
+   * Generates the public-facing order reference in the format
+   * `PGE-YYYY-XXXX`. The numeric suffix is the (year-scoped) document
+   * count + 1, zero-padded to four digits, and we re-roll on the rare
+   * collision so the value remains unique even under concurrency.
+   */
+  public async generateOrderRef(): Promise<string> {
+    const year = new Date().getFullYear();
+    let attempts = 0;
+    while (attempts < 5) {
+      const startOfYear = new Date(`${year}-01-01T00:00:00.000Z`);
+      const yearCount = await SampleRequest.countDocuments({ createdAt: { $gte: startOfYear } });
+      const candidate = `PGE-${year}-${String(yearCount + 1 + attempts).padStart(4, '0')}`;
+      const existing = await SampleRequest.findOne({ orderRef: candidate }).lean();
+      if (!existing) return candidate;
+      attempts += 1;
+    }
+    // Fallback — extremely unlikely; pad with random suffix to avoid blocking.
+    return `PGE-${year}-${Math.floor(1000 + Math.random() * 9000)}`;
+  }
+
+  /**
    * Creates a new sample request.
     * This is typically called before payment proof is submitted.
    */
@@ -44,9 +65,15 @@ class SampleService {
       // FIX: Generate a unique request number
       const requestNumber = await this.generateUniqueRequestNumber();
 
+      // Generate the public-facing order reference if the caller did not
+      // pass one in. Older flows that don't yet set an orderRef will still
+      // get one going forward, while leaving legacy records untouched.
+      const orderRef = sampleData.orderRef || (await this.generateOrderRef());
+
       const newSampleRequest = new SampleRequest({
         ...sampleData,
         requestNumber: requestNumber, // Assign the generated number
+        orderRef,
         paymentStatus: sampleData.paymentStatus || 'pending',
       });
       const savedRequest = await newSampleRequest.save();
@@ -74,6 +101,14 @@ class SampleService {
         void this.sendSampleStatusUpdateEmail(null, savedRequest, 'initial_paid').catch(err => {
           logger.error(`[SampleService] Fire-and-forget initial_paid email failed for ${savedRequest._id} (Req# ${savedRequest.requestNumber}):`, err);
         });
+        // New (additive) admin email — only triggered for the unified review
+        // flow which carries the richer items[]/industry/website context.
+        // Legacy flows still rely on the in-app NotificationService alone.
+        if (savedRequest.requestType) {
+          void this.sendAdminNewSampleEmail(savedRequest).catch((err) => {
+            logger.error(`[SampleService] Admin new-sample email failed for ${savedRequest._id} (Req# ${savedRequest.requestNumber}):`, err);
+          });
+        }
       }
 
       // Create a notification for the admin
@@ -311,6 +346,9 @@ class SampleService {
                 ${commonEmailHeader}
                 <p>Thank you for your payment! We have successfully received it for your sample request.</p>
                 <p>Your order for <strong>${requestTitle}</strong> (Reference: ${displayId}) is now placed, and we will begin processing it shortly.</p>
+                ${this.buildItemsListHtml(updatedRequest)}
+                ${this.buildShippingTimelineHtml(updatedRequest)}
+                ${this.buildWhatsNextHtml()}
                 <p>We will notify you as soon as your samples are shipped.</p>
                 ${commonEmailFooter}
             `;
@@ -384,6 +422,13 @@ class SampleService {
             if (updatedRequest.shippingTrackingLink) {
                 emailTextContent += `\nTracking Link: ${updatedRequest.shippingTrackingLink}`;
                 emailHtmlContent += `<p><strong>Tracking Link:</strong> <a href="${updatedRequest.shippingTrackingLink}" target="_blank">${updatedRequest.shippingTrackingLink}</a></p>`;
+            } else if (updatedRequest.trackingNumber) {
+                // Fall back to a DHL "track by ID" deep link when the admin
+                // only stored the bare tracking number on the request.
+                const dhlLink = `https://www.dhl.com/tracking?id=${encodeURIComponent(updatedRequest.trackingNumber)}`;
+                emailTextContent += `\nTracking Number: ${updatedRequest.trackingNumber}\nTrack: ${dhlLink}`;
+                emailHtmlContent += `<p><strong>Tracking Number:</strong> ${updatedRequest.trackingNumber}${updatedRequest.courierName ? ` (${updatedRequest.courierName})` : ''}</p>
+                                     <p><a href="${dhlLink}" target="_blank">Track your shipment</a></p>`;
             }
             if (updatedRequest.shippedAt) {
                 emailTextContent += `\nShipped On: ${format(new Date(updatedRequest.shippedAt), 'MMM dd, yyyy HH:mm')}`;
@@ -409,6 +454,86 @@ class SampleService {
 
   private formatStatus(status: PaymentStatus): string {
     return status.replace(/_/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  }
+
+  /**
+   * Renders an HTML <ul> of the requested items, including hide-specific
+   * specifications. Returns an empty string when the request does not
+   * carry the new items[] payload (legacy single-product requests).
+   */
+  private buildItemsListHtml(req: ISampleRequest): string {
+    if (!req.items || req.items.length === 0) return '';
+    const rows = req.items
+      .map((it) => {
+        const specs = [it.hideType, it.grade, it.thickness, it.tanningMethod, it.finish, it.variantName]
+          .filter(Boolean)
+          .join(' · ');
+        return `<li><strong>${it.productName || 'Sample item'}</strong>${specs ? ` <span style="color:#666;">— ${specs}</span>` : ''}</li>`;
+      })
+      .join('');
+    const heading = req.requestType === 'HIDE' ? 'Requested hides' : 'Requested product';
+    return `<p style="margin-top:18px;"><strong>${heading}:</strong></p><ul>${rows}</ul>`;
+  }
+
+  /**
+   * Renders the estimated-timeline line for the buyer email when we know
+   * the destination transit days from the ShippingRate lookup.
+   */
+  private buildShippingTimelineHtml(req: ISampleRequest): string {
+    if (!req.estimatedDays) return '';
+    return `<p><strong>Estimated transit:</strong> ${req.estimatedDays} via DHL Express to ${req.country}.</p>`;
+  }
+
+  /**
+   * Standard 4-step "what happens next" block included in the buyer
+   * confirmation email and the post-payment success page.
+   */
+  private buildWhatsNextHtml(): string {
+    return `
+      <p style="margin-top:18px;"><strong>What happens next</strong></p>
+      <ol>
+        <li>We receive your order</li>
+        <li>We pack your samples (1-2 days)</li>
+        <li>DHL collects and ships (day 2-3)</li>
+        <li>Samples arrive at your door</li>
+      </ol>
+    `;
+  }
+
+  /**
+   * Notifies the configured admin inbox of a fresh sample request that
+   * came through the unified review flow. Includes the rich context that
+   * isn't covered by the existing in-app NotificationService.
+   */
+  private async sendAdminNewSampleEmail(req: ISampleRequest): Promise<void> {
+    const adminTo = process.env.ADMIN_EMAIL;
+    if (!adminTo) {
+      logger.warn('[SampleService] ADMIN_EMAIL not set — skipping admin new-sample email.');
+      return;
+    }
+    const ref = req.orderRef || req.requestNumber;
+    const itemsHtml = this.buildItemsListHtml(req);
+    const meta = `
+      <ul>
+        <li><strong>Buyer:</strong> ${req.contactPerson} &lt;${req.email}&gt;${req.phone ? ` · ${req.phone}` : ''}</li>
+        <li><strong>Company:</strong> ${req.companyName}</li>
+        <li><strong>Country:</strong> ${req.country}</li>
+        ${req.industry ? `<li><strong>Industry:</strong> ${req.industry}</li>` : ''}
+        ${req.website ? `<li><strong>Website:</strong> ${req.website}</li>` : ''}
+        <li><strong>Type:</strong> ${req.requestType || 'n/a'}</li>
+        <li><strong>Shipping charged:</strong> $${(req.shippingFee || 0).toFixed(2)} USD${req.estimatedDays ? ` (${req.estimatedDays})` : ''}</li>
+        ${req.notes ? `<li><strong>Notes:</strong> ${req.notes}</li>` : ''}
+      </ul>
+    `;
+    const subject = `New sample request — ${ref} (${req.requestType || 'sample'})`;
+    const html = `
+      <p>A new sample request has been received.</p>
+      <p><strong>Order reference:</strong> ${ref}</p>
+      ${meta}
+      ${itemsHtml}
+      <p style="margin-top:14px;"><a href="${(process.env.NEXT_PUBLIC_SITE_URL || process.env.FRONTEND_URL || '').replace(/\/$/, '')}/admin-ahmza/samples/${req._id}">Open in admin</a></p>
+    `;
+    await sendEmail({ to: adminTo, subject, html, text: `${subject}\n\nBuyer: ${req.contactPerson} <${req.email}>\nCompany: ${req.companyName}\nCountry: ${req.country}` });
   }
 }
 

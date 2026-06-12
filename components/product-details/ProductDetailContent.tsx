@@ -250,11 +250,11 @@ export default function ProductDetailContent({
               <div className="flex flex-col sm:flex-row gap-4">
                 {product.sampleAvailable && (
                   <Link
-                    href={`/request-sample/pay?productId=${product._id}&productTypeCategory=finished-product`}
+                    href={`/sample-request/review?productId=${product._id}&productTypeCategory=finished-product`}
                     className="btn-brass w-full sm:w-auto justify-center"
                   >
                     <ShoppingCart className="mr-2 h-4 w-4" />
-                    Request Sample
+                    Request a Sample
                   </Link>
                 )}
                 <Link
@@ -303,13 +303,13 @@ export default function ProductDetailContent({
                   href={`/catalog/finished-products/${p._id}`}
                   className="group block card-industrial"
                 >
-                  <div className="aspect-square overflow-hidden">
+                  <div className="w-full h-[180px] sm:h-[200px] md:h-[220px] overflow-hidden flex-shrink-0">
                     <Image
                       src={p.images?.[0] || "/placeholder-image.jpg"}
                       alt={p.name}
                       width={800}
                       height={800}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="w-full h-full object-cover object-center block transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
                   <div className="p-6">

@@ -14,10 +14,42 @@ export type BusinessType = 'wholesaler' | 'retailer' | 'manufacturer' | 'distrib
 export type IntendedUse = 'production' | 'resale' | 'testing' | 'development' | 'other';
 export type ExpectedVolume = 'small' | 'medium' | 'large' | 'ongoing' | 'unsure';
 
+// New (additive) types for the unified review flow.
+// `requestType` distinguishes between the two flows:
+//  - "HIDE":             1-3 leather hide samples (free, pay shipping only)
+//  - "FINISHED_PRODUCT": exactly 1 finished product sample
+export type SampleRequestType = 'HIDE' | 'FINISHED_PRODUCT';
+
+export interface ISampleRequestItem {
+  productId?: string;
+  productName?: string;
+  productType?: string;
+  // Hide-only fields
+  hideType?: string;
+  grade?: string;
+  thickness?: string;
+  tanningMethod?: string;
+  finish?: string;
+  // Finished-product-only fields
+  variantId?: string;
+  variantName?: string;
+}
+
 export interface ISampleRequest extends Document {
   _id: string;
   // FIX: Add a human-readable request number
   requestNumber: string; // New field
+  // New (additive) public-facing order reference (PGE-YYYY-XXXX).
+  // Coexists with `requestNumber`; older records will not have this set.
+  orderRef?: string;
+  // New (additive) request-type discriminator and item array for the
+  // unified review flow. Legacy single-product fields below stay.
+  requestType?: SampleRequestType;
+  items?: ISampleRequestItem[];
+  estimatedDays?: string;
+  industry?: string;
+  website?: string;
+  notes?: string;
   companyName: string;
   contactPerson: string;
   email: string;
@@ -56,13 +88,38 @@ export interface ISampleRequest extends Document {
   paymentConfirmationStatus?: string;
   shippedAt?: Date;
   shippingTrackingLink?: string;
+  trackingNumber?: string;
+  courierName?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
+const sampleRequestItemSchema = new Schema<ISampleRequestItem>(
+  {
+    productId: { type: String, trim: true },
+    productName: { type: String, trim: true },
+    productType: { type: String, trim: true },
+    hideType: { type: String, trim: true },
+    grade: { type: String, trim: true },
+    thickness: { type: String, trim: true },
+    tanningMethod: { type: String, trim: true },
+    finish: { type: String, trim: true },
+    variantId: { type: String, trim: true },
+    variantName: { type: String, trim: true },
+  },
+  { _id: false }
+);
+
 const sampleRequestSchema: Schema<ISampleRequest> = new Schema<ISampleRequest>({
   // FIX: Add requestNumber to schema
   requestNumber: { type: String, unique: true, required: true },
+  orderRef: { type: String, trim: true },
+  requestType: { type: String, enum: ['HIDE', 'FINISHED_PRODUCT'] },
+  items: { type: [sampleRequestItemSchema], default: undefined },
+  estimatedDays: { type: String, trim: true },
+  industry: { type: String, trim: true },
+  website: { type: String, trim: true },
+  notes: { type: String, trim: true, maxlength: 300 },
   companyName: { type: String, required: true, trim: true },
   contactPerson: { type: String, required: true, trim: true },
   email: { type: String, required: true, trim: true, lowercase: true, match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
@@ -108,6 +165,8 @@ const sampleRequestSchema: Schema<ISampleRequest> = new Schema<ISampleRequest>({
   paymentConfirmationStatus: { type: String },
   shippedAt: { type: Date },
   shippingTrackingLink: { type: String, trim: true },
+  trackingNumber: { type: String, trim: true },
+  courierName: { type: String, trim: true },
 }, { timestamps: true });
 
 sampleRequestSchema.index({ wiseTransferId: 1 }, { unique: true, sparse: true });
@@ -115,6 +174,9 @@ sampleRequestSchema.index({ paypalOrderId: 1 }, { unique: true, sparse: true });
 sampleRequestSchema.index({ paypalTransactionId: 1 }, { unique: true, sparse: true });
 // FIX: Add index for requestNumber
 sampleRequestSchema.index({ requestNumber: 1 }, { unique: true });
+// New (additive) index for the public order reference. Sparse so legacy
+// records without an orderRef do not collide.
+sampleRequestSchema.index({ orderRef: 1 }, { unique: true, sparse: true });
 
 const SampleRequest = mongoose.models.SampleRequest || mongoose.model<ISampleRequest>('SampleRequest', sampleRequestSchema);
 

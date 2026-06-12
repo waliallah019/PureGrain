@@ -100,13 +100,19 @@ export async function PATCH(req: NextRequest, context: { params: { id: string } 
     }
 
     // 4. Extract validated body data
-    const { status, shippingTrackingLink } = bodyValidation.data;
+    const { status, shippingTrackingLink, trackingNumber, courierName } = bodyValidation.data;
     logger.info(`[PATCH] /api/sample-requests/${id} - Validated status: ${status}, trackingLink: ${shippingTrackingLink}`);
 
     const updateFields: Partial<ISampleRequest> = { paymentStatus: status };
     // Ensure `shippingTrackingLink` is correctly handled for optional values (empty string vs undefined)
     if (shippingTrackingLink !== undefined) {
       updateFields.shippingTrackingLink = shippingTrackingLink;
+    }
+    if (trackingNumber !== undefined) {
+      updateFields.trackingNumber = trackingNumber;
+    }
+    if (courierName !== undefined) {
+      updateFields.courierName = courierName;
     }
 
     const updatedRequest = await sampleService.updateSampleRequest(id, updateFields);

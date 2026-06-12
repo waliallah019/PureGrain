@@ -61,7 +61,8 @@ export default function AdminSingleSamplePage() {
 
   const updateRequestStatus = async (
     newStatus: PaymentStatus,
-    trackingLink?: string
+    trackingLink?: string,
+    extras?: { trackingNumber?: string; courierName?: string }
   ) => {
     setIsStatusUpdateLoading(true);
     // FIX: Use requestNumber in logs/toasts
@@ -76,10 +77,12 @@ export default function AdminSingleSamplePage() {
       }
 
       const apiUrl = `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/sample-requests/${sampleRequestId}`;
-      const payload = {
+      const payload: Record<string, unknown> = {
         status: newStatus,
         shippingTrackingLink: trackingLink === '' ? undefined : trackingLink,
       };
+      if (extras?.trackingNumber) payload.trackingNumber = extras.trackingNumber;
+      if (extras?.courierName) payload.courierName = extras.courierName;
       console.log("[FE-Detail] Sending PATCH request to:", apiUrl, "with payload:", payload);
 
       const response = await axios.patch(apiUrl, payload);
@@ -235,6 +238,9 @@ export default function AdminSingleSamplePage() {
 
             <div className="space-y-2">
               <h3 className="text-lg font-semibold flex items-center gap-2"><Truck className="h-5 w-5" /> Shipping Details</h3>
+              {sampleRequest.trackingNumber && (
+                <p><strong>Tracking Number:</strong> {sampleRequest.trackingNumber}{sampleRequest.courierName ? ` (${sampleRequest.courierName})` : ''}</p>
+              )}
               {sampleRequest.shippingTrackingLink && (
                 <p><strong>Tracking Link:</strong> <a href={sampleRequest.shippingTrackingLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline flex items-center gap-1"> <LinkIcon className="h-4 w-4"/> {sampleRequest.shippingTrackingLink}</a></p>
               )}

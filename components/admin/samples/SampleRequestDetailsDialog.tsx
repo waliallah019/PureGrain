@@ -20,7 +20,11 @@ interface SampleRequestActionsDialogProps {
   isOpen: boolean;
   onClose: () => void;
   request: ISampleRequest;
-  onUpdateStatus: (newStatus: PaymentStatus, trackingLink?: string) => Promise<void>;
+  onUpdateStatus: (
+    newStatus: PaymentStatus,
+    trackingLink?: string,
+    extras?: { trackingNumber?: string; courierName?: string }
+  ) => Promise<void>;
   onDeleteSuccess: () => void;
   isLoading: boolean;
 }
@@ -30,27 +34,35 @@ const SampleRequestActionsDialog: React.FC<SampleRequestActionsDialogProps> = ({
 }) => {
   const [currentStatus, setCurrentStatus] = useState<PaymentStatus>(request.paymentStatus);
   const [trackingLink, setTrackingLink] = useState<string>(request.shippingTrackingLink || '');
+  const [trackingNumber, setTrackingNumber] = useState<string>(request.trackingNumber || '');
+  const [courierName, setCourierName] = useState<string>(request.courierName || 'DHL Express');
   const [localLoading, setLocalLoading] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       setCurrentStatus(request.paymentStatus);
       setTrackingLink(request.shippingTrackingLink || '');
+      setTrackingNumber(request.trackingNumber || '');
+      setCourierName(request.courierName || 'DHL Express');
     }
   }, [isOpen, request]);
 
-  // FIX: Define displayId for dialog title/toasts
-  const dialogDisplayId = request.requestNumber || request._id.substring(0, 8) + '...';
+  // FIX: Define displayId for dialog title/toasts. Prefer the new public
+  // orderRef when present, falling back to the legacy requestNumber.
+  const dialogDisplayId = request.orderRef || request.requestNumber || request._id.substring(0, 8) + '...';
 
   const handleUpdate = async () => {
     setLocalLoading(true);
     try {
-      if (currentStatus === 'shipped' && !trackingLink.trim()) {
-        toast.error("Tracking link is required when status is 'Shipped'.");
+      if (currentStatus === 'shipped' && !trackingLink.trim() && !trackingNumber.trim()) {
+        toast.error("Tracking link or tracking number is required when status is 'Shipped'.");
         setLocalLoading(false);
         return;
       }
-      await onUpdateStatus(currentStatus, trackingLink);
+      await onUpdateStatus(currentStatus, trackingLink, {
+        trackingNumber: trackingNumber || undefined,
+        courierName: courierName || undefined,
+      });
     } catch (error) {
       console.error("[Dialog] Error updating status from dialog:", error);
     } finally {
@@ -84,6 +96,34 @@ const SampleRequestActionsDialog: React.FC<SampleRequestActionsDialogProps> = ({
         <div className="grid gap-4 py-4">
           <p><strong>Customer:</strong> {request.contactPerson} ({request.companyName})</p>
           <p><strong>Item:</strong> {request.productName || request.sampleType}</p>
+          {request.requestType && (
+            <p><strong>Request type:</strong> {request.requestType}</p>
+          )}
+          {request.industry && (
+            <p><strong>Industry:</strong> {request.industry}</p>
+          )}
+          {request.website && (
+            <p><strong>Website:</strong> {request.website}</p>
+          )}
+          {request.items && request.items.length > 0 && (
+            <div>
+              <p className="font-medium">Items:</p>
+              <ul className="ml-4 list-disc text-sm text-muted-foreground">
+                {request.items.map((it, idx) => (
+                  <li key={idx}>
+                    <strong className="text-foreground">{it.productName || 'Item'}</strong>
+                    {[it.hideType, it.grade, it.thickness, it.tanningMethod, it.finish, it.variantName]
+                      .filter(Boolean)
+                      .join(' · ') &&
+                      ` — ${[it.hideType, it.grade, it.thickness, it.tanningMethod, it.finish, it.variantName].filter(Boolean).join(' · ')}`}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {request.notes && (
+            <p className="text-sm"><strong>Notes:</strong> {request.notes}</p>
+          )}
           <Separator />
 
           <div className="space-y-2">
@@ -105,6 +145,29 @@ const SampleRequestActionsDialog: React.FC<SampleRequestActionsDialogProps> = ({
             </Select>
           </div>
 
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <Label htmlFor="trackingNumber">Tracking Number</Label>
+              <Input
+                id="trackingNumber"
+                placeholder="e.g. 1234567890"
+                value={trackingNumber}
+                onChange={(e) => setTrackingNumber(e.target.value)}
+                disabled={isLoading || localLoading}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="courierName">Courier</Label>
+              <Input
+                id="courierName"
+                placeholder="DHL Express"
+                value={courierName}
+                onChange={(e) => setCourierName(e.target.value)}
+                disabled={isLoading || localLoading}
+              />
+            </div>
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="trackingLink">Shipping Tracking Link</Label>
             <Input
@@ -114,8 +177,8 @@ const SampleRequestActionsDialog: React.FC<SampleRequestActionsDialogProps> = ({
               onChange={(e) => setTrackingLink(e.target.value)}
               disabled={isLoading || localLoading}
             />
-            {(currentStatus === 'shipped' && !trackingLink.trim()) && (
-              <p className="text-red-500 text-sm">Tracking link is recommended for 'Shipped' status.</p>
+            {(currentStatus === 'shipped' && !trackingLink.trim() && !trackingNumber.trim()) && (
+              <p className="text-red-500 text-sm">A tracking link or tracking number is required for &apos;Shipped&apos; status.</p>
             )}
           </div>
         </div>
