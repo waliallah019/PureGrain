@@ -173,6 +173,16 @@ export default function CustomManufacturingPage() {
     else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Invalid email format.";
     if (!formData.productType.trim()) newErrors.productType = "Product Type is required.";
     if (!formData.estimatedQuantity.trim()) newErrors.estimatedQuantity = "Estimated Quantity is required.";
+    // Business rule: custom manufacturing requires user-provided specs OR a
+    // design file/image before submission (one of the two is mandatory).
+    const hasSpecs = formData.specifications.trim().length > 0;
+    const hasFiles = designFiles.length > 0;
+    if (!hasSpecs && !hasFiles) {
+      newErrors.specifications =
+        "Please describe your specifications OR upload at least one design file.";
+      newErrors.designFiles =
+        "Please upload at least one design file OR describe your specifications.";
+    }
     if (designFiles.length > MAX_TOTAL_FILES) {
       newErrors.designFiles = `You can upload a maximum of ${MAX_TOTAL_FILES} design files.`;
     }

@@ -95,7 +95,7 @@ export default function SampleTrayBar() {
                 href="/sample-request/review?type=HIDE"
                 className="inline-flex items-center justify-center bg-brass px-5 py-2.5 text-xs font-medium uppercase tracking-wide text-brass-foreground transition-colors duration-200 hover:bg-brass/90 md:px-7 md:py-3 md:text-sm"
               >
-                Review &amp; Checkout
+                Review Sample Request
                 <span className="ml-2" aria-hidden="true">&rarr;</span>
               </Link>
             </div>

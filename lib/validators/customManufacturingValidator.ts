@@ -12,7 +12,9 @@ export const createCustomManufacturingRequestSchema = z.object({
     preferredMaterial: z.string().trim().optional(),
     colors: z.string().trim().optional(),
     timeline: z.string().trim().optional(),
-    // designFiles: handled by backend route directly via Cloudinary upload
+    // designFiles: handled by backend route directly via Cloudinary upload.
+    // The route layer enforces the business rule that at least one of
+    // `specifications` or an uploaded design file must be present.
     specifications: z.string().trim().optional(),
     budgetRange: z.string().trim().optional(),
   }),

@@ -38,6 +38,11 @@ const createSampleRequestBodySchema = z.object({
   // New (additive) fields for the unified review flow.
   orderRef: optionalString(z.string().max(40)),
   requestType: optionalString(z.enum(['HIDE', 'FINISHED_PRODUCT'])),
+  // Business rule: hides allow 1–3 samples per request, finished products
+  // are limited to exactly 1 per request. We keep `items` optional here so
+  // legacy single-product flows (which use top-level productId/productName)
+  // continue to validate, then enforce the count-by-type rule below in a
+  // superRefine on the whole body.
   items: z.array(sampleRequestItemSchema).max(3).optional(),
   estimatedDays: optionalString(z.string().max(60)),
   industry: optionalString(z.string().max(80)),
@@ -86,7 +91,30 @@ const createSampleRequestBodySchema = z.object({
     if (arg === '' || arg === null || arg === undefined) return undefined;
     return typeof arg === 'string' ? new Date(arg) : arg;
   }, z.date().optional()),
-}).strict();
+}).strict().superRefine((data, ctx) => {
+  // Enforce the asymmetric sample limits when the unified review flow
+  // sends `requestType` + `items`. Legacy flows omit both and continue
+  // to validate unchanged.
+  if (!data.requestType || !data.items) return;
+  const count = data.items.length;
+  if (data.requestType === 'HIDE') {
+    if (count < 1 || count > 3) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['items'],
+        message: 'Hide sample requests must include between 1 and 3 hides.',
+      });
+    }
+  } else if (data.requestType === 'FINISHED_PRODUCT') {
+    if (count !== 1) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['items'],
+        message: 'Finished-product sample requests are limited to exactly 1 product.',
+      });
+    }
+  }
+});
 
 const updateSampleRequestAdminBodySchema = z.object({
   // FIX: Allow updating requestNumber (though service will primarily set it)
