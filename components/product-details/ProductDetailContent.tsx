@@ -17,6 +17,7 @@ import {
   X,
 } from "lucide-react";
 import { IProduct } from "@/types/product";
+import PriceDisplay from "@/components/PriceDisplay";
 
 interface ProductDetailContentProps {
   product: IProduct;
@@ -206,9 +207,9 @@ export default function ProductDetailContent({
               </div>
               <div className="mb-6 text-lg text-foreground">
                 <span className="text-foreground/70">Price:</span>{" "}
-                <span className="font-semibold">
-                  {product.currency}
-                  {product.pricePerUnit.toFixed(2)} / {product.priceUnit}
+                <span className="font-semibold inline-flex items-baseline gap-1">
+                  <PriceDisplay usdAmount={product.pricePerUnit} showOriginal />
+                  <span>/ {product.priceUnit}</span>
                 </span>
               </div>
               <div className="divider-brass mb-6" />
@@ -353,8 +354,10 @@ export default function ProductDetailContent({
                       </p>
                       <p>
                         <span className="text-foreground/80">Price:</span>{" "}
-                        {p.currency}
-                        {p.pricePerUnit.toFixed(2)} / {p.priceUnit}
+                        <span className="inline-flex items-baseline gap-1">
+                          <PriceDisplay usdAmount={p.pricePerUnit} />
+                          <span>/ {p.priceUnit}</span>
+                        </span>
                       </p>
                     </div>
                     <div className="flex flex-wrap gap-1.5 mb-4">
