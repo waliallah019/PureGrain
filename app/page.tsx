@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react"
 import { Button } from "@/components/ui/button"
+import PriceDisplay from "@/components/PriceDisplay"
 import {
   ArrowRight,
   Briefcase,
@@ -891,8 +892,10 @@ export default function PureGrainLanding() {
                           {product.pricePerSqFt ? (
                             <p>
                               <span className="text-foreground/80">Price:</span>{" "}
-                              {product.currency}
-                              {product.pricePerSqFt.toFixed(2)} / sq ft
+                              <span className="inline-flex items-baseline gap-1">
+                                <PriceDisplay usdAmount={product.pricePerSqFt} />
+                                <span>/ sq ft</span>
+                              </span>
                             </p>
                           ) : null}
                         </div>
@@ -970,8 +973,10 @@ export default function PureGrainLanding() {
                           {product.pricePerUnit ? (
                             <p>
                               <span className="text-foreground/80">Price:</span>{" "}
-                              {product.currency}
-                              {product.pricePerUnit.toFixed(2)} / {product.priceUnit}
+                              <span className="inline-flex items-baseline gap-1">
+                                <PriceDisplay usdAmount={product.pricePerUnit} />
+                                <span>/ {product.priceUnit}</span>
+                              </span>
                             </p>
                           ) : null}
                         </div>
@@ -1251,8 +1256,8 @@ export default function PureGrainLanding() {
       </section>
 
       {/* CTA */}
-      <section className="relative py-24 lg:py-32 site-leather-texture text-primary-foreground overflow-hidden">
-        {/* subtle leather-grain texture (kept for layering) */}
+      <section className="relative py-24 lg:py-32 bg-bone text-foreground border-y border-border overflow-hidden">
+        {/* subtle leather-grain texture */}
         <div
           aria-hidden="true"
           className="absolute inset-0 opacity-[0.08] pointer-events-none"
@@ -1261,11 +1266,12 @@ export default function PureGrainLanding() {
               "radial-gradient(circle at 25% 30%, hsl(var(--leather)) 0%, transparent 45%), radial-gradient(circle at 75% 70%, hsl(var(--accent)) 0%, transparent 50%)",
           }}
         />
+        {/* top brass hairline */}
+        <div
+          aria-hidden="true"
+          className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brass to-transparent"
+        />
         <div className="relative container-wide">
-          {/* centered brass hairline (inline so it doesn't overlap content) */}
-          <div aria-hidden className="flex justify-center mb-8 pointer-events-none">
-            <div className="w-full max-w-[1240px] h-px bg-gradient-to-r from-transparent via-brass to-transparent" />
-          </div>
           <div className="max-w-3xl mx-auto text-center">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
@@ -1296,7 +1302,7 @@ export default function PureGrainLanding() {
               </Link>
               <Link
                 href="/contact"
-                className="btn-outline-brass"
+                className="inline-flex items-center justify-center px-8 py-4 border border-primary text-primary font-medium text-sm tracking-wide uppercase transition-all duration-300 hover:bg-primary hover:text-primary-foreground"
               >
                 Contact Sales
               </Link>

@@ -373,8 +373,10 @@
 
 .catalogPage .catalogFeatureCard__media {
   position: relative;
-  aspect-ratio: 4 / 3;
+  width: 100%;
+  height: 220px;
   overflow: hidden;
+  flex-shrink: 0;
   background: var(--bg-parchment);
 }
 
@@ -382,6 +384,8 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
+  display: block;
   transition: transform 0.55s ease;
 }
 
@@ -720,6 +724,10 @@
   .catalogPage .catalogListingFilters__row {
     grid-template-columns: 1fr 1fr;
   }
+
+  .catalogPage .catalogFeatureCard__media {
+    height: 200px;
+  }
 }
 
 @media (max-width: 600px) {
@@ -735,6 +743,10 @@
 
   .catalogPage .catalogTypeStrip {
     top: 72px;
+  }
+
+  .catalogPage .catalogFeatureCard__media {
+    height: 180px;
   }
 }
 
@@ -1356,236 +1368,4 @@
 @media (max-width: 760px) {
   .catalogPage .catalogInquiry { padding: 28px 22px; }
   .catalogPage .catalogInquiry__row { grid-template-columns: 1fr; }
-}
-
-/* ---------------------------------------------------------------
-   CATALOG NAVIGATOR (Filters Section)
-   --------------------------------------------------------------- */
-.catalogPage .catalogNavigator {
-  position: relative;
-  padding: 56px 0;
-  background: var(--bg-cream);
-  border-top: 1px solid var(--border-tan-soft);
-  border-bottom: 1px solid var(--border-tan-soft);
-}
-
-.catalogPage .catalogNavigator__panel {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 56px;
-  align-items: start;
-}
-
-.catalogPage .catalogNavigator__main {
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-}
-
-.catalogPage .catalogNavigator__title {
-  margin: 0 0 12px;
-  font-family: var(--font-head);
-  font-size: clamp(1.35rem, 2vw, 1.75rem);
-  font-weight: 600;
-  line-height: 1.2;
-  color: var(--text-on-light);
-}
-
-.catalogPage .catalogNavigator__intro {
-  margin: 0;
-  font-size: 0.95rem;
-  line-height: 1.65;
-  color: var(--text-on-light-mute);
-}
-
-.catalogPage .catalogNavigator__note {
-  position: relative;
-  padding: 24px 22px;
-  background: linear-gradient(135deg, rgba(240, 232, 220, 0.95), rgba(250, 246, 240, 0.98));
-  border: 1px solid var(--border-tan-soft);
-  border-radius: 12px;
-  flex: 0 0 auto;
-  max-width: 320px;
-}
-
-.catalogPage .catalogNavigator__note > div {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.catalogPage .catalogNavigator__note .catalogEyebrow {
-  display: block;
-}
-
-.catalogPage .catalogNavigator__note p {
-  margin: 0;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  color: var(--text-on-light-mute);
-}
-
-/* ---------------------------------------------------------------
-   CATALOG FIELDS (Form Inputs)
-   --------------------------------------------------------------- */
-.catalogPage .catalogField {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.catalogPage .catalogField label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--text-on-light);
-}
-
-.catalogPage .catalogField input,
-.catalogPage .catalogField select {
-  padding: 10px 12px;
-  border: 1px solid var(--border-tan-soft);
-  border-radius: var(--radius);
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  color: var(--text-on-light);
-  background: #ffffff;
-  transition: border-color 150ms ease, box-shadow 150ms ease;
-  height: 40px;
-}
-
-.catalogPage .catalogField input {
-  padding-left: 36px;
-}
-
-.catalogPage .catalogField input:focus,
-.catalogPage .catalogField select:focus {
-  outline: none;
-  border-color: var(--accent-gold);
-  box-shadow: 0 0 0 3px rgba(201, 148, 58, 0.1);
-}
-
-.catalogPage .catalogField input::placeholder {
-  color: var(--text-on-light-mute);
-}
-
-.catalogPage .catalogField--wide {
-  grid-column: span 1;
-}
-
-/* Override shadcn Select components styling within catalogField */
-.catalogPage .catalogField [role="combobox"] {
-  padding: 10px 12px !important;
-  border: 1px solid var(--border-tan-soft) !important;
-  border-radius: var(--radius) !important;
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  color: var(--text-on-light);
-  background: #ffffff !important;
-  height: 40px;
-  width: 100%;
-}
-
-.catalogPage .catalogField [role="combobox"]:focus {
-  border-color: var(--accent-gold) !important;
-  box-shadow: 0 0 0 3px rgba(201, 148, 58, 0.1) !important;
-}
-
-.catalogPage .catalogField [role="combobox"] svg {
-  color: var(--text-on-light-mute);
-}
-
-.catalogPage .catalogField .relative {
-  position: relative;
-  display: flex;
-  width: 100%;
-}
-
-.catalogPage .catalogField .relative svg {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  color: var(--text-on-light-mute);
-}
-
-.catalogPage .catalogField .relative input {
-  width: 100%;
-}
-
-/* ---------------------------------------------------------------
-   CATALOG MINI LIST (Sourcing Tips)
-   --------------------------------------------------------------- */
-.catalogPage .catalogMiniList {
-  display: grid;
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.catalogPage .catalogMiniList li {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.88rem;
-  line-height: 1.5;
-  color: var(--text-on-light-mute);
-}
-
-.catalogPage .catalogMiniList svg {
-  flex-shrink: 0;
-  width: 16px;
-  height: 16px;
-  color: var(--accent-gold);
-}
-
-/* ---------------------------------------------------------------
-   RESPONSIVE: Navigator & Fields
-   --------------------------------------------------------------- */
-@media (max-width: 1100px) {
-  .catalogPage .catalogNavigator__panel {
-    grid-template-columns: 1fr;
-    gap: 36px;
-  }
-
-  .catalogPage .catalogNavigator__note {
-    max-width: none;
-  }
-}
-
-@media (max-width: 900px) {
-  .catalogPage .catalogNavigator {
-    padding: 44px 0;
-  }
-
-  .catalogPage .catalogNavigator__panel {
-    gap: 28px;
-  }
-
-  .catalogPage .catalogListingFilters__row {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media (max-width: 600px) {
-  .catalogPage .catalogNavigator {
-    padding: 32px 0;
-  }
-
-  .catalogPage .catalogNavigator__main {
-    gap: 20px;
-  }
-
-  .catalogPage .catalogListingFilters__row {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .catalogPage .catalogNavigator__note {
-    max-width: none;
-  }
 }

@@ -201,7 +201,7 @@ export default function FinishedProductsPage() {
                         id="finished-search"
                         value={searchTerm}
                         onChange={(event) => setSearchTerm(event.target.value)}
-                        placeholder="by name, material, or finish"
+                        placeholder="Search by name, material, or finish"
                         className="pl-9"
                       />
                     </div>
@@ -228,7 +228,7 @@ export default function FinishedProductsPage() {
                         <SelectValue placeholder="Availability" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All </SelectItem>
+                        <SelectItem value="all">All Availability</SelectItem>
                         <SelectItem value="In Stock">In Stock</SelectItem>
                         <SelectItem value="Made to Order">Made to Order</SelectItem>
                         <SelectItem value="Limited Stock">Limited Stock</SelectItem>
