@@ -183,7 +183,7 @@ export async function POST(req: NextRequest) {
         requestNumber: saved.requestNumber,
         paymentStatus: saved.paymentStatus,
         paypalTransactionId: captureRecord.id,
-        amount: expectedQuote.amount,
+        amount: expectedAmount,
         currency: 'USD',
       },
     });

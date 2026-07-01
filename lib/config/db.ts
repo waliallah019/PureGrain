@@ -25,6 +25,9 @@ async function connectDB() {
   if (!cached.mongoose.promise) {
     const opts = {
       bufferCommands: false,
+      // Fail fast instead of hanging on the default 30s timeout when the
+      // cluster is unreachable (e.g. DNS/network issues).
+      serverSelectionTimeoutMS: 15000,
     };
 
     cached.mongoose.promise = mongoose

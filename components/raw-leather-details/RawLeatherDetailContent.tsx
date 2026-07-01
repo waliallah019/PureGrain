@@ -18,6 +18,7 @@ import {
   X,
 } from "lucide-react";
 import { IRawLeather } from "@/types/rawLeather";
+import PriceDisplay from "@/components/PriceDisplay";
 import RawLeatherCard from "@/components/raw-leather-details/RawLeatherCard";
 import AddToSampleTrayButton from "@/components/sample-request/AddToSampleTrayButton";
 import SampleTrayBar from "@/components/sample-request/SampleTrayBar";
@@ -215,9 +216,9 @@ export default function RawLeatherDetailContent({
               </div>
               <div className="mb-6 text-lg text-foreground">
                 <span className="text-foreground/70">Price:</span>{" "}
-                <span className="font-semibold">
-                  {rawLeather.currency}
-                  {rawLeather.pricePerSqFt.toFixed(2)} / sq ft
+                <span className="font-semibold inline-flex items-baseline gap-1">
+                  <PriceDisplay usdAmount={rawLeather.pricePerSqFt} showOriginal />
+                  <span>/ sq ft</span>
                 </span>
               </div>
               <div className="divider-brass mb-6" />
@@ -370,8 +371,10 @@ export default function RawLeatherDetailContent({
                         </p>
                         <p>
                           <span className="text-foreground/80">Price:</span>{" "}
-                          {rl.currency}
-                          {rl.pricePerSqFt.toFixed(2)} / sq ft
+                          <span className="inline-flex items-baseline gap-1">
+                            <PriceDisplay usdAmount={rl.pricePerSqFt} />
+                            <span>/ sq ft</span>
+                          </span>
                         </p>
                       </div>
                       <div className="flex flex-wrap gap-2 mb-4">
