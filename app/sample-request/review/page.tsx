@@ -33,7 +33,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import SampleTrayBar from "@/components/sample-request/SampleTrayBar";
 import { useSampleTrayStore } from "@/lib/stores/sampleTrayStore";
 
 declare global {
@@ -57,9 +56,10 @@ const INDUSTRIES = [
   "Other",
 ] as const;
 
-// Country list — we re-export from the legacy shippingConfig for parity
-// with the existing /request-sample/pay page so the dropdown matches.
-import { countries as ALL_COUNTRIES } from "@/lib/config/shippingConfig";
+// Country dropdown is restricted to the countries we actually hold a DHL
+// shipping rate for, so every selectable country resolves to a price and the
+// PayPal button can appear. Shared source of truth with the seed + pricing.
+import { SAMPLE_SHIPPING_COUNTRIES } from "@/lib/config/sampleShippingRates";
 
 interface ShippingLookup {
   found: boolean;
@@ -705,7 +705,7 @@ function ReviewPageInner() {
                       onChange={handleField("country")}
                     >
                       <option value="">Select a country…</option>
-                      {ALL_COUNTRIES.map((c) => (
+                      {SAMPLE_SHIPPING_COUNTRIES.map((c) => (
                         <option key={c} value={c}>
                           {c}
                         </option>
@@ -853,7 +853,6 @@ function ReviewPageInner() {
         </section>
       </main>
       <Footer />
-      {mode === "HIDE" && <SampleTrayBar />}
     </div>
   );
 }

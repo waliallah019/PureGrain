@@ -111,6 +111,23 @@ Entries:
 - Validation: `get_errors` clean; admin UI calls (`PUT { status }` and invoice form spreads) remain within the validated field set so no behavior change for legitimate admin traffic.
 - Risks/Follow-up: All other admin API mutation routes still lack auth/role checks (see admin QA report). Module-level `connectDB()` pattern may exist elsewhere — needs sweep.
 
+- Date: 2026-07-01
+- Area: sample tray (audit + bug fixes)
+- Request: Audit the Sample Tray feature, then fix the reported bugs (slow Proceed, tray bar on review page, shipping never calculating / no PayPal button).
+- Changes:
+  - `package.json` — added missing direct dep `zustand@4.5.7` (was only transitive; pnpm's strict layout left the tray store's `import "zustand"` unresolved → whole store typed `any`). Root cause of the feature not compiling under TS.
+  - `lib/config/sampleShippingRates.ts` — NEW single source of truth: 22 priced countries + `SAMPLE_SHIPPING_COUNTRIES` (dropdown list) + `getSampleShippingRate()` fallback lookup.
+  - `lib/services/sampleShippingService.ts` — NEW `resolveSampleShippingAmount()` (DB → static fallback) shared by create-order AND capture-order so charged == verified amount.
+  - `scripts/seedShippingRates.ts` — now imports `SAMPLE_SHIPPING_RATES` (seed ≡ app data).
+  - `app/api/sample-request/shipping-rate/route.ts` — DB miss now falls back to static table (feature works pre-seed).
+  - `app/api/paypal/create-order/route.ts` — new flow uses `resolveSampleShippingAmount()`.
+  - `app/api/paypal/capture-order/route.ts` — accepts `requestType`; prices new flow via the shared resolver instead of the legacy continent table (BUG-3b: was capturing money then 409-rejecting every new-flow order). Amount resolved BEFORE capture.
+  - `app/sample-request/review/page.tsx` — dropdown now sourced from `SAMPLE_SHIPPING_COUNTRIES` (every selectable country has a rate → shipping calculates → PayPal appears); removed the `SampleTrayBar` render (BUG-2).
+  - `components/sample-request/SampleTrayBar.tsx` — `usePathname` route guard hides the bar on review/success/pay/admin (BUG-2); CTA is now a button with `useTransition` + `router.push` + prefetch and a spinner "Opening review…" (BUG-1, instant nav feedback).
+  - `lib/stores/sampleTrayStore.ts` — exported `SampleTrayState`; completed the SSR `Storage` shim (`clear/key/length`).
+- Validation: `get_errors` clean on all 9 touched files; `pnpm add` resolved zustand 4.5.7 from existing lock (no version churn).
+- Risks/Follow-up: (1) Country dropdown intentionally reduced from ~50 to the 22 priced countries — need business rates to re-add the rest (India, Singapore, Egypt, etc.). (2) BUG-4 residual: a genuine post-capture amount mismatch still returns 409 without an auto-refund; now effectively unreachable for the new flow, but a PayPal refund path is a recommended follow-up. (3) Remember to run `pnpm tsx scripts/seedShippingRates.ts` in each environment (static fallback covers it otherwise).
+
 ## Optional Next Customizations
 
 If this file grows too large, split into focused customizations:

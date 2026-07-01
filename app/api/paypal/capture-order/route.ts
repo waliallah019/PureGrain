@@ -11,12 +11,17 @@ import SampleRequest from '@/lib/models/sampleRequestModel';
 import sampleService from '@/lib/services/sampleService';
 import { capturePaypalOrder, isPaypalConfigured } from '@/lib/services/paypalService';
 import { getShippingQuote, COUNTRY_TO_CONTINENT_MAP } from '@/lib/config/shippingConfig';
+import { resolveSampleShippingAmount } from '@/lib/services/sampleShippingService';
 import logger from '@/lib/config/logger';
 
 export const dynamic = 'force-dynamic';
 
 const bodySchema = z.object({
   orderId: z.string().min(5).max(64),
+  // Discriminator for the unified review flow. When present, the expected
+  // shipping amount is resolved from the SAME source as create-order so the
+  // captured amount can never be rejected due to a table mismatch.
+  requestType: z.enum(['HIDE', 'FINISHED_PRODUCT']).optional(),
   form: z.object({
     companyName: z.string().min(1).max(120),
     contactPerson: z.string().min(1).max(120),
@@ -56,7 +61,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { orderId, form } = parsed.data;
+    const { orderId, requestType, form } = parsed.data;
 
     // Idempotency: if we've already saved a request for this PayPal order,
     // return it instead of double-capturing / double-saving.
@@ -74,8 +79,28 @@ export async function POST(req: NextRequest) {
     }
 
     // Server-side amount the buyer SHOULD have paid for this country.
-    const known = COUNTRY_TO_CONTINENT_MAP[form.country] !== undefined;
-    const expectedQuote = getShippingQuote(known ? form.country : 'Other');
+    // New review flow resolves via the shared service (same source as
+    // create-order); legacy single-product flow uses the continent table.
+    // This is resolved BEFORE capture so an unknown country never charges.
+    let expectedAmount: number;
+    if (requestType) {
+      const resolved = await resolveSampleShippingAmount(form.country);
+      if (!resolved) {
+        return NextResponse.json(
+          {
+            success: false,
+            message:
+              'Shipping rate not available for this country. Please contact support before paying online.',
+            code: 'SHIPPING_RATE_UNAVAILABLE',
+          },
+          { status: 422 }
+        );
+      }
+      expectedAmount = resolved.amount;
+    } else {
+      const known = COUNTRY_TO_CONTINENT_MAP[form.country] !== undefined;
+      expectedAmount = getShippingQuote(known ? form.country : 'Other').amount;
+    }
 
     const capture = await capturePaypalOrder(orderId);
     if (capture.status !== 'COMPLETED') {
@@ -96,12 +121,12 @@ export async function POST(req: NextRequest) {
     const paidAmount = parseFloat(captureRecord.amount.value);
     const paidCurrency = captureRecord.amount.currency_code;
 
-    if (paidCurrency !== 'USD' || Math.abs(paidAmount - expectedQuote.amount) > 0.01) {
+    if (paidCurrency !== 'USD' || Math.abs(paidAmount - expectedAmount) > 0.01) {
       logger.error('[paypal/capture] amount/currency mismatch', {
         orderId,
         paidAmount,
         paidCurrency,
-        expected: expectedQuote.amount,
+        expected: expectedAmount,
         country: form.country,
       });
       return NextResponse.json(
@@ -135,7 +160,7 @@ export async function POST(req: NextRequest) {
       productId: form.productId ? (form.productId as any) : undefined,
       productName: form.productName || undefined,
       productTypeCategory: form.productTypeCategory,
-      shippingFee: expectedQuote.amount,
+      shippingFee: expectedAmount,
       paymentStatus: 'paid',
       paymentMethod: 'paypal',
       paypalOrderId: orderId,
@@ -146,7 +171,7 @@ export async function POST(req: NextRequest) {
       paymentConfirmationToken,
       paymentConfirmationTokenExpiry,
       paymentConfirmationStatus: 'verified',
-      paymentConfirmationAmount: expectedQuote.amount,
+      paymentConfirmationAmount: expectedAmount,
       paymentConfirmationMethod: 'PayPal',
       paymentConfirmationSubmittedAt: new Date(),
     } as any);

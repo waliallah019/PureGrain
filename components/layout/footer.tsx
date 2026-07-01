@@ -151,8 +151,21 @@ export function Footer() {
         </div>
 
         <div className="mt-10 pt-5 border-t border-[hsl(var(--footer-foreground)/0.1)] flex flex-col md:flex-row justify-between items-center gap-3">
-          <p className="text-sm text-[hsl(var(--footer-foreground)/0.5)]">© {currentYear} PureGrain. All rights reserved.</p>
-          <div className="flex gap-6">
+          <p className="text-sm text-[hsl(var(--footer-foreground)/0.5)] text-center md:text-left">
+            © {currentYear} PureGrain. All rights reserved.{" "}
+            <span className="block md:inline mt-1 md:mt-0 md:ml-2">
+              Powered by{" "}
+              <a
+                href="https://www.axenity.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-brass hover:underline underline-offset-2 transition-colors"
+              >
+                Axenity
+              </a>
+            </span>
+          </p>
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
             {legalLinks.map((link) => (
               <Link
                 key={link.href}

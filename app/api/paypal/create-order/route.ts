@@ -14,8 +14,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createPaypalOrder, isPaypalConfigured, PaypalApiError } from '@/lib/services/paypalService';
 import { getShippingQuote, COUNTRY_TO_CONTINENT_MAP } from '@/lib/config/shippingConfig';
-import connectDB from '@/lib/config/db';
-import ShippingRate from '@/lib/models/ShippingRate';
+import { resolveSampleShippingAmount } from '@/lib/services/sampleShippingService';
 import logger from '@/lib/config/logger';
 
 export const dynamic = 'force-dynamic';
@@ -53,14 +52,12 @@ export async function POST(req: NextRequest) {
     let region: string;
 
     if (requestType) {
-      // New flow: look up the rate from the seeded ShippingRate collection.
-      await connectDB();
-      const rate = await ShippingRate.findOne({
-        country: { $regex: `^${country.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, $options: 'i' },
-        isActive: true,
-      }).lean<any>();
+      // New flow: resolve via the shared service (seeded ShippingRate DB,
+      // falling back to the bundled static table). Using the SAME resolver as
+      // capture-order guarantees the charged amount matches the verified one.
+      const resolved = await resolveSampleShippingAmount(country);
 
-      if (!rate) {
+      if (!resolved) {
         return NextResponse.json(
           {
             success: false,
@@ -71,8 +68,8 @@ export async function POST(req: NextRequest) {
           { status: 422 }
         );
       }
-      amount = rate.rateUsd;
-      region = rate.region;
+      amount = resolved.amount;
+      region = resolved.region;
     } else {
       // Legacy flow: static continent rates.
       const known = COUNTRY_TO_CONTINENT_MAP[country] !== undefined;
