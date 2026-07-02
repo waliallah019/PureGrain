@@ -16,26 +16,61 @@
  */
 
 import { AnimatePresence, motion } from "framer-motion";
-import Link from "next/link";
-import { ShoppingBag, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Loader2, ShoppingBag, X } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState, useTransition } from "react";
 import {
   SAMPLE_TRAY_LIMIT,
   useSampleTrayStore,
+  type SampleTrayState,
 } from "@/lib/stores/sampleTrayStore";
+
+// Routes where the tray bar must never appear: the review/checkout flow, the
+// post-payment success screen, the legacy pay page, and the admin area.
+const HIDDEN_ON_ROUTES = [
+  "/sample-request/review",
+  "/sample-request/success",
+  "/request-sample/pay",
+  "/admin-ahmza",
+];
+
+const REVIEW_ROUTE = "/sample-request/review?type=HIDE";
 
 export default function SampleTrayBar() {
   const [hydrated, setHydrated] = useState(false);
-  const items = useSampleTrayStore((s) => s.items);
-  const removeHide = useSampleTrayStore((s) => s.removeHide);
+  const items = useSampleTrayStore((s: SampleTrayState) => s.items);
+  const removeHide = useSampleTrayStore((s: SampleTrayState) => s.removeHide);
+
+  const pathname = usePathname();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [navigating, setNavigating] = useState(false);
 
   useEffect(() => {
     setHydrated(true);
   }, []);
 
-  // Don't render anything until we've hydrated from localStorage.
-  // This avoids a flash of empty/full state mismatching the server HTML.
-  if (!hydrated) return null;
+  // Warm the review route so navigation paints quickly on click.
+  useEffect(() => {
+    router.prefetch(REVIEW_ROUTE);
+  }, [router]);
+
+  // BUG-1: instant feedback, then navigate immediately. No blocking work
+  // (no fetch / no serialization / no await) runs before the push.
+  const handleProceed = () => {
+    setNavigating(true);
+    startTransition(() => {
+      router.push(REVIEW_ROUTE);
+    });
+  };
+
+  // BUG-2 guard (defence-in-depth): never show the bar in the checkout flow
+  // or admin area, even if a page mounts it directly.
+  const hideOnRoute = HIDDEN_ON_ROUTES.some((r) => pathname?.startsWith(r));
+
+  // Don't render until we've hydrated from localStorage (avoids a flash of
+  // empty/full state mismatching the server HTML), or on a hidden route.
+  if (!hydrated || hideOnRoute) return null;
 
   const visible = items.length > 0;
   const isFull = items.length >= SAMPLE_TRAY_LIMIT;
@@ -91,13 +126,30 @@ export default function SampleTrayBar() {
                   Tray full — review your selection
                 </span>
               )}
-              <Link
-                href="/sample-request/review?type=HIDE"
-                className="inline-flex items-center justify-center bg-brass px-5 py-2.5 text-xs font-medium uppercase tracking-wide text-brass-foreground transition-colors duration-200 hover:bg-brass/90 md:px-7 md:py-3 md:text-sm"
+              <button
+                type="button"
+                onClick={handleProceed}
+                disabled={navigating || isPending}
+                aria-busy={navigating || isPending}
+                className="inline-flex items-center justify-center bg-brass px-5 py-2.5 text-xs font-medium uppercase tracking-wide text-brass-foreground transition-colors duration-200 hover:bg-brass/90 disabled:cursor-wait disabled:opacity-90 md:px-7 md:py-3 md:text-sm"
               >
-                Review &amp; Checkout
-                <span className="ml-2" aria-hidden="true">&rarr;</span>
-              </Link>
+                {navigating || isPending ? (
+                  <>
+                    <Loader2
+                      className="mr-2 h-4 w-4 animate-spin"
+                      aria-hidden="true"
+                    />
+                    Opening review…
+                  </>
+                ) : (
+                  <>
+                    Review Sample Request
+                    <span className="ml-2" aria-hidden="true">
+                      &rarr;
+                    </span>
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </motion.aside>

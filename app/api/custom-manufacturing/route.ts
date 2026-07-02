@@ -90,11 +90,87 @@ export async function POST(req: NextRequest) {
     }
     const requestData = validation.data.body;
 
+    // Business rule: at least one of `specifications` or a design file must
+    // be provided. Enforced server-side as well as client-side because
+    // anyone can bypass the browser validation.
+    const hasSpecs = (requestData.specifications || "").trim().length > 0;
+    if (!hasSpecs && designFiles.length === 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            "Please describe your specifications OR upload at least one design file.",
+          errors: [
+            {
+              path: "specifications",
+              message:
+                "Please describe your specifications OR upload at least one design file.",
+            },
+            {
+              path: "designFiles",
+              message:
+                "Please upload at least one design file OR describe your specifications.",
+            },
+          ],
+        },
+        { status: 400 }
+      );
+    }
+
+    // File policy mirrors the client-side limits — but enforced here so it
+    // can't be bypassed by crafting a custom multipart request.
+    const MAX_FILE_SIZE_BYTES = 25 * 1024 * 1024; // 25 MB
+    const MAX_TOTAL_FILES = 5;
+    const ALLOWED_MIMETYPES = new Set<string>([
+      "application/pdf",
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "image/x-adobe-ai",
+      "application/postscript",
+      "image/vnd.adobe.photoshop",
+      "image/psd",
+      "application/dxf",
+      "application/x-autocad",
+      "application/vnd.oasis.opendocument.text",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ]);
+
+    if (designFiles.length > MAX_TOTAL_FILES) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `A maximum of ${MAX_TOTAL_FILES} design files can be uploaded.`,
+        },
+        { status: 400 }
+      );
+    }
+
+    for (const file of designFiles) {
+      if (file.size > MAX_FILE_SIZE_BYTES) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: `File '${file.name}' exceeds the 25MB upload limit.`,
+          },
+          { status: 400 }
+        );
+      }
+      if (!ALLOWED_MIMETYPES.has(file.type)) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: `File '${file.name}' has an unsupported format. Allowed: PDF, JPG, PNG, GIF, AI, PSD, DWG, DOC/DOCX.`,
+          },
+          { status: 400 }
+        );
+      }
+    }
+
     const designFileUrls: string[] = [];
-    // Only upload if files are provided; design files are optional in form submission
     if (designFiles.length > 0) {
       for (const file of designFiles) {
-        // You might want validation for file size/type here before upload
         const arrayBuffer = await file.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
         const b64 = buffer.toString("base64");

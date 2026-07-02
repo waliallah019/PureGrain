@@ -11,6 +11,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/config/db";
 import ShippingRate from "@/lib/models/ShippingRate";
+import { getSampleShippingRate } from "@/lib/config/sampleShippingRates";
 import logger from "@/lib/config/logger";
 
 export const dynamic = "force-dynamic";
@@ -27,10 +28,14 @@ export async function GET(req: NextRequest) {
   try {
     await connectDB();
 
-    const rate = await ShippingRate.findOne({
+    const dbRate = await ShippingRate.findOne({
       country: { $regex: `^${escapeRegExp(country)}$`, $options: "i" },
       isActive: true,
     }).lean<any>();
+
+    // Prefer the seeded collection; fall back to the bundled static table so
+    // the review page still calculates shipping before the DB is seeded.
+    const rate = dbRate ?? getSampleShippingRate(country);
 
     if (!rate) {
       return NextResponse.json({ success: true, found: false });

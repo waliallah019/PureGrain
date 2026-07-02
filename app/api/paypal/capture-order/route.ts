@@ -8,40 +8,20 @@ import { z } from 'zod';
 import crypto from 'crypto';
 import connectDB from '@/lib/config/db';
 import SampleRequest from '@/lib/models/sampleRequestModel';
-import ShippingRate from '@/lib/models/ShippingRate';
 import sampleService from '@/lib/services/sampleService';
 import { capturePaypalOrder, isPaypalConfigured } from '@/lib/services/paypalService';
 import { getShippingQuote, COUNTRY_TO_CONTINENT_MAP } from '@/lib/config/shippingConfig';
+import { resolveSampleShippingAmount } from '@/lib/services/sampleShippingService';
 import logger from '@/lib/config/logger';
 
 export const dynamic = 'force-dynamic';
 
-// Item shape used by the new unified review flow. All hide-specific and
-// finished-product-specific fields are optional so the same schema covers
-// both flows without forking the validator.
-const itemSchema = z.object({
-  productId: z.string().max(64).optional(),
-  productName: z.string().max(200).optional(),
-  productType: z.string().max(60).optional(),
-  hideType: z.string().max(60).optional(),
-  grade: z.string().max(60).optional(),
-  thickness: z.string().max(60).optional(),
-  tanningMethod: z.string().max(60).optional(),
-  finish: z.string().max(60).optional(),
-  variantId: z.string().max(64).optional(),
-  variantName: z.string().max(120).optional(),
-});
-
 const bodySchema = z.object({
   orderId: z.string().min(5).max(64),
-  // New (additive): when present, the request goes through the per-country
-  // ShippingRate lookup. When absent, we fall back to the legacy continent
-  // table — preserving the existing /request-sample/pay flow byte-for-byte.
+  // Discriminator for the unified review flow. When present, the expected
+  // shipping amount is resolved from the SAME source as create-order so the
+  // captured amount can never be rejected due to a table mismatch.
   requestType: z.enum(['HIDE', 'FINISHED_PRODUCT']).optional(),
-  items: z.array(itemSchema).max(3).optional(),
-  industry: z.string().max(80).optional(),
-  website: z.string().max(200).optional(),
-  notes: z.string().max(300).optional(),
   form: z.object({
     companyName: z.string().min(1).max(120),
     contactPerson: z.string().min(1).max(120),
@@ -81,7 +61,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { orderId, form, requestType, items, industry, website, notes } = parsed.data;
+    const { orderId, requestType, form } = parsed.data;
 
     // Idempotency: if we've already saved a request for this PayPal order,
     // return it instead of double-capturing / double-saving.
@@ -92,59 +72,34 @@ export async function POST(req: NextRequest) {
         message: 'Order already processed.',
         data: {
           requestNumber: existing.requestNumber,
-          orderRef: existing.orderRef,
           paymentStatus: existing.paymentStatus,
           paypalTransactionId: existing.paypalTransactionId,
         },
       });
     }
 
-    // ---- Per-flow validation of the items array -----------------------------
-    if (requestType === 'HIDE') {
-      if (!items || items.length < 1 || items.length > 3) {
-        return NextResponse.json(
-          { success: false, message: 'Hide sample requests must include 1 to 3 items.' },
-          { status: 400 }
-        );
-      }
-      for (const it of items) {
-        if (!it.productId || !it.hideType) {
-          return NextResponse.json(
-            { success: false, message: 'Each hide item must include a productId and hideType.' },
-            { status: 400 }
-          );
-        }
-      }
-    } else if (requestType === 'FINISHED_PRODUCT') {
-      if (!items || items.length !== 1) {
-        return NextResponse.json(
-          { success: false, message: 'Finished-product sample requests must include exactly 1 item.' },
-          { status: 400 }
-        );
-      }
-    }
-
-    // ---- Server-side amount the buyer SHOULD have paid for this country ----
+    // Server-side amount the buyer SHOULD have paid for this country.
+    // New review flow resolves via the shared service (same source as
+    // create-order); legacy single-product flow uses the continent table.
+    // This is resolved BEFORE capture so an unknown country never charges.
     let expectedAmount: number;
-    let estimatedDays: string | undefined;
-
     if (requestType) {
-      const rate = await ShippingRate.findOne({
-        country: { $regex: `^${form.country.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, $options: 'i' },
-        isActive: true,
-      }).lean<any>();
-      if (!rate) {
+      const resolved = await resolveSampleShippingAmount(form.country);
+      if (!resolved) {
         return NextResponse.json(
-          { success: false, message: 'Shipping rate not configured for this country. Please contact support.' },
+          {
+            success: false,
+            message:
+              'Shipping rate not available for this country. Please contact support before paying online.',
+            code: 'SHIPPING_RATE_UNAVAILABLE',
+          },
           { status: 422 }
         );
       }
-      expectedAmount = rate.rateUsd;
-      estimatedDays = rate.transitDays;
+      expectedAmount = resolved.amount;
     } else {
       const known = COUNTRY_TO_CONTINENT_MAP[form.country] !== undefined;
-      const quote = getShippingQuote(known ? form.country : 'Other');
-      expectedAmount = quote.amount;
+      expectedAmount = getShippingQuote(known ? form.country : 'Other').amount;
     }
 
     const capture = await capturePaypalOrder(orderId);
@@ -188,22 +143,7 @@ export async function POST(req: NextRequest) {
     const paymentConfirmationToken = crypto.randomBytes(24).toString('hex');
     const paymentConfirmationTokenExpiry = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30);
 
-    // Resolve the legacy single-product fields. For the new HIDE flow there
-    // is no single product, so we synthesize a friendly summary instead.
-    const legacyProductName =
-      form.productName ||
-      (requestType === 'HIDE' && items
-        ? items.map((i) => i.productName).filter(Boolean).join(', ')
-        : '') ||
-      undefined;
-
     const saved = await sampleService.createSampleRequest({
-      requestType,
-      items: items as any,
-      industry,
-      website,
-      notes,
-      estimatedDays,
       companyName: form.companyName,
       contactPerson: form.contactPerson,
       email: form.email,
@@ -211,23 +151,15 @@ export async function POST(req: NextRequest) {
       country: form.country,
       address: form.address,
       sampleType: (form.sampleType ||
-        (requestType === 'HIDE'
-          ? 'raw-leather'
-          : form.productTypeCategory === 'raw-leather'
-            ? 'raw-leather'
-            : 'finished-products')) as any,
-      quantitySamples:
-        form.quantitySamples ||
-        (requestType === 'HIDE' && items ? `${items.length} hide sample${items.length === 1 ? '' : 's'}` : '1-3 samples'),
+        (form.productTypeCategory === 'raw-leather' ? 'raw-leather' : 'finished-products')) as any,
+      quantitySamples: form.quantitySamples || '1-3 samples',
       materialPreference: form.materialPreference || undefined,
       finishType: form.finishType || undefined,
       colorPreferences: form.colorPreferences || undefined,
       specificRequests: form.specificRequests || undefined,
       productId: form.productId ? (form.productId as any) : undefined,
-      productName: legacyProductName,
-      productTypeCategory:
-        form.productTypeCategory ||
-        (requestType === 'HIDE' ? 'raw-leather' : requestType === 'FINISHED_PRODUCT' ? 'finished-product' : undefined),
+      productName: form.productName || undefined,
+      productTypeCategory: form.productTypeCategory,
       shippingFee: expectedAmount,
       paymentStatus: 'paid',
       paymentMethod: 'paypal',
@@ -249,7 +181,6 @@ export async function POST(req: NextRequest) {
       message: 'Payment received. Sample request submitted.',
       data: {
         requestNumber: saved.requestNumber,
-        orderRef: saved.orderRef,
         paymentStatus: saved.paymentStatus,
         paypalTransactionId: captureRecord.id,
         amount: expectedAmount,

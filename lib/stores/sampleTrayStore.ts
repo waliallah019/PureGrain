@@ -25,7 +25,7 @@ export interface SampleTrayItem {
   image?: string;
 }
 
-interface SampleTrayState {
+export interface SampleTrayState {
   items: SampleTrayItem[];
   addHide: (hide: SampleTrayItem) => boolean;
   removeHide: (productId: string) => void;
@@ -68,6 +68,9 @@ export const useSampleTrayStore = create<SampleTrayState>()(
             getItem: () => null,
             setItem: () => {},
             removeItem: () => {},
+            clear: () => {},
+            key: () => null,
+            length: 0,
           } as Storage;
         }
         return window.localStorage;

@@ -85,7 +85,8 @@
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.6",
     "winston": "latest",
-    "zod": "latest"
+    "zod": "latest",
+    "zustand": "4.5.7"
   },
   "devDependencies": {
     "@types/jspdf": "^2.0.0",

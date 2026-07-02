@@ -67,7 +67,10 @@ export default function QuoteRequestForm({
     if (!formData.customerEmail.trim()) newErrors.customerEmail = 'Email is required.';
     if (formData.customerEmail.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.customerEmail.trim())) newErrors.customerEmail = 'Invalid email format.';
     if (!formData.companyName.trim()) newErrors.companyName = 'Company Name is required.';
-    if (!formData.destinationCountry.trim() || formData.destinationCountry === countries[0]) newErrors.destinationCountry = 'Destination Country is required.';
+    // NOTE: Previously rejected `countries[0]` as "empty", which would
+    // silently fail any buyer whose country sorted first in the list.
+    // We only require that a country is selected (non-empty trimmed).
+    if (!formData.destinationCountry.trim()) newErrors.destinationCountry = 'Destination Country is required.';
     if (formData.quantity <= 0) newErrors.quantity = 'Quantity must be at least 1.';
     if (!formData.quantityUnit.trim()) newErrors.quantityUnit = 'Quantity unit is required.';
     if (!formData.itemName.trim()) newErrors.itemName = 'Item Name is required (pre-filled).';
