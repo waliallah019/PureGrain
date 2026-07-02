@@ -348,7 +348,7 @@ function ReviewPageInner() {
     paypalSlotRef.current.innerHTML = "";
 
     const buttons = window.paypal.Buttons({
-      style: { layout: "vertical", color: "gold", shape: "rect", label: "paypal", height: 44 },
+      style: { layout: "vertical", color: "gold", shape: "rect", label: "pay", height: 45, tagline: false },
       onClick: (_d: any, actions: any) => {
         const errs = validate(formRef.current);
         if (Object.keys(errs).length > 0 || !rateRef.current?.found) {
@@ -817,35 +817,28 @@ function ReviewPageInner() {
               <Link href="/catalog/raw-leather" className="reviewBackLink">
                 ← Back to catalog
               </Link>
-              <div style={{ minWidth: 220 }}>
+              <div className="reviewPaySection">
+                <h3 className="reviewPaySection__title">Complete Your Request</h3>
                 {paypalLoadError && (
                   <p className="reviewError">{paypalLoadError}</p>
                 )}
                 {globalError && <p className="reviewError">{globalError}</p>}
+                <div
+                  className={`paypal-wrapper reviewPaypalWrap${
+                    isFormValid ? "" : " reviewPaypalWrap--disabled"
+                  }`}
+                >
+                  <div ref={paypalSlotRef} className="reviewPaypalSlot" />
+                </div>
                 {!isFormValid && !paypalLoadError && (
-                  <p
-                    style={{
-                      fontSize: 12,
-                      color: "hsl(var(--muted-foreground))",
-                      marginBottom: 6,
-                    }}
-                  >
+                  <p className="reviewPayHint">
                     {!rate?.found
-                      ? "Select a country to see your shipping cost."
+                      ? "Payment will be enabled after shipping is calculated"
                       : "Complete the required fields to continue."}
                   </p>
                 )}
-                <div ref={paypalSlotRef} className="reviewPaypalSlot" />
                 {submitting && (
-                  <p
-                    style={{
-                      fontSize: 12,
-                      color: "hsl(var(--muted-foreground))",
-                      marginTop: 6,
-                    }}
-                  >
-                    Finalising your order…
-                  </p>
+                  <p className="reviewPayNote">Finalising your order…</p>
                 )}
               </div>
             </div>

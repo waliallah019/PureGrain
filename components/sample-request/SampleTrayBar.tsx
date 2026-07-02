@@ -85,28 +85,28 @@ export default function SampleTrayBar() {
           transition={{ duration: 0.25, ease: "easeOut" }}
           role="region"
           aria-label="Sample tray"
-          className="fixed inset-x-0 bottom-0 z-40 border-t border-brass/40 bg-[hsl(var(--primary))] text-primary-foreground shadow-[0_-8px_30px_rgba(0,0,0,0.18)]"
+          className="fixed inset-x-0 bottom-0 z-50 border-t border-brass bg-[hsl(var(--primary))] text-primary-foreground shadow-[0_-4px_20px_rgba(0,0,0,0.3)] pb-[env(safe-area-inset-bottom)]"
         >
-          <div className="container-wide flex flex-wrap items-center gap-3 px-4 py-3 md:flex-nowrap md:gap-6 md:px-6 md:py-4">
+          <div className="container-wide flex h-14 flex-nowrap items-center justify-between gap-3 px-4 md:h-16 md:gap-6 md:px-6">
             {/* LEFT — count pill */}
-            <div className="flex shrink-0 items-center gap-3">
+            <div className="flex shrink-0 items-center gap-2.5">
               <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brass/20 text-brass">
                 <ShoppingBag className="h-4 w-4" aria-hidden="true" />
               </span>
-              <span className="rounded-full bg-brass/15 px-3 py-1 text-xs font-medium uppercase tracking-[0.18em] text-brass">
+              <span className="whitespace-nowrap rounded-full bg-brass px-3 py-1 text-xs font-semibold text-brass-foreground md:text-[13px]">
                 {items.length} of {SAMPLE_TRAY_LIMIT} hides selected
               </span>
             </div>
 
             {/* MIDDLE — selected hides as removable tags (desktop only) */}
-            <div className="hidden min-w-0 flex-1 flex-wrap items-center gap-2 md:flex">
+            <div className="hidden min-w-0 flex-1 items-center gap-2 overflow-hidden px-4 md:flex">
               {items.map((it) => (
                 <span
                   key={it.productId}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs"
+                  className="inline-flex max-w-[120px] items-center gap-2 whitespace-nowrap rounded-xl border border-brass/40 bg-brass/15 px-2.5 py-1 text-xs text-primary-foreground"
                   title={it.productName}
                 >
-                  <span className="max-w-[14ch] truncate">{it.productName}</span>
+                  <span className="truncate">{it.productName}</span>
                   <button
                     type="button"
                     onClick={() => removeHide(it.productId)}
@@ -120,7 +120,7 @@ export default function SampleTrayBar() {
             </div>
 
             {/* RIGHT — CTA */}
-            <div className="ml-auto flex shrink-0 items-center gap-3">
+            <div className="flex shrink-0 items-center gap-3">
               {isFull && (
                 <span className="hidden text-xs text-brass/90 md:inline">
                   Tray full — review your selection
@@ -131,22 +131,20 @@ export default function SampleTrayBar() {
                 onClick={handleProceed}
                 disabled={navigating || isPending}
                 aria-busy={navigating || isPending}
-                className="inline-flex items-center justify-center bg-brass px-5 py-2.5 text-xs font-medium uppercase tracking-wide text-brass-foreground transition-colors duration-200 hover:bg-brass/90 disabled:cursor-wait disabled:opacity-90 md:px-7 md:py-3 md:text-sm"
+                className="inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-md bg-brass px-3.5 py-2 text-[13px] font-semibold text-brass-foreground transition-colors duration-200 hover:bg-accent hover:text-primary-foreground disabled:cursor-wait disabled:opacity-80 md:px-5 md:py-2.5 md:text-sm"
               >
                 {navigating || isPending ? (
                   <>
                     <Loader2
-                      className="mr-2 h-4 w-4 animate-spin"
+                      className="h-4 w-4 animate-spin"
                       aria-hidden="true"
                     />
-                    Opening review…
+                    Loading...
                   </>
                 ) : (
                   <>
                     Review Sample Request
-                    <span className="ml-2" aria-hidden="true">
-                      &rarr;
-                    </span>
+                    <span aria-hidden="true">&rarr;</span>
                   </>
                 )}
               </button>
