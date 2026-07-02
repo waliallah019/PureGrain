@@ -253,3 +253,104 @@
   border: 1px solid hsl(var(--brass) / 0.4);
   text-align: center;
 }
+
+/* ---------------------------------------------------------------------------
+ * Fix 2 — always-visible payment section
+ * ------------------------------------------------------------------------- */
+.reviewPaySection {
+  width: 100%;
+  max-width: 360px;
+  margin-left: auto;
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+  border-radius: 12px;
+  padding: 24px;
+  box-sizing: border-box;
+}
+.reviewPaySection__title {
+  font-family: var(--font-serif, "Cormorant Garamond", serif);
+  font-size: 20px;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  margin-bottom: 8px;
+}
+.reviewPaypalWrap {
+  position: relative;
+  transition: opacity 0.3s ease;
+}
+.reviewPaypalWrap--disabled {
+  opacity: 0.45;
+  pointer-events: none;
+  user-select: none;
+}
+.reviewPayHint {
+  font-size: 12px;
+  color: hsl(var(--accent));
+  text-align: center;
+  margin-top: 8px;
+}
+.reviewPayNote {
+  font-size: 12px;
+  color: hsl(var(--muted-foreground));
+  margin-top: 6px;
+}
+
+/* ---------------------------------------------------------------------------
+ * Fix 4 — checkout mobile responsiveness
+ * ------------------------------------------------------------------------- */
+/* Prevent any horizontal overflow on this page. */
+.reviewPage { overflow-x: hidden; }
+
+/* Full-width fields, softer corners, iOS-safe appearance + focus ring. */
+.reviewInput,
+.reviewSelect,
+.reviewTextarea {
+  width: 100%;
+  border-radius: 6px;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.reviewInput:focus,
+.reviewSelect:focus,
+.reviewTextarea:focus {
+  box-shadow: 0 0 0 3px hsl(var(--brass) / 0.15);
+}
+
+/* Native select arrow (brand tan chevron). */
+.reviewSelect {
+  padding-right: 36px;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23A0724A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+}
+
+/* Give the remove control a proper 44px touch target. */
+.reviewCard__remove {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  /* 16px minimum stops iOS from auto-zooming on focus. */
+  .reviewInput,
+  .reviewSelect,
+  .reviewTextarea { font-size: 16px; }
+
+  /* Stack the shipping estimate vertically on small screens. */
+  .reviewShippingBar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 12px 14px;
+  }
+  .reviewShippingBar__price { font-size: 18px; }
+
+  /* Payment box spans full width once the columns stack. */
+  .reviewPaySection { max-width: 100%; margin-left: 0; }
+
+  .reviewBody { padding: 24px 0 32px; }
+}
