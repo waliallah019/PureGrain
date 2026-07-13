@@ -27,6 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { IProduct, IProductType } from "@/types/product"
+import PriceDisplay from "@/components/PriceDisplay"
 import "../catalog.css"
 
 const FALLBACK_IMAGE = "/placeholder-image.jpg"
@@ -36,11 +37,16 @@ type ProductCategory = {
   label: string
 }
 
-function formatStoredPrice(amount: number | undefined, currency: string | undefined, unit: string | undefined) {
+function renderPrice(amount: number | undefined, unit: string | undefined) {
   if (typeof amount !== "number" || Number.isNaN(amount)) {
     return "On request"
   }
-  return `${currency || "USD"} ${amount.toFixed(2)} / ${unit || "unit"}`
+  return (
+    <>
+      <PriceDisplay usdAmount={amount} />
+      <span className="catalogFeatureCard__priceUnit"> / {unit || "unit"}</span>
+    </>
+  )
 }
 
 export default function FinishedProductsPage() {
@@ -375,8 +381,11 @@ export default function FinishedProductsPage() {
                           <p><span>Material:</span> {product.materialUsed}</p>
                           <p><span>Type:</span> {product.productType}</p>
                           <p><span>MOQ:</span> {product.moq} units</p>
-                          <p><span>Price:</span> {formatStoredPrice(product.pricePerUnit, product.currency, product.priceUnit)}</p>
                         </div>
+                        <p className="catalogFeatureCard__price">
+                          <span>Price</span>
+                          {renderPrice(product.pricePerUnit, product.priceUnit)}
+                        </p>
                         <div className="catalogChipRow">
                           {product.isFeatured && <span className="catalogChip catalogChip--gold">Featured</span>}
                           {product.sampleAvailable && <span className="catalogChip">Sample</span>}
