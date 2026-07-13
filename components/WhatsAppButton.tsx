@@ -3,6 +3,13 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import styles from "./WhatsAppButton.module.css";
+import { useSampleTrayVisible } from "@/hooks/use-sample-tray-visible";
+
+// The sample tray bar's own content height (see SampleTrayBar.tsx: h-14 /
+// md:h-16), plus its safe-area-inset-bottom padding, plus a small gap so the
+// WhatsApp button sits just above it instead of underneath it.
+const TRAY_BAR_CLEARANCE_MOBILE = "calc(56px + env(safe-area-inset-bottom, 0px) + 16px)";
+const TRAY_BAR_CLEARANCE_DESKTOP = "calc(64px + env(safe-area-inset-bottom, 0px) + 16px)";
 
 interface WhatsAppButtonProps {
   /** Phone number in international format with no "+" or spaces, e.g. "923001234567" */
@@ -31,6 +38,7 @@ export default function WhatsAppButton({
 }: WhatsAppButtonProps) {
   const pathname = usePathname();
   const isHomePage = pathname === "/";
+  const trayVisible = useSampleTrayVisible();
   // On the home page, hide until the user scrolls past the hero banner.
   // On every other page, show immediately.
   const [isVisible, setIsVisible] = useState(!isHomePage);
@@ -68,15 +76,24 @@ export default function WhatsAppButton({
   // 116px clears: bottom 16 + sticker height 84 + 16 gap.
   const mobileOffset = Math.min(bottomOffset, 116);
 
+  // When the sample tray bar is showing, stack the button just above it
+  // instead of letting the bar cover it.
+  const bottomStyle = trayVisible
+    ? `calc(${bottomOffset}px + ${TRAY_BAR_CLEARANCE_DESKTOP})`
+    : `${bottomOffset}px`;
+  const mobileBottomStyle = trayVisible
+    ? `calc(${mobileOffset}px + ${TRAY_BAR_CLEARANCE_MOBILE})`
+    : `${mobileOffset}px`;
+
   return (
     <div
       className={`${styles.wrapper} ${isVisible ? styles.visible : styles.hidden}`}
-      style={{ bottom: `${bottomOffset}px` }}
+      style={{ bottom: bottomStyle }}
       aria-hidden={!isVisible}
     >
       <style>{`
         @media (max-width: 767px) {
-          .${styles.wrapper} { bottom: ${mobileOffset}px !important; }
+          .${styles.wrapper} { bottom: ${mobileBottomStyle} !important; }
         }
       `}</style>
 

@@ -17,22 +17,14 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader2, ShoppingBag, X } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import {
   SAMPLE_TRAY_LIMIT,
   useSampleTrayStore,
   type SampleTrayState,
 } from "@/lib/stores/sampleTrayStore";
-
-// Routes where the tray bar must never appear: the review/checkout flow, the
-// post-payment success screen, the legacy pay page, and the admin area.
-const HIDDEN_ON_ROUTES = [
-  "/sample-request/review",
-  "/sample-request/success",
-  "/request-sample/pay",
-  "/admin-ahmza",
-];
+import { useSampleTrayVisible } from "@/hooks/use-sample-tray-visible";
 
 const REVIEW_ROUTE = "/sample-request/review?type=HIDE";
 
@@ -40,8 +32,8 @@ export default function SampleTrayBar() {
   const [hydrated, setHydrated] = useState(false);
   const items = useSampleTrayStore((s: SampleTrayState) => s.items);
   const removeHide = useSampleTrayStore((s: SampleTrayState) => s.removeHide);
+  const shouldShow = useSampleTrayVisible();
 
-  const pathname = usePathname();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [navigating, setNavigating] = useState(false);
@@ -64,15 +56,12 @@ export default function SampleTrayBar() {
     });
   };
 
-  // BUG-2 guard (defence-in-depth): never show the bar in the checkout flow
-  // or admin area, even if a page mounts it directly.
-  const hideOnRoute = HIDDEN_ON_ROUTES.some((r) => pathname?.startsWith(r));
-
   // Don't render until we've hydrated from localStorage (avoids a flash of
-  // empty/full state mismatching the server HTML), or on a hidden route.
-  if (!hydrated || hideOnRoute) return null;
+  // empty/full state mismatching the server HTML), or on a hidden route /
+  // empty tray (both covered by useSampleTrayVisible).
+  if (!hydrated) return null;
 
-  const visible = items.length > 0;
+  const visible = shouldShow;
   const isFull = items.length >= SAMPLE_TRAY_LIMIT;
 
   return (

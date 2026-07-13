@@ -4,9 +4,12 @@ import connectDB from '@/lib/config/db';
 import notificationService from '@/lib/services/notificationService';
 import logger from '@/lib/config/logger';
 
-// IMPORTANT: Define this in your Vercel project's Environment Variables (e.g., as NOTIFICATION_CLEANUP_CRON_SECRET)
-// And use it in your vercel.json cron job config.
-const CRON_SECRET = process.env.NOTIFICATION_CLEANUP_CRON_SECRET;
+// IMPORTANT: Define this in your hosting platform's Environment Variables.
+// Scheduled via vercel.json — Vercel automatically sends
+// `Authorization: Bearer <CRON_SECRET>` for cron invocations when a
+// `CRON_SECRET` env var is set, so that's checked first. Falls back to the
+// legacy custom name for deployments that already configured that instead.
+const CRON_SECRET = process.env.CRON_SECRET || process.env.NOTIFICATION_CLEANUP_CRON_SECRET;
 const DAYS_TO_KEEP_NOTIFICATIONS = 7; // Define how many days to keep notifications
 
 export const dynamic = 'force-dynamic'; // Ensure this route is always a serverless function
