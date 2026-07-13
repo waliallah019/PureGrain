@@ -598,10 +598,6 @@
 }
 
 @media (max-width: 640px) {
-  .catalogPage .catalogFeatureMeta {
-    grid-template-columns: 1fr;
-  }
-
   .catalogPage .catalogSectionHead {
     margin-bottom: 36px;
   }
@@ -848,10 +844,6 @@
     grid-template-columns: 1fr 1fr;
   }
 
-  .catalogPage .catalogFeatureCard__media {
-    height: 200px;
-  }
-
   .catalogPage .catalogNavigator__panel {
     grid-template-columns: 1fr;
     padding: 32px;
@@ -872,10 +864,6 @@
 
   .catalogPage .catalogListingFilters__row {
     grid-template-columns: 1fr;
-  }
-
-  .catalogPage .catalogFeatureCard__media {
-    height: 180px;
   }
 
   .catalogPage .catalogNavigator {
