@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import {
@@ -75,6 +75,28 @@ export default function RawLeatherPage() {
   const [selectedFinish, setSelectedFinish] = useState("all")
   const [sortBy, setSortBy] = useState("featured")
   const [gridCols, setGridCols] = useState<2 | 3 | 4>(3)
+
+  const resultsSectionRef = useRef<HTMLElement>(null)
+  const prevFiltersRef = useRef({ activeType, selectedAnimal, selectedFinish, sortBy })
+
+  // Scroll the results into view whenever a filter actually changes (type chip,
+  // animal, finish, or sort) — regardless of where on the page the control lives —
+  // instead of letting the page jump back to the top. Compares against the last
+  // seen values (rather than an invocation-count flag) so this stays correct under
+  // React Strict Mode's double-invoked mount effect in development, and never fires
+  // on initial page load/navigation since nothing has changed yet at that point.
+  useEffect(() => {
+    const prev = prevFiltersRef.current
+    const changed =
+      prev.activeType !== activeType ||
+      prev.selectedAnimal !== selectedAnimal ||
+      prev.selectedFinish !== selectedFinish ||
+      prev.sortBy !== sortBy
+    prevFiltersRef.current = { activeType, selectedAnimal, selectedFinish, sortBy }
+    if (changed) {
+      resultsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+    }
+  }, [activeType, selectedAnimal, selectedFinish, sortBy])
 
   useEffect(() => {
     const fetchTypes = async () => {
@@ -336,6 +358,7 @@ export default function RawLeatherPage() {
                   <Link
                     key={category.id}
                     href={href}
+                    scroll={false}
                     className={`catalogTypeChip${isActive ? " catalogTypeChip--active" : ""}`}
                   >
                     {category.label}
@@ -346,7 +369,7 @@ export default function RawLeatherPage() {
           </div>
         </section>
 
-        <section className="catalogSection parchment-texture">
+        <section ref={resultsSectionRef} className="catalogSection parchment-texture">
           <div className="catalogContainer">
             {error && <div className="catalogListingError">{error}</div>}
 

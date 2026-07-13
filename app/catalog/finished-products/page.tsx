@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import {
@@ -66,6 +66,28 @@ export default function FinishedProductsPage() {
   const [selectedAvailability, setSelectedAvailability] = useState("all")
   const [sortBy, setSortBy] = useState("featured")
   const [gridCols, setGridCols] = useState<2 | 3 | 4>(3)
+
+  const resultsSectionRef = useRef<HTMLElement>(null)
+  const prevFiltersRef = useRef({ activeType, selectedMaterial, selectedAvailability, sortBy })
+
+  // Scroll the results into view whenever a filter actually changes (type chip,
+  // material, availability, or sort) — regardless of where on the page the control
+  // lives — instead of letting the page jump back to the top. Compares against the
+  // last seen values (rather than an invocation-count flag) so this stays correct
+  // under React Strict Mode's double-invoked mount effect in development, and never
+  // fires on initial page load/navigation since nothing has changed yet at that point.
+  useEffect(() => {
+    const prev = prevFiltersRef.current
+    const changed =
+      prev.activeType !== activeType ||
+      prev.selectedMaterial !== selectedMaterial ||
+      prev.selectedAvailability !== selectedAvailability ||
+      prev.sortBy !== sortBy
+    prevFiltersRef.current = { activeType, selectedMaterial, selectedAvailability, sortBy }
+    if (changed) {
+      resultsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+    }
+  }, [activeType, selectedMaterial, selectedAvailability, sortBy])
 
   useEffect(() => {
     const fetchTypes = async () => {
@@ -321,6 +343,7 @@ export default function FinishedProductsPage() {
                   <Link
                     key={category.id}
                     href={href}
+                    scroll={false}
                     className={`catalogTypeChip${isActive ? " catalogTypeChip--active" : ""}`}
                   >
                     {category.label}
@@ -331,7 +354,7 @@ export default function FinishedProductsPage() {
           </div>
         </section>
 
-        <section className="catalogSection parchment-texture">
+        <section ref={resultsSectionRef} className="catalogSection parchment-texture">
           <div className="catalogContainer">
             {error && <div className="catalogListingError">{error}</div>}
 
