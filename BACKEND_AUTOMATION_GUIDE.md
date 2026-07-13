@@ -60,7 +60,7 @@ Authentication is effectively client-side only.
 - `lib/auth.tsx` accepts exactly one hardcoded credential pair:
   - email: `admin@puregrain.com`
   - password: `admin123`
-- On successful login, the app stores `{ email, role: "admin" }` in `localStorage` under `admin-user`.
+- On successful login, the app stores `{ email, role: "admin", expiresAt }` in `localStorage` under `admin-user`. `expiresAt` is a 24h-from-login timestamp (ms); `lib/auth.tsx` clears the entry and treats the session as logged out once it's past, and re-checks every 60s so an already-open tab is logged out too, not just on next reload.
 - The route `app/api/login/route.ts` returns the same hardcoded success response, but the current login page does not need a real server-issued session.
 - `middleware.ts` matches `/admin/:path*`, but always returns `NextResponse.next()`.
 
@@ -76,10 +76,10 @@ Authentication is effectively client-side only.
 
 You can log in through the UI normally, but you can also speed up admin automation by writing `admin-user` directly into local storage before opening `/admin`.
 
-Example local storage payload:
+Example local storage payload (must include a future `expiresAt` in ms, or it's treated as an expired session and cleared):
 
 ```json
-{"email":"admin@puregrain.com","role":"admin"}
+{"email":"admin@puregrain.com","role":"admin","expiresAt":1234567890000}
 ```
 
 That approach matches the current frontend behavior exactly.
@@ -498,9 +498,13 @@ If you only need admin screens, skip the login form entirely:
 
 ```python
 driver.get(BASE_URL)
+# Must include a future expiresAt (ms) — sessions without one are treated as
+# expired and cleared by lib/auth.tsx.
 driver.execute_script(
-    "window.localStorage.setItem('admin-user', arguments[0]);",
-    '{"email":"admin@puregrain.com","role":"admin"}'
+    "window.localStorage.setItem('admin-user', JSON.stringify({"
+    "email: 'admin@puregrain.com', role: 'admin',"
+    "expiresAt: Date.now() + 24 * 60 * 60 * 1000"
+    "}));"
 )
 driver.get(f"{BASE_URL}/admin")
 ```

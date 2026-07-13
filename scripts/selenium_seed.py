@@ -70,9 +70,13 @@ def select_radix_value(driver: webdriver.Chrome, placeholder_text: str, option_t
 
 def inject_admin_session(driver: webdriver.Chrome, base_url: str) -> None:
     driver.get(base_url)
+    # Must match the { email, role, expiresAt } shape lib/auth.tsx expects —
+    # sessions without a future expiresAt are now treated as logged out.
     driver.execute_script(
-        "window.localStorage.setItem('admin-user', arguments[0]);",
-        '{"email":"admin@puregrain.com","role":"admin"}',
+        "window.localStorage.setItem('admin-user', JSON.stringify({"
+        "email: 'admin@puregrain.com', role: 'admin',"
+        "expiresAt: Date.now() + 24 * 60 * 60 * 1000"
+        "}));"
     )
 
 

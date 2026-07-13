@@ -38,7 +38,7 @@ Domain layout is consistent across features — for a domain called `X` expect: 
 
 Authentication is client-side-only and does not protect the API:
 
-- Admin UI at `/admin-login` uses `useAuth()` from `lib/auth.tsx`, a React Context that checks one hardcoded credential pair in-code and, on success, writes `{ email, role: "admin" }` to `localStorage["admin-user"]`. There is no server session, JWT, or cookie.
+- Admin UI at `/admin-login` uses `useAuth()` from `lib/auth.tsx`, a React Context that checks one hardcoded credential pair in-code and, on success, writes `{ email, role: "admin", expiresAt }` to `localStorage["admin-user"]` — expires 24h after login (checked on load and every 60s while a tab stays open) rather than persisting forever. There is still no server session, JWT, or cookie — this is client-side expiry only, not real access revocation.
 - `app/api/login/route.ts` exists with a *different* hardcoded credential pair than `lib/auth.tsx` and is not what the admin login page actually calls — treat it as effectively dead/legacy code, not the source of truth for admin credentials.
 - The real admin section lives at `app/admin-ahmza/**` (not `/admin`). `middleware.ts` matches `/admin-ahmza/:path*` but currently always calls `NextResponse.next()` — it does not enforce anything.
 - Because of this, every `app/api/**` route is reachable by anyone who knows the URL shape, including admin-oriented ones (e.g. `app/api/admin/payment-confirmations`). Don't assume an "admin" route is actually access-controlled — if you're asked to add real auth, this is greenfield, not a bug fix.

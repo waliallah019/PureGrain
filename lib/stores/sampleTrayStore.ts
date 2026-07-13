@@ -79,6 +79,15 @@ export const useSampleTrayStore = create<SampleTrayState>()(
       // should not be serialized.
       partialize: (state) => ({ items: state.items }),
       version: 1,
+      // If the stored value is corrupted (e.g. malformed JSON from manual
+      // tampering), zustand falls back to the initial in-memory state
+      // (items: []) rather than crashing — this just surfaces that instead
+      // of failing silently, so a bad entry doesn't go unnoticed.
+      onRehydrateStorage: () => (_state, error) => {
+        if (error) {
+          console.warn("Sample tray: failed to restore from localStorage, starting empty.", error);
+        }
+      },
     }
   )
 );
