@@ -84,6 +84,9 @@
 .catalogPage .catalogSection {
   position: relative;
   padding: 50px 0;
+  /* Fixed header (113px) + sticky type-filter strip (74px), so a
+     scrollIntoView target lands just below both instead of under them. */
+  scroll-margin-top: 190px;
 }
 
 @media (max-width: 700px) {
