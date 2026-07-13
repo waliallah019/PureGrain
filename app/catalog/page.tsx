@@ -52,6 +52,7 @@ import {
 import { countries } from "@/lib/config/shippingConfig"
 import { IProduct } from "@/types/product"
 import { IRawLeather } from "@/types/rawLeather"
+import PriceDisplay from "@/components/PriceDisplay"
 import "./catalog.css"
 
 const FALLBACK_IMAGE = "/placeholder-image.jpg"
@@ -126,11 +127,16 @@ const sourcingPaths = [
   },
 ] as const
 
-function formatStoredPrice(amount: number | undefined, currency: string | undefined, unit?: string) {
+function renderPrice(amount: number | undefined, unit?: string) {
   if (typeof amount !== "number" || Number.isNaN(amount)) {
     return "On request"
   }
-  return `${currency || "USD"} ${amount.toFixed(2)}${unit ? ` / ${unit}` : ""}`
+  return (
+    <>
+      <PriceDisplay usdAmount={amount} />
+      {unit ? <span className="catalogFeatureCard__priceUnit"> / {unit}</span> : null}
+    </>
+  )
 }
 
 type InquiryFormState = {
@@ -475,8 +481,11 @@ export default function CatalogPage() {
                               <p><span>Animal:</span> {item.animal}</p>
                               <p><span>Finish:</span> {item.finish}</p>
                               <p><span>MOQ:</span> {item.minOrderQuantity} {item.priceUnit || "sq ft"}</p>
-                              <p><span>Price:</span> {formatStoredPrice(item.pricePerSqFt, item.currency, item.priceUnit || "sq ft")}</p>
                             </div>
+                            <p className="catalogFeatureCard__price">
+                              <span>Price</span>
+                              {renderPrice(item.pricePerSqFt, item.priceUnit || "sq ft")}
+                            </p>
                             <div className="catalogChipRow">
                               {item.isFeatured && <span className="catalogChip catalogChip--gold">Featured</span>}
                               {item.sampleAvailable && <span className="catalogChip">Sample</span>}
@@ -528,8 +537,11 @@ export default function CatalogPage() {
                               <p><span>Material:</span> {product.materialUsed}</p>
                               <p><span>Type:</span> {product.productType}</p>
                               <p><span>MOQ:</span> {product.moq} units</p>
-                              <p><span>Price:</span> {formatStoredPrice(product.pricePerUnit, product.currency, product.priceUnit)}</p>
                             </div>
+                            <p className="catalogFeatureCard__price">
+                              <span>Price</span>
+                              {renderPrice(product.pricePerUnit, product.priceUnit)}
+                            </p>
                             <div className="catalogChipRow">
                               {product.isFeatured && <span className="catalogChip catalogChip--gold">Featured</span>}
                               {product.sampleAvailable && <span className="catalogChip">Sample</span>}

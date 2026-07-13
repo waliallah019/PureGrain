@@ -845,16 +845,19 @@ export default function PureGrainLanding() {
                 View Leather Hides <ArrowRight size={16} />
               </Link>
               <h3 className="font-serif text-xl font-medium text-foreground mb-6">Featured Leather Hides</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 {isCatalogLoading
                   ? Array.from({ length: 4 }).map((_, index) => (
-                      <div key={`raw-loading-${index}`} className="card-industrial overflow-hidden">
-                        <div className="aspect-[4/5] animate-pulse bg-secondary" />
-                        <div className="p-5 space-y-3">
+                      <div key={`raw-loading-${index}`} className="bg-card border border-border overflow-hidden">
+                        <div className="aspect-[4/3] animate-pulse bg-secondary" />
+                        <div className="p-4 sm:p-5 space-y-3">
                           <div className="h-3 w-1/3 animate-pulse bg-secondary" />
                           <div className="h-5 w-3/4 animate-pulse bg-secondary" />
-                          <div className="h-4 w-full animate-pulse bg-secondary" />
-                          <div className="h-4 w-5/6 animate-pulse bg-secondary" />
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="h-4 w-full animate-pulse bg-secondary" />
+                            <div className="h-4 w-full animate-pulse bg-secondary" />
+                          </div>
+                          <div className="h-4 w-1/2 animate-pulse bg-secondary" />
                         </div>
                       </div>
                     ))
@@ -865,50 +868,52 @@ export default function PureGrainLanding() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="h-full"
                   >
                     <Link
                       href={`/catalog/raw-leather/${product._id}`}
-                      className="group block card-industrial"
+                      className="group flex flex-col h-full bg-card border border-border shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass/50 focus-visible:ring-offset-2"
                     >
-                      <div className="aspect-[4/5] overflow-hidden">
+                      <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
                         <img
                           src={product.images?.[0] ?? "/placeholder.svg?height=800&width=600"}
                           alt={product.name}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       </div>
-                      <div className="p-5">
-                        <p className="text-xs text-brass mb-2">{product.leatherType}</p>
-                        <h3 className="font-serif text-lg font-medium text-foreground mb-3 group-hover:text-leather transition-colors">
+                      <div className="flex flex-col flex-1 p-4 sm:p-5">
+                        <p className="text-[11px] font-semibold uppercase tracking-wider text-brass mb-1.5">
+                          {product.leatherType}
+                        </p>
+                        <h3 className="font-serif text-base sm:text-lg font-medium text-foreground mb-3 leading-snug line-clamp-1 group-hover:text-leather transition-colors">
                           {product.name}
                         </h3>
-                        <div className="space-y-1 text-sm text-muted-foreground">
-                          <p>
-                            <span className="text-foreground/80">Thickness:</span> {product.thickness}
-                          </p>
-                          <p>
-                            <span className="text-foreground/80">Finish:</span> {product.finish}
-                          </p>
-                          {product.pricePerSqFt ? (
-                            <p>
-                              <span className="text-foreground/80">Price:</span>{" "}
-                              <span className="inline-flex items-baseline gap-1">
-                                <PriceDisplay usdAmount={product.pricePerSqFt} />
-                                <span>/ sq ft</span>
-                              </span>
-                            </p>
-                          ) : null}
+                        <div className="grid grid-cols-2 gap-x-3 gap-y-2 text-xs mb-3">
+                          <div className="min-w-0">
+                            <span className="block text-muted-foreground">Thickness</span>
+                            <span className="text-foreground/90 truncate block">{product.thickness}</span>
+                          </div>
+                          <div className="min-w-0">
+                            <span className="block text-muted-foreground">Finish</span>
+                            <span className="text-foreground/90 truncate block">{product.finish}</span>
+                          </div>
                         </div>
                         {product.colors?.length ? (
-                          <div className="mt-4 flex flex-wrap gap-2">
+                          <div className="flex flex-wrap gap-1.5 mb-3">
                             {product.colors.slice(0, 3).map((color) => (
                               <span
                                 key={color}
-                                className="text-xs px-2 py-1 bg-secondary text-secondary-foreground"
+                                className="text-[10px] px-1.5 py-0.5 bg-secondary text-secondary-foreground"
                               >
                                 {color}
                               </span>
                             ))}
+                          </div>
+                        ) : null}
+                        {product.pricePerSqFt ? (
+                          <div className="mt-auto pt-3 border-t border-border flex items-baseline gap-1">
+                            <PriceDisplay usdAmount={product.pricePerSqFt} className="text-sm font-semibold text-foreground" />
+                            <span className="text-xs text-muted-foreground">/ sq ft</span>
                           </div>
                         ) : null}
                       </div>
@@ -926,16 +931,19 @@ export default function PureGrainLanding() {
                 View Finished Products <ArrowRight size={16} />
               </Link>
               <h3 className="font-serif text-xl font-medium text-foreground mb-6">Featured Products</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 {isCatalogLoading
                   ? Array.from({ length: 4 }).map((_, index) => (
-                      <div key={`product-loading-${index}`} className="card-industrial overflow-hidden">
-                        <div className="aspect-[4/5] animate-pulse bg-secondary" />
-                        <div className="p-5 space-y-3">
+                      <div key={`product-loading-${index}`} className="bg-card border border-border overflow-hidden">
+                        <div className="aspect-[4/3] animate-pulse bg-secondary" />
+                        <div className="p-4 sm:p-5 space-y-3">
                           <div className="h-3 w-1/3 animate-pulse bg-secondary" />
                           <div className="h-5 w-3/4 animate-pulse bg-secondary" />
-                          <div className="h-4 w-full animate-pulse bg-secondary" />
-                          <div className="h-4 w-5/6 animate-pulse bg-secondary" />
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="h-4 w-full animate-pulse bg-secondary" />
+                            <div className="h-4 w-full animate-pulse bg-secondary" />
+                          </div>
+                          <div className="h-4 w-1/2 animate-pulse bg-secondary" />
                         </div>
                       </div>
                     ))
@@ -946,50 +954,52 @@ export default function PureGrainLanding() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="h-full"
                   >
                     <Link
                       href={`/catalog/finished-products/${product._id}`}
-                      className="group block card-industrial"
+                      className="group flex flex-col h-full bg-card border border-border shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass/50 focus-visible:ring-offset-2"
                     >
-                      <div className="aspect-[4/5] overflow-hidden">
+                      <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
                         <img
                           src={product.images?.[0] ?? "/placeholder.svg?height=800&width=600"}
                           alt={product.name}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       </div>
-                      <div className="p-5">
-                        <p className="text-xs text-brass mb-2">{product.productType}</p>
-                        <h3 className="font-serif text-lg font-medium text-foreground mb-3 group-hover:text-leather transition-colors">
+                      <div className="flex flex-col flex-1 p-4 sm:p-5">
+                        <p className="text-[11px] font-semibold uppercase tracking-wider text-brass mb-1.5">
+                          {product.productType}
+                        </p>
+                        <h3 className="font-serif text-base sm:text-lg font-medium text-foreground mb-3 leading-snug line-clamp-1 group-hover:text-leather transition-colors">
                           {product.name}
                         </h3>
-                        <div className="space-y-1 text-sm text-muted-foreground">
-                          <p>
-                            <span className="text-foreground/80">Material:</span> {product.materialUsed}
-                          </p>
-                          <p>
-                            <span className="text-foreground/80">Availability:</span> {product.availability}
-                          </p>
-                          {product.pricePerUnit ? (
-                            <p>
-                              <span className="text-foreground/80">Price:</span>{" "}
-                              <span className="inline-flex items-baseline gap-1">
-                                <PriceDisplay usdAmount={product.pricePerUnit} />
-                                <span>/ {product.priceUnit}</span>
-                              </span>
-                            </p>
-                          ) : null}
+                        <div className="grid grid-cols-2 gap-x-3 gap-y-2 text-xs mb-3">
+                          <div className="min-w-0">
+                            <span className="block text-muted-foreground">Material</span>
+                            <span className="text-foreground/90 truncate block">{product.materialUsed}</span>
+                          </div>
+                          <div className="min-w-0">
+                            <span className="block text-muted-foreground">Availability</span>
+                            <span className="text-foreground/90 truncate block">{product.availability}</span>
+                          </div>
                         </div>
                         {product.tags?.length ? (
-                          <div className="mt-4 flex flex-wrap gap-2">
+                          <div className="flex flex-wrap gap-1.5 mb-3">
                             {product.tags.slice(0, 3).map((tag) => (
                               <span
                                 key={tag}
-                                className="text-xs px-2 py-1 bg-secondary text-secondary-foreground"
+                                className="text-[10px] px-1.5 py-0.5 bg-secondary text-secondary-foreground"
                               >
                                 {tag}
                               </span>
                             ))}
+                          </div>
+                        ) : null}
+                        {product.pricePerUnit ? (
+                          <div className="mt-auto pt-3 border-t border-border flex items-baseline gap-1">
+                            <PriceDisplay usdAmount={product.pricePerUnit} className="text-sm font-semibold text-foreground" />
+                            <span className="text-xs text-muted-foreground">/ {product.priceUnit}</span>
                           </div>
                         ) : null}
                       </div>

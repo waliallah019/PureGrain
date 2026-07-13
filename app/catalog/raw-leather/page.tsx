@@ -29,6 +29,7 @@ import {
 import { IRawLeather, IRawLeatherType } from "@/types/rawLeather"
 import AddToSampleTrayButton from "@/components/sample-request/AddToSampleTrayButton"
 import SampleTrayBar from "@/components/sample-request/SampleTrayBar"
+import PriceDisplay from "@/components/PriceDisplay"
 import "../catalog.css"
 
 const FALLBACK_IMAGE = "/placeholder-image.jpg"
@@ -45,11 +46,16 @@ const MATERIAL_TO_ANIMAL: Record<string, string> = {
   sheep: "Sheep",
 }
 
-function formatStoredPrice(amount: number | undefined, currency: string | undefined, unit: string | undefined) {
+function renderPrice(amount: number | undefined, unit: string | undefined) {
   if (typeof amount !== "number" || Number.isNaN(amount)) {
     return "On request"
   }
-  return `${currency || "USD"} ${amount.toFixed(2)} / ${unit || "sq ft"}`
+  return (
+    <>
+      <PriceDisplay usdAmount={amount} />
+      <span className="catalogFeatureCard__priceUnit"> / {unit || "sq ft"}</span>
+    </>
+  )
 }
 
 export default function RawLeatherPage() {
@@ -390,8 +396,11 @@ export default function RawLeatherPage() {
                           <p><span>Animal:</span> {product.animal}</p>
                           <p><span>Finish:</span> {product.finish}</p>
                           <p><span>MOQ:</span> {product.minOrderQuantity} {product.priceUnit || "sq ft"}</p>
-                          <p><span>Price:</span> {formatStoredPrice(product.pricePerSqFt, product.currency, product.priceUnit || "sq ft")}</p>
                         </div>
+                        <p className="catalogFeatureCard__price">
+                          <span>Price</span>
+                          {renderPrice(product.pricePerSqFt, product.priceUnit || "sq ft")}
+                        </p>
                         <div className="catalogChipRow">
                           {product.isFeatured && <span className="catalogChip catalogChip--gold">Featured</span>}
                           {product.sampleAvailable && <span className="catalogChip">Sample</span>}
