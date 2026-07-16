@@ -1,18 +1,8 @@
 .policyPage #terms-hero-section {
-  margin-top: 0;
-}
-@media (max-width: 900px) {
-  .policyPage #terms-hero-section {
-    margin-top: 0;
-  }
-}
-@media (max-width: 600px) {
-  .policyPage #terms-hero-section {
-    margin-top: 0;
-  }
-}
-
-.policyPage #terms-hero-section {
+  /* Clears the fixed header (constant 113px); the dark hero then sits flush
+     under the ticker. Replaces the old margin-top:0 + 5rem frame padding,
+     which only cleared the 80px nav and left content 33px under the ticker. */
+  margin-top: 113px;
   background: var(--bg-primary);
   color: var(--text-on-dark);
 }
@@ -26,9 +16,10 @@
   color: var(--text-on-dark-mute);
 }
 
-/* Ensure hero content starts below fixed header */
+/* Breathing room inside the hero (header clearance now lives on the
+   hero-section margin above). */
 .policyPage #terms-hero-section .hero__frame {
-  padding-top: 5rem; /* header height (h-20) */
+  padding-top: 3rem;
 }
 
 /* ============================================================

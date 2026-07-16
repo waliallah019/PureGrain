@@ -3,14 +3,10 @@
    All rules scoped to .policyPage
    ============================================================ */
 
-/* Hero margin */
-.policyPage #about-hero-section { margin-top: 112px; }
-@media (max-width: 900px) {
-  .policyPage #about-hero-section { margin-top: 72px; }
-}
-@media (max-width: 600px) {
-  .policyPage #about-hero-section { margin-top: 80px; }
-}
+/* Hero margin — clears the fixed header (constant 113px: 80px nav + 33px
+   ticker) at every breakpoint. Single value avoids the old 112/72/80
+   mismatch that left a gap on desktop and underlapped on mobile/tablet. */
+.policyPage #about-hero-section { margin-top: 113px; }
 
 /* Hero with image background */
 .policyPage #about-hero-section.hero {

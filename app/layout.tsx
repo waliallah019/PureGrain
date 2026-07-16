@@ -7,6 +7,7 @@ import { ReactLenis } from "@/lib/utils/lenis"
 import { FloatingSamplesSticker } from "@/components/layout/floating-samples-sticker"
 import { ScrollManager } from "@/components/layout/scroll-to-top-on-route-change"
 import WhatsAppButton from "@/components/WhatsAppButton"
+import SampleTrayBar from "@/components/sample-request/SampleTrayBar"
 import { CurrencyProvider } from "@/lib/currency/CurrencyContext"
 
 const inter = Jost({ subsets: ["latin"], variable: "--font-inter" })
@@ -51,6 +52,10 @@ export default function RootLayout({
                 showPulse
                 bottomOffset={24}
               />
+              {/* Global sample-tray bar — surfaces the persisted hide tray on
+                  every customer page. Self-hides on the checkout flow and
+                  admin area via useSampleTrayVisible(). */}
+              <SampleTrayBar />
             </CurrencyProvider>
           </ThemeProvider>
         </body>

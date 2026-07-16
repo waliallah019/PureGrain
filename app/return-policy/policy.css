@@ -302,8 +302,8 @@
         /* ============================================================
            SECTION BASE
            ============================================================ */
-        .policyPage section.block{ padding: 110px 0; position: relative; }
-        @media (max-width: 700px) { .policyPage section.block{ padding: 70px 0; } }
+        .policyPage section.block{ padding: 70px 0; position: relative; }
+        @media (max-width: 700px) { .policyPage section.block{ padding: 50px 0; } }
 
         .policyPage .section-head{ text-align: center; max-width: 800px; margin: 0 auto 60px; }
         .policyPage .section-head--left{ text-align: left; margin-left: 0; }
@@ -920,3 +920,123 @@
             .policyPage .reveal{ opacity: 1; transform: none; transition: none; }
             .policyPage{ animation: none !important; transition: none !important; }
         }
+
+/* ================================================================
+   DARK THEME — "leather night". Activated by `.dark` on <html>.
+   Shared by all policy-family pages (about, quality, terms, privacy,
+   privacy-policy, return-policy, payments). `.dark .policyPage ...`
+   overrides the per-page light card rules by specificity regardless
+   of stylesheet order.
+   ================================================================ */
+.dark .policyPage {
+  --bg-cream: #17100b;
+  --bg-parchment: #221810;
+  --text-on-light: #f3ead8;
+  --text-on-light-mute: #bda88f;
+  --border-tan-soft: #3a2c1d;
+  --border-tan: #4a3927;
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.5);
+  --shadow-card-hover: 0 12px 40px rgba(0, 0, 0, 0.6);
+  background: var(--bg-cream);
+  color: var(--text-on-light);
+}
+/* Raised card surfaces (were #fff) */
+.dark .policyPage .policy-card,
+.dark .policyPage .claims-col,
+.dark .policyPage .gov-card,
+.dark .policyPage .nl-notice,
+.dark .policyPage .ref-box,
+.dark .policyPage .pathway-card,
+.dark .policyPage .req-card,
+.dark .policyPage .lc-table-wrap,
+.dark .policyPage .faq-item,
+.dark .policyPage .about-process__card,
+.dark .policyPage .about-region-card,
+.dark .policyPage .about-serve-card,
+.dark .policyPage .best-fit,
+.dark .policyPage .clarity-card,
+.dark .policyPage .doc-frame,
+.dark .policyPage .problem-image,
+.dark .policyPage .problem-list li,
+.dark .policyPage .scope-card,
+.dark .policyPage .story-step__body,
+.dark .policyPage .testimonial-card,
+.dark .policyPage .cert-card,
+.dark .policyPage .finish-card,
+.dark .policyPage .pillar-card,
+.dark .policyPage .process-card,
+.dark .policyPage .quality-step__body,
+.dark .policyPage .tagline-card { background: #221810; }
+/* Recessed / subtle surfaces (were #FAF7F4) */
+.dark .policyPage .policy-summary-box,
+.dark .policyPage .policy-fact-card,
+.dark .policyPage .about-cta-final,
+.dark .policyPage .about-stats-bar,
+.dark .policyPage .founder-card,
+.dark .policyPage .story-callout,
+.dark .policyPage .story-criteria-item,
+.dark .policyPage .story-step__media,
+.dark .policyPage .finish-card__media,
+.dark .policyPage .finish-mastery-callout,
+.dark .policyPage .quality-step__media,
+.dark .policyPage .faq-q__icon,
+.dark .policyPage .about-faq .faq-q__icon,
+.dark .policyPage .quality-faq .faq-q__icon,
+.dark .policyPage .tagline-card__icon { background: #1c130c; }
+/* Table body zebra + hover that used light vars */
+.dark .policyPage .lc-table tbody tr:hover td { background: #2c2016; }
+/* Amber/info callouts — keep the warm accent but on a dark field */
+.dark .policyPage .amber-callout,
+.dark .policyPage .info-box--amber { background: #2a1e0d; color: #e8c896; }
+.dark .policyPage .info-box--gold { background: rgba(201, 148, 58, 0.12); color: #e0c79a; }
+
+/* Section-level light wrappers (were near-white #FDFAF6/#FAF7F4) — drop to
+   page-bg so raised cards read against them in dark mode. */
+.dark .policyPage .tagline-meaning-section,
+.dark .policyPage .story-section,
+.dark .policyPage .about-stats-bar { background: #17100b; }
+/* Any leftover pure-white raised cards from the exhaustive scan not already
+   covered above. */
+.dark .policyPage .about-faq .faq-item,
+.dark .policyPage .quality-faq .faq-item,
+.dark .policyPage .story-step__media,
+.dark .policyPage .story-criteria-item { background: #221810; }
+.dark .policyPage .about-faq .faq-q__icon,
+.dark .policyPage .quality-faq .faq-q__icon { background: #1c130c; }
+
+/* Card headings/labels that used a dark color (#2C1810 / --bg-primary) for
+   dark-on-white cards — flip to light so they're readable on dark cards.
+   The gold `__num` badges keep their dark text (correct on gold). */
+.dark .policyPage h3,
+.dark .policyPage h4,
+.dark .policyPage .quality-step__title,
+.dark .policyPage .story-step__title,
+.dark .policyPage .policy-fact-card strong,
+.dark .policyPage .founder-card__name,
+.dark .policyPage .testimonial-card__author,
+.dark .policyPage .about-stat__num,
+.dark .policyPage .quality-faq .faq-q,
+.dark .policyPage .about-faq .faq-q,
+.dark .policyPage .timeline-step h3 { color: var(--text-on-light); }
+.dark .policyPage .story-step__subhead { color: var(--text-on-light) !important; }
+
+/* Defensive: force card/section headings to an explicit bright cream in dark
+   mode (bypasses any CSS-variable resolution edge cases on nested scopes). */
+.dark .policyPage .pillar-card h3,
+.dark .policyPage .finish-card h3,
+.dark .policyPage .process-card h3,
+.dark .policyPage .cert-card h3,
+.dark .policyPage .tagline-card h3,
+.dark .policyPage .about-serve-card h3,
+.dark .policyPage .about-region-card h3,
+.dark .policyPage .about-process__card h3,
+.dark .policyPage .scope-card h3,
+.dark .policyPage .clarity-card h3,
+.dark .policyPage .best-fit h3,
+.dark .policyPage .quality-step__title,
+.dark .policyPage .story-step__title { color: #f3ead8 !important; }
+
+/* return-policy: ref-box heading/label used --bg-primary (dark) for white
+   cards — flip to light on dark. */
+.dark .policyPage .ref-box h4,
+.dark .policyPage .ref-box strong { color: var(--text-on-light) !important; }

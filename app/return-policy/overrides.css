@@ -6,20 +6,11 @@
      - DO NOT override or change the navbar color here!
      ============================================================ */
 
-/* Top spacing — clears the fixed Header.
-   Header is h-20 (80px) plus an announcement bar (~36px). */
+/* Top spacing — clears the fixed Header (constant 113px: 80px nav + 33px
+   ticker) at every breakpoint. Single value avoids the old 110/112/96
+   mismatch that underlapped on tablet/mobile. */
 .policyPage {
-    padding-top: 110px;
-}
-@media (max-width: 1023px) {
-    .policyPage {
-        padding-top: 112px;
-    }
-}
-@media (max-width: 767px) {
-    .policyPage {
-        padding-top: 96px;
-    }
+    padding-top: 113px;
 }
 
 /* Hero — warm mid-brown with leather grain + gold hairline separators.

@@ -21,7 +21,6 @@ import { IRawLeather } from "@/types/rawLeather";
 import PriceDisplay from "@/components/PriceDisplay";
 import RawLeatherCard from "@/components/raw-leather-details/RawLeatherCard";
 import AddToSampleTrayButton from "@/components/sample-request/AddToSampleTrayButton";
-import SampleTrayBar from "@/components/sample-request/SampleTrayBar";
 
 interface RawLeatherDetailContentProps {
   rawLeather: IRawLeather;
@@ -451,8 +450,6 @@ export default function RawLeatherDetailContent({
           </div>
         </div>
       )}
-      {/* Tray bar — only mounted on hide pages, per spec. */}
-      <SampleTrayBar />
     </>
   );
 }

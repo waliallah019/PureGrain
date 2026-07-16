@@ -32,19 +32,8 @@
     }
 }
 .policyPage #privacy-hero-section {
-  margin-top: 112px;
-  /* background: var(--bg-primary); */
-  /* color: var(--text-on-dark); */
-}
-@media (max-width: 900px) {
-  .policyPage #privacy-hero-section {
-    margin-top: 72px;
-  }
-}
-@media (max-width: 600px) {
-  .policyPage #privacy-hero-section {
-    margin-top: 80px;
-  }
+  /* Clears the fixed header (constant 113px) at every breakpoint. */
+  margin-top: 113px;
 }
 
 .policyPage #privacy-hero-section .hero__eyebrow {

@@ -74,17 +74,11 @@
         TEXTURES (CSS only — leather grain & parchment)
         ============================================================ */
     .policyPage #pymnt-terms-hero-section {
-            margin-top: 0;
-    }
-    @media (max-width: 900px) {
-        .policyPage #pymnt-terms-hero-section {
-            margin-top: 0;
-        }
-    }
-    @media (max-width: 600px) {
-        .policyPage #pymnt-terms-hero-section {
-            margin-top: 0;
-        }
+            /* Clears the fixed header (constant 113px) so the dark hero sits
+               flush under the ticker. Replaces margin-top:0 + 5rem frame
+               padding, which only cleared the 80px nav (content 33px under
+               the ticker). */
+            margin-top: 113px;
     }
     .leather-texture {
         background-color: var(--bg-primary);
@@ -114,9 +108,10 @@
             radial-gradient(circle at 80% 90%, rgba(160, 114, 74, 0.05), transparent 50%);
     }
 
-    /* Ensure hero content starts below fixed header */
+    /* Breathing room inside the hero (header clearance now lives on the
+       hero-section margin above). */
     .policyPage #pymnt-terms-hero-section .hero__frame {
-        padding-top: 5rem; /* header height (h-20) */
+        padding-top: 3rem;
     }
  
     .parchment-mid-texture {

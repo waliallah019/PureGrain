@@ -4,8 +4,10 @@
 /**
  * SampleTrayBar
  * -------------
- * Persistent fixed bottom bar that surfaces the user's sample tray on the
- * hide catalog and hide detail pages. Hidden when the tray is empty.
+ * Persistent fixed bottom bar that surfaces the user's sample tray. Mounted
+ * once globally in the root layout, so it follows the user across every
+ * customer page until they check out or empty the tray. Hidden when the tray
+ * is empty and on the checkout flow / admin area (see useSampleTrayVisible).
  *
  * Visual language matches the existing site palette:
  *   - background: --primary (#2C1810)
