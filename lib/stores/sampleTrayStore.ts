@@ -18,7 +18,7 @@ export const SAMPLE_TRAY_LIMIT = 3;
 // many ms of inactivity, rather than sitting in localStorage forever. Any
 // add/remove touches the clock, so an actively-used tray never expires
 // mid-session — only a genuinely abandoned one does.
-const TRAY_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+const TRAY_EXPIRY_MS = 3 * 24 * 60 * 60 * 1000; // 3 days
 
 export interface SampleTrayItem {
   productId: string;

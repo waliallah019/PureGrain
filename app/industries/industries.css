@@ -78,6 +78,9 @@
 
 /* ============================== BREADCRUMB ============================== */
 .industriesPage .indBreadcrumb {
+  /* Breadcrumb is the first element on the page, so it carries the fixed
+     header clearance (constant 113px); the hero then follows directly. */
+  margin-top: 113px;
   background: var(--bg-cream);
   border-bottom: 1px solid var(--border-tan-soft);
   font-size: 12.5px;
@@ -109,7 +112,9 @@
 .industriesPage .indHero {
   position: relative;
   color: var(--text-on-dark);
-  padding: 120px 0 130px;
+  /* Header clearance lives on the preceding .indBreadcrumb; this padding is
+     just the hero's internal breathing room. */
+  padding: 64px 0 96px;
   overflow: hidden;
   isolation: isolate;
 }
@@ -227,7 +232,7 @@
   margin: 0;
 }
 @media (max-width: 760px) {
-  .industriesPage .indHero { padding: 80px 0 90px; }
+  .industriesPage .indHero { padding: 40px 0 64px; }
   .industriesPage .indHero__frame { padding: 44px 20px; }
   .industriesPage .indHero__frame::before { left: 20px; }
   .industriesPage .indHero__frame::after  { right: 20px; }
@@ -770,4 +775,27 @@
 .industriesPage .indCta__contact i {
   margin-right: 6px;
   color: var(--accent-gold);
+}
+
+/* ================================================================
+   DARK THEME — leather night. Activated by `.dark` on <html>.
+   ================================================================ */
+.dark .industriesPage {
+  --bg-cream: #17100b;
+  --bg-parchment: #221810;
+  --text-on-light: #f3ead8;
+  --text-on-light-mute: #bda88f;
+  --border-tan-soft: #3a2c1d;
+  --border-tan: #4a3927;
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.5);
+  --shadow-card-hover: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+.dark .industriesPage .indBreadcrumb { background: #1c130c; }
+.dark .industriesPage .indSpec,
+.dark .industriesPage .indWhyCard,
+.dark .industriesPage .indAnchorPill { background: #221810; }
+.dark .industriesPage .indHero::before {
+  background-image:
+    linear-gradient(135deg, rgba(10,6,3,0.94) 0%, rgba(10,6,3,0.82) 60%, rgba(10,6,3,0.94) 100%),
+    url("https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1900&q=80");
 }

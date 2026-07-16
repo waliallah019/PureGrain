@@ -3,15 +3,10 @@
    All rules scoped to .policyPage
    ============================================================ */
 
-/* Hero margin */
+/* Hero margin — clears the fixed header (constant 113px) at every
+   breakpoint. Replaces the old 112/72/80 mismatch. */
 .policyPage #quality-hero-section {
-  margin-top: 112px;
-}
-@media (max-width: 900px) {
-  .policyPage #quality-hero-section { margin-top: 72px; }
-}
-@media (max-width: 600px) {
-  .policyPage #quality-hero-section { margin-top: 80px; }
+  margin-top: 113px;
 }
 
 /* Hero with image background */

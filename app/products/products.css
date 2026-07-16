@@ -74,6 +74,8 @@
 
 /* ============================== BREADCRUMB ============================== */
 .productsPage .prBreadcrumb {
+  /* First element on the page — carries the fixed header clearance (113px). */
+  margin-top: 113px;
   background: var(--bg-cream);
   border-bottom: 1px solid var(--border-tan-soft);
   font-size: 12.5px;
@@ -96,7 +98,8 @@
 .productsPage .prHero {
   position: relative;
   color: var(--text-on-dark);
-  padding: 120px 0 130px;
+  /* Header clearance lives on the preceding .prBreadcrumb. */
+  padding: 64px 0 96px;
   overflow: hidden;
   isolation: isolate;
 }
@@ -218,7 +221,7 @@
   margin: 0;
 }
 @media (max-width: 760px) {
-  .productsPage .prHero { padding: 80px 0 90px; }
+  .productsPage .prHero { padding: 40px 0 64px; }
   .productsPage .prHero__frame { padding: 44px 20px; }
   .productsPage .prHero__frame::before { left: 20px; }
   .productsPage .prHero__frame::after  { right: 20px; }
@@ -891,3 +894,24 @@
   margin-right: 6px;
   color: var(--accent-gold);
 }
+
+/* ================================================================
+   DARK THEME — leather night. Activated by `.dark` on <html>.
+   ================================================================ */
+.dark .productsPage {
+  --bg-cream: #17100b;
+  --bg-parchment: #221810;
+  --text-on-light: #f3ead8;
+  --text-on-light-mute: #bda88f;
+  --border-tan-soft: #3a2c1d;
+  --border-tan: #4a3927;
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.5);
+  --shadow-card-hover: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+.dark .productsPage .prBreadcrumb { background: #1c130c; }
+.dark .productsPage .prSpec,
+.dark .productsPage .prWhyCard,
+.dark .productsPage .prTermCard,
+.dark .productsPage .prFaqItem,
+.dark .productsPage .prAnchorPill,
+.dark .productsPage .prBtn--light { background: #221810; color: var(--text-on-light); }

@@ -1501,3 +1501,44 @@
   .catalogPage .catalogInquiry { padding: 28px 22px; }
   .catalogPage .catalogInquiry__row { grid-template-columns: 1fr; }
 }
+
+/* ================================================================
+   DARK THEME — "leather night" palette. Activated by the `.dark`
+   class the theme toggle puts on <html>. Redefines the light surface
+   variables + the hardcoded light card surfaces so the whole catalog
+   page inverts cohesively (the dark hero/accent vars stay as-is).
+   ================================================================ */
+.dark .catalogPage {
+  --bg-cream: #17100b;
+  --bg-parchment: #221810;
+  --text-on-light: #f3ead8;
+  --text-on-light-mute: #bda88f;
+  --border-tan-soft: #3a2c1d;
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.5);
+  --shadow-card-hover: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+.dark .catalogPage .catalogTagPills span { background: rgba(255, 255, 255, 0.06); }
+.dark .catalogPage .catalogChip { background: rgba(255, 255, 255, 0.05); }
+.dark .catalogPage .catalogNavigator__panel { background: #221810; }
+.dark .catalogPage .catalogLayoutToggle { background: #241a12; border-color: #3a2c1d; }
+.dark .catalogPage .catalogTypeStrip { background: #1c130c; border-top-color: #3a2c1d; border-bottom-color: #3a2c1d; }
+.dark .catalogPage .catalogTypeChip { background: #241a12; border-color: #3a2c1d; color: var(--text-on-light); }
+.dark .catalogPage .catalogTypeChip:hover { border-color: var(--accent-gold); color: var(--accent-gold-soft); }
+.dark .catalogPage .catalogTypeChip--active { background: var(--accent-gold); border-color: var(--accent-gold); color: #17100b; }
+.dark .catalogPage .catalogTypeChip--active:hover { background: var(--accent-gold-soft); border-color: var(--accent-gold-soft); color: #17100b; }
+.dark .catalogPage .catalogSkeletonCard,
+.dark .catalogPage .catalogPathCard,
+.dark .catalogPage .catalogPathCard--service,
+.dark .catalogPage .catalogTile,
+.dark .catalogPage .catalogTile--service,
+.dark .catalogPage .catalogSourcingColumn,
+.dark .catalogPage .catalogInquiry { background: #221810; }
+.dark .catalogPage .catalogTile:hover,
+.dark .catalogPage .catalogTile--service:hover { background: #2c2016; }
+.dark .catalogPage .catalogInquiry__field [data-slot="select-trigger"] { background: #241a12; border-color: #3a2c1d; }
+/* Deepen the hero photo overlay so headline contrast stays strong. */
+.dark .catalogPage .catalogHero::before {
+  background-image:
+    linear-gradient(180deg, rgba(10, 6, 3, 0.88) 0%, rgba(10, 6, 3, 0.72) 50%, rgba(10, 6, 3, 0.62) 100%),
+    url("/hero-leather-espresso.jpg");
+}

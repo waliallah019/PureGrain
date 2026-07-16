@@ -109,7 +109,10 @@
 .cmPage .cm-hero {
     position: relative;
     color: var(--text-on-dark);
-    padding: 120px 0 130px;
+    /* Clear the fixed header (constant 113px); top padding is now breathing
+       room only, not doubling as header clearance. */
+    margin-top: 113px;
+    padding: 64px 0 96px;
     overflow: hidden;
     isolation: isolate;
 }
@@ -158,7 +161,7 @@
 .cmPage .cm-hero__trust span:last-child { border-right: none; }
 .cmPage .cm-hero__trust i { color: var(--accent-gold); }
 @media (max-width: 700px) {
-    .cmPage .cm-hero { padding: 80px 0 90px; }
+    .cmPage .cm-hero { padding: 40px 0 64px; }
     .cmPage .cm-hero__trust span { border-right: none; width: 100%; justify-content: center; }
 }
 
@@ -786,3 +789,26 @@
     font-size: 0.95rem;
     margin-bottom: 24px;
 }
+
+/* ================================================================
+   DARK THEME — leather night. Activated by `.dark` on <html>.
+   ================================================================ */
+.dark .cmPage {
+  --bg-cream: #17100b;
+  --bg-parchment: #221810;
+  --text-on-light: #f3ead8;
+  --text-on-light-mute: #bda88f;
+  --border-tan-soft: #3a2c1d;
+  --border-tan: #4a3927;
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.5);
+  --shadow-card-hover: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+.dark .cmPage .how-card,
+.dark .cmPage .product-card,
+.dark .cmPage .scale-card,
+.dark .cmPage .why-card { background: #221810; }
+
+/* Card headings that used --bg-primary (dark) for white cards — flip to light
+   in dark mode. The gold `__num` badges keep dark text (correct on gold). */
+.dark .cmPage h3,
+.dark .cmPage h4 { color: var(--text-on-light); }

@@ -28,7 +28,6 @@ import {
 } from "@/components/ui/select"
 import { IRawLeather, IRawLeatherType } from "@/types/rawLeather"
 import AddToSampleTrayButton from "@/components/sample-request/AddToSampleTrayButton"
-import SampleTrayBar from "@/components/sample-request/SampleTrayBar"
 import PriceDisplay from "@/components/PriceDisplay"
 import "../catalog.css"
 
@@ -504,8 +503,6 @@ export default function RawLeatherPage() {
         </section>
       </main>
       <Footer />
-      {/* Persistent sample-tray bar — only mounted on hide pages. */}
-      <SampleTrayBar />
     </div>
   )
 }
