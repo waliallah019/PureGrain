@@ -138,6 +138,14 @@
   }
   html {
     scroll-behavior: smooth;
+    /* Base themed background on <html> (not just <body>) so overscroll bounce,
+       overflow, and full-screen third-party overlays (e.g. the PayPal card
+       form on mobile) never reveal a transparent/white area when scrolling. */
+    @apply bg-background;
+    /* Prevent the whole page from rubber-band scrolling behind fixed overlays
+       on mobile, which is what exposed the transparent area during the PayPal
+       card flow. */
+    overscroll-behavior-y: none;
   }
   body {
     @apply bg-background text-foreground antialiased;
