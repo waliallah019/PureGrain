@@ -10,16 +10,17 @@ import {
   deleteRawLeatherTypeSchema,
 } from "@/lib/validators/rawLeatherTypeValidator";
 import logger from "@/lib/config/logger";
+import { requireAdmin } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
 
 interface RawLeatherTypeRouteParams {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 // GET a single raw leather type by ID
 export async function GET(req: NextRequest, { params }: RawLeatherTypeRouteParams) {
-  const rawLeatherTypeId = params.id;
+  const rawLeatherTypeId = (await params).id;
   await connectDB();
   try {
     const validation = await validateRequest(getRawLeatherTypeByIdSchema, req, { id: rawLeatherTypeId });
@@ -48,7 +49,9 @@ export async function GET(req: NextRequest, { params }: RawLeatherTypeRouteParam
 
 // PUT/PATCH update a raw leather type by ID
 export async function PUT(req: NextRequest, { params }: RawLeatherTypeRouteParams) {
-  const rawLeatherTypeId = params.id;
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
+  const rawLeatherTypeId = (await params).id;
   await connectDB();
   try {
     const body = await req.json();
@@ -81,7 +84,9 @@ export async function PUT(req: NextRequest, { params }: RawLeatherTypeRouteParam
 
 // DELETE a raw leather type by ID
 export async function DELETE(req: NextRequest, { params }: RawLeatherTypeRouteParams) {
-  const rawLeatherTypeId = params.id;
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
+  const rawLeatherTypeId = (await params).id;
   await connectDB();
   try {
     const validation = await validateRequest(deleteRawLeatherTypeSchema, req, { id: rawLeatherTypeId });

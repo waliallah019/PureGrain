@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main, ahmza, ahmza48]
+  pull_request:
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check
+        run: pnpm typecheck
+
+      # Production build. Requires the same env vars as runtime; supply them as
+      # GitHub Actions secrets. Kept non-blocking-optional until secrets are set.
+      - name: Build
+        run: pnpm build
+        env:
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET || 'ci-placeholder-secret-not-for-prod' }}
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          NEXT_PUBLIC_PAYPAL_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_PAYPAL_CLIENT_ID }}

@@ -67,7 +67,6 @@ export default function AdminSingleSamplePage() {
     setIsStatusUpdateLoading(true);
     // FIX: Use requestNumber in logs/toasts
     const displayId = sampleRequest?.requestNumber || sampleRequestId.substring(0, 8);
-    console.log(`[FE-Detail] Attempting to update request ${displayId} to status ${newStatus} with tracking ${trackingLink}`);
     try {
       if (!sampleRequestId || !/^[0-9a-fA-F]{24}$/.test(sampleRequestId)) {
         toast.error("Invalid Request ID provided for update (frontend check).");
@@ -83,7 +82,6 @@ export default function AdminSingleSamplePage() {
       };
       if (extras?.trackingNumber) payload.trackingNumber = extras.trackingNumber;
       if (extras?.courierName) payload.courierName = extras.courierName;
-      console.log("[FE-Detail] Sending PATCH request to:", apiUrl, "with payload:", payload);
 
       const response = await axios.patch(apiUrl, payload);
 

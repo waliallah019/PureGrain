@@ -7,6 +7,7 @@ import logger from '@/lib/config/logger';
 import { sendEmail } from '@/lib/utils/sendEmail';
 import { generateInvoicePdf } from '@/lib/utils/invoicePdfGenerator';
 import { IInvoice, PaymentTerms } from '@/types/invoice';
+import { requireAdmin } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,6 +33,8 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
 
   try {
@@ -118,10 +121,11 @@ export async function PATCH(
 
     const paymentMethod = toPaymentMethod(paymentTerms);
 
+    // Bank details from environment (see .env.local) — not hardcoded in source.
     const vendorBankDetails = {
-      accountTitle: process.env.YOUR_BANK_ACCOUNT_TITLE || 'PUREGRAIN EXPORTS (SMC-PRIVATE) LIMITED',
-      bankName: process.env.YOUR_BANK_NAME || 'Bank Alfalah',
-      accountNumber: process.env.YOUR_BANK_ACCOUNT || '5573-5002834840',
+      accountTitle: process.env.YOUR_BANK_ACCOUNT_TITLE || '',
+      bankName: process.env.YOUR_BANK_NAME || '',
+      accountNumber: process.env.YOUR_BANK_ACCOUNT || '',
       swiftCode: process.env.YOUR_BANK_SWIFT || '',
       iban: process.env.YOUR_BANK_IBAN || '',
     };

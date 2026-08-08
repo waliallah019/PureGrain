@@ -26,6 +26,7 @@ class MessageService {
     phone?: string;
     companyName?: string;
     country?: string;
+    industry?: string;
     inquiryType: string;
     message: string;
   }): Promise<IMessage> {

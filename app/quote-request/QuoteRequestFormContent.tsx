@@ -256,7 +256,6 @@ export function QuoteRequestFormContent() {
 
     if (!validateForm()) {
       toast.error('Please fix the errors in the form.');
-      console.log('Validation errors:', errors);
       return;
     }
 

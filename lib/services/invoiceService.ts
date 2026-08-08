@@ -56,17 +56,20 @@ class InvoiceService {
     const dueDate = new Date();
     dueDate.setDate(issueDate.getDate() + 30);
 
+    // Vendor + bank details come from environment (see .env.local). Kept out of
+    // source so real banking data isn't committed to the repo. Empty fallbacks
+    // avoid crashing invoice generation if a var is missing.
     const vendorDetails = {
       vendorName: process.env.YOUR_COMPANY_NAME || 'PureGrain Leather',
-      vendorAddress: process.env.YOUR_COMPANY_ADDRESS || '123 Leather Lane, Rawhide City, LTH 12345',
+      vendorAddress: process.env.YOUR_COMPANY_ADDRESS || '',
       vendorEmail: process.env.ADMIN_EMAIL || 'info@puregrain.com',
-      vendorPhone: process.env.YOUR_COMPANY_PHONE || '+92 308 4578957',
+      vendorPhone: process.env.YOUR_COMPANY_PHONE || '',
       vendorBankDetails: {
-        accountTitle: process.env.YOUR_BANK_ACCOUNT_TITLE || 'PUREGRAIN EXPORTS (SMC-PRIVATE) LIMITED',
-        bankName: process.env.YOUR_BANK_NAME || 'Bank Alfalah',
-        accountNumber: process.env.YOUR_BANK_ACCOUNT || '5573-5002834840',
-        swiftCode: process.env.YOUR_BANK_SWIFT || 'LETHSWIFT',
-        iban: process.env.YOUR_BANK_IBAN || 'LTXX XXXX XXXX XXXX XXXX',
+        accountTitle: process.env.YOUR_BANK_ACCOUNT_TITLE || '',
+        bankName: process.env.YOUR_BANK_NAME || '',
+        accountNumber: process.env.YOUR_BANK_ACCOUNT || '',
+        swiftCode: process.env.YOUR_BANK_SWIFT || '',
+        iban: process.env.YOUR_BANK_IBAN || '',
       }
     };
 

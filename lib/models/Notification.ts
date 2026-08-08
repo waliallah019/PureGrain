@@ -20,6 +20,7 @@ export interface INotification extends Document {
     | 'payment_failed'    // From previous code, ensuring it's here
     | 'new_quote_request'
     | 'quote_status_update'
+    | 'custom_request_status_update'
     | 'invoice_sent'
     | 'payment_received';
   // --- END FIX ---
@@ -50,6 +51,7 @@ const NotificationSchema: Schema = new Schema(
         'payment_failed',
         'new_quote_request',
         'quote_status_update',
+        'custom_request_status_update',
         'invoice_sent',
         'payment_received'
       ],

@@ -7,11 +7,14 @@ import { validateRequest } from "@/lib/middleware/validateRequest";
 import { createQuoteRequestCombinedSchema, getQuoteRequestsListCombinedSchema } from '@/lib/validators/quoteValidator';
 import logger from '@/lib/config/logger';
 import mongoose from 'mongoose';
+import { requireAdmin } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
 
-// GET all quote requests (for admin dashboard)
+// GET all quote requests (for admin dashboard) — admin only
 export async function GET(req: NextRequest) {
+  const auth = await requireAdmin(req);
+  if (!auth.ok) return auth.response;
   await connectDB();
   try {
     const query = Object.fromEntries(req.nextUrl.searchParams.entries());

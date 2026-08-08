@@ -106,7 +106,9 @@ export default function ProductList({
   const [filterCategory, setFilterCategory] = useState<string>("");
   const [filterAvailability, setFilterAvailability] = useState<string>("");
   // filterIsArchived: "false" for active, "true" for archived, "" for all (both active and archived)
-  const [filterIsArchived, setFilterIsArchived] = useState<string>("false");
+  // Defaults to "all" so newly imported (archived) products are visible on load
+  // rather than silently filtered out — matches the raw leather list.
+  const [filterIsArchived, setFilterIsArchived] = useState<string>("");
   const [filterSampleAvailable, setFilterSampleAvailable] =
     useState<string>("");
 
@@ -188,15 +190,25 @@ export default function ProductList({
       if (filterAvailability) {
         queryParams.append("availability", filterAvailability);
       }
-      if (filterIsArchived !== "") {
+      if (filterIsArchived === "true" || filterIsArchived === "false") {
         queryParams.append("isArchived", filterIsArchived);
+      } else {
+        // filterIsArchived is "" (never touched) or "all" (explicitly chosen
+        // in the Status dropdown, whose SelectItem value is literally "all")
+        // — both mean archived + live together. Checking only `!== ""` here
+        // used to miss the "all" case: applying any filter from the popover
+        // copies the dropdown's raw value into filterIsArchived, so choosing
+        // "All (Active & Archived)" and clicking Apply set filterIsArchived
+        // to "all", which isn't a valid isArchived value for the API and
+        // silently fell back to Active-only — e.g. picking Product Type =
+        // Wallet showed only the 3 active wallets instead of all 121.
+        queryParams.append("includeArchived", "true");
       }
 
       if (filterSampleAvailable !== "") {
         queryParams.append("sampleAvailable", filterSampleAvailable);
       }
 
-      console.log("Fetching with params (frontend):", queryParams.toString());
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/finished-products?${queryParams.toString()}`,
@@ -208,7 +220,6 @@ export default function ProductList({
       }
 
       const data = await response.json();
-      console.log("API Response (frontend):", data);
 
       if (data.data && Array.isArray(data.data)) {
         setProducts(data.data);
@@ -341,7 +352,12 @@ export default function ProductList({
     setFilterColor("");
     setFilterCategory("");
     setFilterAvailability("");
-    setFilterIsArchived("false"); // Reset to default: show active products (by param)
+    // "" (not "false") so clearing shows every product regardless of archived
+    // status — matches the component's own initial default and RawLeatherList.
+    // Resetting to "false" here previously scoped "cleared" filters down to
+    // Active-only, which silently hid the ~97% of the catalog sitting archived
+    // pending review whenever a type/material/etc filter was applied afterward.
+    setFilterIsArchived("");
     setFilterSampleAvailable("");
     setSearchTerm("");
 
@@ -351,7 +367,7 @@ export default function ProductList({
     setTempFilterColor("");
     setTempFilterCategory("");
     setTempFilterAvailability("");
-    setTempFilterIsArchived("false");
+    setTempFilterIsArchived("");
     setTempFilterSampleAvailable("");
 
     setCurrentPage(1);
@@ -438,7 +454,8 @@ export default function ProductList({
     filterColor !== "" ||
     filterCategory !== "" ||
     filterAvailability !== "" ||
-    (filterIsArchived !== "" && filterIsArchived !== "false") ||
+    filterIsArchived === "true" ||
+    filterIsArchived === "false" ||
     filterSampleAvailable !== "" ||
     !isDefaultSort;
 
@@ -454,6 +471,12 @@ export default function ProductList({
               onChange={(e) =>
                 handleTempFilterChange("search", e.target.value)
               }
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleApplyFilters();
+                }
+              }}
               className="pl-9 pr-4 w-full"
             />
           </div>
@@ -647,7 +670,7 @@ export default function ProductList({
       </div>
 
       <div className="flex justify-between items-center mb-4 flex-wrap gap-y-2">
-        <p className="text-sm text-muted-foreground flex items-center gap-2">
+        <div className="text-sm text-muted-foreground flex items-center gap-2">
           Displaying {products.length} of {totalProductsCount} products
           {/* Prominent Active/Archived Indicator */}
           {filterIsArchived === "true" ? (
@@ -680,7 +703,7 @@ export default function ProductList({
               <span className="ml-1 text-gray-500 uppercase">{sortOrder}</span>
             </span>
           )}
-        </p>
+        </div>
 
         {hasActiveFiltersOrNonDefaultSort && (
           <Button

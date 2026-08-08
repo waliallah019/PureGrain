@@ -16,10 +16,13 @@ import mongoose from 'mongoose';
 import { z } from 'zod';
 import crypto from 'crypto';
 import QuoteRequest from '@/lib/models/QuoteRequest';
+import { requireAdmin } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
 
 export async function PATCH(req: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
     // FIX: Await params as required by Next.js 15+

@@ -9,6 +9,7 @@ import {
 import { validateRequest } from "@/lib/middleware/validateRequest";
 import logger from "@/lib/config/logger";
 import cloudinary from "@/lib/config/cloudinary";
+import { requireAdmin } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
 export const config = {
@@ -38,6 +39,7 @@ export async function GET(req: NextRequest) {
       search: validatedQueryParams.search,
       isFeatured: validatedQueryParams.isFeatured,
       isArchived: validatedQueryParams.isArchived,
+      includeArchived: validatedQueryParams.includeArchived,
       priceUnit: validatedQueryParams.priceUnit,
       discountAvailable: validatedQueryParams.discountAvailable,
       negotiable: validatedQueryParams.negotiable,
@@ -69,6 +71,8 @@ export async function GET(req: NextRequest) {
 
 // POST create a new leather hides entry
 export async function POST(req: NextRequest) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
     const formData = await req.formData();

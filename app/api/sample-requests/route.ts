@@ -7,11 +7,14 @@ import { handleApiError } from '@/lib/utils/errorHandler';
 import { validateRequest } from "@/lib/middleware/validateRequest";
 import { createSampleRequestSchema, getSampleRequestListFilterSchema } from '@/lib/validators/sampleRequestValidator';
 import logger from '@/lib/config/logger';
+import { requireAdmin } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
 
 // GET all sample requests (for admin dashboard)
 export async function GET(req: NextRequest) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
     const query = Object.fromEntries(req.nextUrl.searchParams.entries());

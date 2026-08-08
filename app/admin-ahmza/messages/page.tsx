@@ -240,7 +240,6 @@ export default function MessagesPage() {
   };
 
  const updateMessageStatus = async (messageId: string, newStatus: Message["status"], replyText?: string) => {
-    console.log("Updating message status. ID:", messageId, "New Status:", newStatus, "Reply Text:", replyText);
     setLoading(true);
     try {
       const payload = { status: newStatus, replyText };

@@ -10,6 +10,7 @@ import { validateRequest } from "@/lib/middleware/validateRequest";
 import logger from "@/lib/config/logger"; // Assuming logger is used for general info, not just errors
 import { parseFormData } from "@/lib/utils/parseFormData";
 import cloudinary from "@/lib/config/cloudinary";
+import { requireAdmin } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
 export const config = {
@@ -37,6 +38,7 @@ export async function GET(req: NextRequest) {
       availability: query.availability,
       isActive: query.isActive,
       isArchived: query.isArchived, // This is crucial and correctly passed
+      includeArchived: query.includeArchived,
       sampleAvailable: query.sampleAvailable, // Ensure this is also passed
       isFeatured: query.isFeatured, // Filter for featured products
     };
@@ -68,6 +70,8 @@ export async function GET(req: NextRequest) {
 
 // POST create a new finished product (no changes needed here)
 export async function POST(req: NextRequest) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
     const { fields, files } = await parseFormData(req);

@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { validateFields, ValidationRule } from './validators'
 import { sanitizeObject, preventSqlInjection, preventXss } from './security'
 import logger from '@/lib/config/logger'
+import { getAdminFromRequest } from '@/lib/auth/session'
 
 export interface ValidationConfig {
   rules: Record<string, ValidationRule>
@@ -102,13 +103,14 @@ export function requireRole(allowedRoles: string[]) {
     authorized: boolean
     errorResponse?: NextResponse
   }> => {
-    // Get user role from session/token
-    // This is a placeholder - implement based on your auth system
-    const userRole = req.headers.get('x-user-role') || 'user'
+    // Verify the signed, httpOnly session cookie instead of trusting a
+    // client-supplied header (the old `x-user-role` was trivially spoofable).
+    const admin = await getAdminFromRequest(req)
+    const userRole = admin?.role
 
-    if (!allowedRoles.includes(userRole)) {
+    if (!userRole || !allowedRoles.includes(userRole)) {
       logger.warn('Unauthorized access attempt', {
-        userRole,
+        userRole: userRole || 'anonymous',
         allowedRoles,
         endpoint: req.url,
         ip: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip'),
@@ -121,7 +123,7 @@ export function requireRole(allowedRoles: string[]) {
             success: false,
             message: 'Unauthorized access',
           },
-          { status: 403 }
+          { status: admin ? 403 : 401 }
         ),
       }
     }

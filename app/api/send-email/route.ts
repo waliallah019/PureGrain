@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { sendEmail } from "@/lib/utils/sendEmail";
 import logger from "@/lib/config/logger";
+import { requireAdmin } from '@/lib/auth/session';
 
 // Define a type for the expected request body
 interface SendEmailRequestBody {
@@ -12,6 +13,8 @@ interface SendEmailRequestBody {
 }
 
 export async function POST(req: Request) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   if (req.method !== "POST") {
     return NextResponse.json({ message: "Method Not Allowed" }, { status: 405 });
   }

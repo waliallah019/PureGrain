@@ -721,7 +721,6 @@ function SampleRequestForm() {
 
   const handlePaymentSuccess = async () => {
     setLoading(true);
-    console.log('Payment confirmation step accepted, submitting sample request...');
     let shouldStopLoading = true;
 
     try {
@@ -749,11 +748,9 @@ function SampleRequestForm() {
         paymentConfirmationTokenExpiry: paymentConfirmationTokenExpiry.toISOString(),
       };
 
-      console.log('Sending payload to API:', payload);
 
       const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/sample-requests`, payload);
 
-      console.log('API Response:', response.data);
 
       if (response.data.success) {
         toast.success('Sample request submitted successfully!');

@@ -52,17 +52,17 @@ export function preventXss(input: string): string {
  * Sanitize object recursively to prevent XSS
  */
 export function sanitizeObject<T extends Record<string, any>>(obj: T): T {
-  const sanitized = { ...obj }
-  
+  const sanitized: Record<string, any> = { ...obj }
+
   for (const key in sanitized) {
     if (typeof sanitized[key] === 'string') {
-      sanitized[key] = sanitizeInput(sanitizeObject(sanitized[key] as any))
+      sanitized[key] = sanitizeInput(sanitized[key])
     } else if (typeof sanitized[key] === 'object' && sanitized[key] !== null) {
       sanitized[key] = sanitizeObject(sanitized[key])
     }
   }
-  
-  return sanitized
+
+  return sanitized as T
 }
 
 /**
@@ -113,13 +113,13 @@ export function filterAllowedFields<T extends Record<string, any>>(
   allowedFields: (keyof T)[]
 ): Partial<T> {
   const filtered: Partial<T> = {}
-  
+
   for (const field of allowedFields) {
-    if (field in data) {
-      filtered[field] = data[field] as T[Extract<keyof T, string>]
+    if ((field as string) in data) {
+      filtered[field] = data[field as string]
     }
   }
-  
+
   return filtered
 }
 

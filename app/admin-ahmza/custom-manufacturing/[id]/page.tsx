@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { ICustomManufacturingRequest } from "@/lib/models/CustomManufacturingRequest";
 import { toast } from "react-hot-toast";
@@ -55,9 +55,6 @@ import {
   DollarSign,
 } from "lucide-react"; // Icons
 
-interface CustomRequestDetailPageProps {
-  params: { id: string };
-}
 
 const requestStatuses = [
   "submitted",
@@ -239,11 +236,10 @@ const InvoiceForm: React.FC<{
   );
 };
 
-export default function CustomRequestDetailPage({
-  params,
-}: CustomRequestDetailPageProps) {
+export default function CustomRequestDetailPage() {
   const router = useRouter();
-  const requestId = params.id;
+  const params = useParams();
+  const requestId = params.id as string;
 
   const [request, setRequest] = useState<ICustomManufacturingRequest | null>(
     null,

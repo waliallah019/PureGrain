@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/config/db";
 import cloudinary from "@/lib/config/cloudinary";
 import { handleApiError } from "@/lib/utils/errorHandler";
+import { requireAdmin } from '@/lib/auth/session';
 
 export const dynamic = "force-dynamic";
 export const config = {
@@ -11,6 +12,8 @@ export const config = {
 };
 
 export async function POST(req: NextRequest) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
 
   try {

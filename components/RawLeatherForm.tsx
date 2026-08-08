@@ -113,7 +113,6 @@ export default function RawLeatherForm({
     const areTypesLoadedAndInitialFormNeedsUpdate = availableLeatherTypes.length > 0 && formData.leatherType === ""; // For add mode only if types load later
 
     if (isSwitchingItem || isModeChanging || (isAddMode && areTypesLoadedAndInitialFormNeedsUpdate)) {
-      console.log("RawLeatherForm: Resetting form due to prop change.");
       setFormData(getInitialFormData(rawLeather, defaultLeatherType));
       setExistingImages(rawLeather?.images || []);
       setImages([]); // Clear any newly added images when switching items or modes

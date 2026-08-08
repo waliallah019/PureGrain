@@ -11,6 +11,7 @@ interface FinishedProductFilters {
   availability?: string; // New filter
   isActive?: boolean; // New filter (will be boolean due to Zod preprocess)
   isArchived?: boolean; // NEW FILTER (will be boolean due to Zod preprocess)
+  includeArchived?: boolean; // Admin-only: return archived and live products together
   sampleAvailable?: boolean; // NEW FILTER
   isFeatured?: boolean; // NEW FILTER for featured products
 }
@@ -56,7 +57,6 @@ class FinishedProductService {
     page: number;
     limit: number;
   }> {
-    console.log("Backend: getProducts - Filters received:", filters);
     console.log(
       "Backend: getProducts - Page:",
       page,
@@ -113,12 +113,13 @@ class FinishedProductService {
         `Backend: DEBUG: isArchived filter IS a boolean. Setting query.isArchived to: ${filters.isArchived}`,
       );
       query.isArchived = filters.isArchived;
-    } else {
+    } else if (!filters.includeArchived) {
       console.log(
         "Backend: DEBUG: isArchived filter is NOT a boolean (or undefined). Applying default: { $ne: true }",
       );
       // Default behavior if isArchived filter is not explicitly set: Show non-archived products.
       // This means products where isArchived is false or undefined.
+      // includeArchived lets the admin list opt out and see everything at once.
       query.isArchived = { $ne: true };
     }
     // --- DEBUGGING isArchived END ---
@@ -138,7 +139,6 @@ class FinishedProductService {
         JSON.stringify(query),
       );
       const total = await FinishedProduct.countDocuments(query);
-      console.log("Backend: Total products found by query:", total);
 
       // Define allowed sort fields to prevent unexpected behavior or security risks
       const allowedSortFields = [
@@ -190,7 +190,6 @@ class FinishedProductService {
           sampleAvailable: p.sampleAvailable, // Added for quick debugging
         })),
       );
-      console.log("Backend: Number of products fetched:", products.length);
       return { products, total, page, limit };
     } catch (error: any) {
       logger.error(`Error getting finished products: ${error.message}`);

@@ -10,6 +10,7 @@ interface RawLeatherFilters {
   search?: string;
   isFeatured?: boolean; // New filter
   isArchived?: boolean; // New filter
+  includeArchived?: boolean; // Admin-only: return archived and live products together
   priceUnit?: string; // New filter
   discountAvailable?: boolean; // New filter
   negotiable?: boolean; // New filter
@@ -73,8 +74,9 @@ class RawLeatherService {
     }
     if (typeof filters.isArchived === "boolean") {
       query.isArchived = filters.isArchived;
-    } else {
+    } else if (!filters.includeArchived) {
       // Default behavior if isArchived filter is not explicitly set: Show non-archived products.
+      // includeArchived lets the admin list opt out and see everything at once.
       query.isArchived = { $ne: true };
     }
     if (filters.priceUnit) {

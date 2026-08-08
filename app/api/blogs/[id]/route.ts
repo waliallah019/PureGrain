@@ -4,18 +4,20 @@ import blogService from "@/lib/services/blogService";
 import { handleApiError } from "@/lib/utils/errorHandler";
 import { validateRequest } from "@/lib/middleware/validateRequest";
 import { blogIdSchema, updateBlogSchema } from "@/lib/validators/blogValidator";
+import { requireAdmin } from '@/lib/auth/session';
 
 export const dynamic = "force-dynamic";
 
 interface BlogParams {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export async function GET(req: NextRequest, { params }: BlogParams) {
   await connectDB();
 
   try {
-    const validation = await validateRequest(blogIdSchema, req, { id: params.id });
+    const { id: routeId } = await params;
+    const validation = await validateRequest(blogIdSchema, req, { id: routeId });
     if (!validation.success) {
       return validation.errorResponse;
     }
@@ -41,10 +43,13 @@ export async function GET(req: NextRequest, { params }: BlogParams) {
 }
 
 export async function PUT(req: NextRequest, { params }: BlogParams) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
 
   try {
-    const idValidation = await validateRequest(blogIdSchema, req, { id: params.id });
+    const { id: routeId } = await params;
+    const idValidation = await validateRequest(blogIdSchema, req, { id: routeId });
     if (!idValidation.success) {
       return idValidation.errorResponse;
     }
@@ -84,10 +89,13 @@ export async function PUT(req: NextRequest, { params }: BlogParams) {
 }
 
 export async function DELETE(req: NextRequest, { params }: BlogParams) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
 
   try {
-    const validation = await validateRequest(blogIdSchema, req, { id: params.id });
+    const { id: routeId } = await params;
+    const validation = await validateRequest(blogIdSchema, req, { id: routeId });
     if (!validation.success) {
       return validation.errorResponse;
     }

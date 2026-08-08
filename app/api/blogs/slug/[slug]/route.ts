@@ -8,14 +8,15 @@ import { blogSlugSchema } from "@/lib/validators/blogValidator";
 export const dynamic = "force-dynamic";
 
 interface SlugParams {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export async function GET(req: NextRequest, { params }: SlugParams) {
   await connectDB();
 
   try {
-    const validation = await validateRequest(blogSlugSchema, req, { slug: params.slug });
+    const { slug: routeSlug } = await params;
+    const validation = await validateRequest(blogSlugSchema, req, { slug: routeSlug });
     if (!validation.success) {
       return validation.errorResponse;
     }

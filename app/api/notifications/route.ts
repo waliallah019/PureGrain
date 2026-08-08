@@ -8,10 +8,13 @@ import { handleApiError } from "@/lib/utils/errorHandler";
 import { notificationQuerySchema } from "@/lib/validators/notificationValidator"; // Use this directly
 import logger from "@/lib/config/logger";
 import { ZodError } from "zod"; // Import ZodError for explicit error handling
+import { requireAdmin } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
     const rawQueryParams = Object.fromEntries(req.nextUrl.searchParams.entries());
@@ -91,6 +94,8 @@ export async function GET(req: NextRequest) {
 
 // PATCH to mark all notifications as read (NO CHANGE)
 export async function PATCH(req: NextRequest) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
     await notificationService.markAllAsRead();
