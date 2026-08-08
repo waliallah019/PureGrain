@@ -10,6 +10,7 @@ import {
   deleteRawLeatherTypeSchema,
 } from "@/lib/validators/rawLeatherTypeValidator";
 import logger from "@/lib/config/logger";
+import { requireAdmin } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
 
@@ -48,6 +49,8 @@ export async function GET(req: NextRequest, { params }: RawLeatherTypeRouteParam
 
 // PUT/PATCH update a raw leather type by ID
 export async function PUT(req: NextRequest, { params }: RawLeatherTypeRouteParams) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   const rawLeatherTypeId = params.id;
   await connectDB();
   try {
@@ -81,6 +84,8 @@ export async function PUT(req: NextRequest, { params }: RawLeatherTypeRouteParam
 
 // DELETE a raw leather type by ID
 export async function DELETE(req: NextRequest, { params }: RawLeatherTypeRouteParams) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   const rawLeatherTypeId = params.id;
   await connectDB();
   try {

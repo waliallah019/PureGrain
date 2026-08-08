@@ -1,88 +1,71 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect, useRef, type ReactNode } from "react"
+import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
 
 interface User {
   email: string
   role: string
 }
 
-interface StoredSession extends User {
-  expiresAt: number
-}
-
 interface AuthContextType {
   user: User | null
   login: (email: string, password: string) => Promise<boolean>
-  logout: () => void
+  logout: () => Promise<void>
   isLoading: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-const STORAGE_KEY = "admin-user"
-// Admin sessions expire 24h after login rather than persisting in
-// localStorage indefinitely. Re-checked periodically so a tab left open
-// past expiry is logged out without needing a reload.
-const SESSION_DURATION_MS = 24 * 60 * 60 * 1000
-const SESSION_CHECK_INTERVAL_MS = 60 * 1000
-
-function readStoredSession(): User | null {
-  let raw: string | null
-  try {
-    raw = localStorage.getItem(STORAGE_KEY)
-  } catch {
-    // localStorage unavailable (privacy mode, etc.) — treat as logged out.
-    return null
-  }
-  if (!raw) return null
-
-  let parsed: StoredSession
-  try {
-    parsed = JSON.parse(raw)
-  } catch {
-    // Corrupted entry — clear it so we don't keep re-parsing garbage forever.
-    localStorage.removeItem(STORAGE_KEY)
-    return null
-  }
-
-  if (!parsed?.expiresAt || Date.now() > parsed.expiresAt) {
-    localStorage.removeItem(STORAGE_KEY)
-    return null
-  }
-
-  return { email: parsed.email, role: parsed.role }
-}
+// How often to re-check the server session so a tab left open past the cookie's
+// expiry reflects the logout without needing a manual reload.
+const SESSION_CHECK_INTERVAL_MS = 5 * 60 * 1000
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const userRef = useRef<User | null>(null)
-  userRef.current = user
 
+  // Hydrate auth state from the httpOnly session cookie via the server. The
+  // cookie itself is not readable by JS (httpOnly), so /api/auth/me is the
+  // source of truth — there is no client-side credential check anymore.
   useEffect(() => {
-    setUser(readStoredSession())
-    setIsLoading(false)
+    let cancelled = false
 
-    // Periodically re-validate so an expired session in an already-open tab
-    // gets cleared instead of lingering until the next reload/navigation.
-    const interval = setInterval(() => {
-      if (userRef.current && !readStoredSession()) {
-        setUser(null)
+    const refresh = async () => {
+      try {
+        const res = await fetch("/api/auth/me", { cache: "no-store" })
+        if (cancelled) return
+        if (res.ok) {
+          const data = await res.json()
+          setUser(data?.authenticated ? data.user : null)
+        } else {
+          setUser(null)
+        }
+      } catch {
+        if (!cancelled) setUser(null)
+      } finally {
+        if (!cancelled) setIsLoading(false)
       }
-    }, SESSION_CHECK_INTERVAL_MS)
+    }
 
-    return () => clearInterval(interval)
+    refresh()
+    const interval = setInterval(refresh, SESSION_CHECK_INTERVAL_MS)
+    return () => {
+      cancelled = true
+      clearInterval(interval)
+    }
   }, [])
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      // For demo purposes, hardcode the credentials
-      if (email === "ahamz48" && password === "JaguarX8") {
-        const user = { email, role: "admin" }
-        setUser(user)
-        const session: StoredSession = { ...user, expiresAt: Date.now() + SESSION_DURATION_MS }
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(session))
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      })
+      if (!res.ok) return false
+      const data = await res.json()
+      if (data?.success && data.user) {
+        setUser(data.user)
         return true
       }
       return false
@@ -92,9 +75,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" })
+    } catch {
+      /* clear local state regardless */
+    }
     setUser(null)
-    localStorage.removeItem(STORAGE_KEY)
   }
 
   return <AuthContext.Provider value={{ user, login, logout, isLoading }}>{children}</AuthContext.Provider>

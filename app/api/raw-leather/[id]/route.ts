@@ -9,6 +9,7 @@ import {
 import { validateRequest } from "@/lib/middleware/validateRequest";
 import logger from "@/lib/config/logger";
 import cloudinary from "@/lib/config/cloudinary";
+import { requireAdmin } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
 export const config = {
@@ -57,6 +58,8 @@ export async function GET(req: NextRequest, { params }: RawLeatherParams) {
 
 // PUT update a raw leather entry by ID
 export async function PUT(req: NextRequest, { params }: RawLeatherParams) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   // Use a local variable for params.id to satisfy Next.js's static analysis
   const rawLeatherId = params.id;
   await connectDB();
@@ -180,6 +183,8 @@ export async function PUT(req: NextRequest, { params }: RawLeatherParams) {
 
 // DELETE a raw leather entry by ID
 export async function DELETE(req: NextRequest, { params }: RawLeatherParams) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   // Use a local variable for params.id to satisfy Next.js's static analysis
   const rawLeatherId = params.id;
   await connectDB();

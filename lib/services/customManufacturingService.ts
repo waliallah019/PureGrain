@@ -50,8 +50,8 @@ class CustomManufacturingService {
         title: `New Custom Request: ${newRequest.companyName}`,
         message: `Custom request from ${newRequest.contactPerson} (${newRequest.email}) was submitted. Ref: ${newRequest.requestNumber}`,
         type: 'new_custom_request',
-        link: `/admin-ahmza/custom-manufacturing/${newRequest._id.toString()}`,
-        relatedId: mongoose.Types.ObjectId.isValid(newRequest._id) ? new mongoose.Types.ObjectId(newRequest._id as string) : undefined,
+        link: `/admin-ahmza/custom-manufacturing/${String(newRequest._id)}`,
+        relatedId: mongoose.Types.ObjectId.isValid(newRequest._id as any) ? new mongoose.Types.ObjectId(String(newRequest._id)) : undefined,
       });
 
       const adminEmail = process.env.ADMIN_EMAIL;
@@ -220,8 +220,8 @@ class CustomManufacturingService {
           title: `Custom Request Status Update: ${request.requestNumber}`,
           message: `Custom request from ${request.contactPerson} changed from ${originalStatus} to ${request.status}.`,
           type: 'custom_request_status_update',
-          link: `/admin-ahmza/custom-manufacturing/${request._id.toString()}`,
-          relatedId: mongoose.Types.ObjectId.isValid(request._id) ? new mongoose.Types.ObjectId(request._id as string) : undefined,
+          link: `/admin-ahmza/custom-manufacturing/${String(request._id)}`,
+          relatedId: mongoose.Types.ObjectId.isValid(request._id as any) ? new mongoose.Types.ObjectId(String(request._id)) : undefined,
         });
 
         const customerStatusLabel = this.formatStatus(request.status);
@@ -229,7 +229,7 @@ class CustomManufacturingService {
         let text = `Dear ${request.contactPerson},\n\nYour custom request (Ref: ${request.requestNumber}) status has been updated to ${customerStatusLabel}.\n\nBest regards,\nPureGrain Team`;
         let html = `<p>Dear ${request.contactPerson},</p><p>Your custom request (Ref: <strong>${request.requestNumber}</strong>) status has been updated to <strong>${customerStatusLabel}</strong>.</p><p>Best regards,<br/>PureGrain Team</p>`;
 
-        switch (request.status) {
+        switch (request.status as string) {
           case 'submitted':
             subject = `PureGrain: Your Custom Request Has Been Submitted (Ref: ${request.requestNumber})`;
             text = `Dear ${request.contactPerson},\n\nThank you for submitting your custom request. It is now in our queue for review.\n\nReference Number: ${request.requestNumber}\n\nBest regards,\nPureGrain Team`;

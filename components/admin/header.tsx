@@ -39,7 +39,6 @@ export function AdminHeader({ onMenuToggle }: AdminHeaderProps) {
   const [notificationsLoading, setNotificationsLoading] = useState(false)
 
   const fetchNotificationsData = useCallback(async () => {
-    console.log("FETCH NOTIFICATIONS: Starting data fetch...");
     setNotificationsLoading(true);
     try {
       // Get count of unread notifications
@@ -52,8 +51,6 @@ export function AdminHeader({ onMenuToggle }: AdminHeaderProps) {
       
       if (countResponse.data.success) {
         unreadCount = countResponse.data.pagination.totalProducts;
-        console.log("FETCH NOTIFICATIONS: Unread count response:", unreadCount);
-        console.log("FETCH NOTIFICATIONS: Full count response:", countResponse.data);
         
         // Only fetch recent unread notifications if there are any unread notifications
         if (unreadCount > 0) {
@@ -63,13 +60,10 @@ export function AdminHeader({ onMenuToggle }: AdminHeaderProps) {
           
           if (recentResponse.data.success) {
             recentUnreadNotifications = recentResponse.data.data;
-            console.log("FETCH NOTIFICATIONS: Recent unread notifications data:", recentUnreadNotifications);
-            console.log("FETCH NOTIFICATIONS: Full recent response:", recentResponse.data);
           } else {
             console.error("FETCH NOTIFICATIONS: Failed to get recent unread notifications.", recentResponse.data);
           }
         } else {
-          console.log("FETCH NOTIFICATIONS: No unread notifications found.");
         }
       } else {
         console.error("FETCH NOTIFICATIONS: Failed to get unread count.", countResponse.data);
@@ -87,19 +81,16 @@ export function AdminHeader({ onMenuToggle }: AdminHeaderProps) {
       setRecentNotifications([]);
     } finally {
       setNotificationsLoading(false);
-      console.log("FETCH NOTIFICATIONS: Data fetch finished.");
     }
   }, []);
 
   const markNotificationAsRead = useCallback(async (id: string, redirectLink?: string) => {
-    console.log(`MARK ONE: Marking notification ${id} as read...`);
     try {
       const response = await axios.patch(
         `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/notifications/${id}`,
         { read: true }
       );
       if (response.data.success) {
-        console.log(`MARK ONE: Notification ${id} marked as read successfully on server.`);
         
         // Optimistically update local state
         setUnreadNotificationCount(prev => Math.max(0, prev - 1));
@@ -123,7 +114,6 @@ export function AdminHeader({ onMenuToggle }: AdminHeaderProps) {
   }, [router, fetchNotificationsData]);
 
   const markAllNotificationsAsRead = useCallback(async () => {
-    console.log("MARK ALL: Initiating mark all as read action...");
     try {
       setNotificationsLoading(true);
       const response = await axios.patch(
@@ -131,7 +121,6 @@ export function AdminHeader({ onMenuToggle }: AdminHeaderProps) {
       );
       
       if (response.data.success) {
-        console.log("MARK ALL: Server confirmed all notifications marked as read.");
         toast.success(response.data.message);
         
         // Immediately update local state to reflect "all read" status
@@ -152,29 +141,23 @@ export function AdminHeader({ onMenuToggle }: AdminHeaderProps) {
       await fetchNotificationsData();
     } finally {
       setNotificationsLoading(false);
-      console.log("MARK ALL: Action finished.");
     }
   }, [fetchNotificationsData]);
 
   useEffect(() => {
-    console.log("USE_EFFECT: Component mounted/dependencies changed. Initial fetch or interval setup.");
     fetchNotificationsData(); // Initial fetch on mount
 
     const interval = setInterval(() => {
-      console.log("USE_EFFECT: Polling for notifications...");
       fetchNotificationsData();
     }, 60000); // Poll every 60 seconds
 
     return () => {
-      console.log("USE_EFFECT: Cleaning up interval.");
       clearInterval(interval);
     }
   }, [fetchNotificationsData]);
 
   // Add a useEffect to log state changes, useful for debugging
   useEffect(() => {
-    console.log("STATE UPDATE: Current unreadNotificationCount:", unreadNotificationCount);
-    console.log("STATE UPDATE: Current recentNotifications.length:", recentNotifications.length);
   }, [unreadNotificationCount, recentNotifications]);
 
   const handleSearch = (e: React.FormEvent) => {

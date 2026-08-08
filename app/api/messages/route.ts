@@ -6,10 +6,13 @@ import { handleApiError } from "@/lib/utils/errorHandler";
 import { validateRequest } from "@/lib/middleware/validateRequest";
 import { getAdminListFilterSchema } from "@/lib/validators/contactValidator"; // Re-use general filter schema
 import logger from "@/lib/config/logger";
+import { requireAdmin } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
     const query = Object.fromEntries(req.nextUrl.searchParams.entries());

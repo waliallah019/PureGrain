@@ -6,12 +6,15 @@ import { handleApiError } from "@/lib/utils/errorHandler";
 import { removeImagesSchema } from "@/lib/validators/finishedProductValidator";
 import { validateRequest } from "@/lib/middleware/validateRequest";
 import logger from "@/lib/config/logger";
+import { requireAdmin } from '@/lib/auth/session';
 
 interface ProductParams {
   params: { id: string };
 }
 
 export async function PATCH(req: NextRequest, { params }: ProductParams) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
     const requestBody = await req.json(); // Expecting JSON body for image URLs

@@ -11,11 +11,14 @@ import {
 } from "@/lib/validators/sampleRequestValidator";
 import logger from "@/lib/config/logger";
 import { z, ZodError } from "zod";
+import { requireAdmin } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
 
 // GET a single sample request by ID
 export async function GET(req: NextRequest, context: { params: { id: string } }) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
   const { id } = context.params;
   logger.info(`[GET] /api/sample-requests/${id} - Request received.`);
@@ -49,6 +52,8 @@ export async function GET(req: NextRequest, context: { params: { id: string } })
 
 // PATCH to update sample request status or add tracking link (Admin action)
 export async function PATCH(req: NextRequest, context: { params: { id: string } }) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
   const { id } = context.params;
   logger.info(`[PATCH] /api/sample-requests/${id} - Request received.`);
@@ -132,6 +137,8 @@ export async function PATCH(req: NextRequest, context: { params: { id: string } 
 
 // DELETE a sample request
 export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
   const { id } = context.params;
   logger.info(`[DELETE] /api/sample-requests/${id} - Request received.`);

@@ -7,11 +7,14 @@ import { validateRequest } from "@/lib/middleware/validateRequest";
 import { updateMessageStatusSchema, deleteMessageSchema } from "@/lib/validators/contactValidator"; // No longer need idParamSchema if ID is in body
 import logger from "@/lib/config/logger";
 import { sendEmail } from "@/lib/utils/sendEmail";
+import { requireAdmin } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
 
 // GET message by ID (This one is tricky with your validateRequest)
 export async function GET(req: NextRequest, context: { params: Promise<{ id: string }> | { id: string } }) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
     const resolvedParams = await context.params;
@@ -39,6 +42,8 @@ export async function GET(req: NextRequest, context: { params: Promise<{ id: str
 
 // PATCH message status (and potentially send reply)
 export async function PATCH(req: NextRequest, context: { params: Promise<{ id: string }> | { id: string } }) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
     const resolvedParams = await context.params;
@@ -56,8 +61,6 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
     // validated.data.body will now contain { id, status, replyText }
     const { id, status, replyText } = validation.data.body;
 
-    console.log("Validated status:", status, "Reply text:", replyText);
-    console.log("Validated ID from merged body:", id);
 
     const updatedMessage = await messageService.updateMessageStatus(id, status); // Use the validated ID
 
@@ -86,6 +89,8 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
 
 // DELETE message
 export async function DELETE(req: NextRequest, context: { params: Promise<{ id: string }> | { id: string } }) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
     const resolvedParams = await context.params;

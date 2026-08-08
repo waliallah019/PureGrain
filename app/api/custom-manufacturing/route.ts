@@ -10,6 +10,7 @@ import {
 import { validateRequest } from "@/lib/middleware/validateRequest";
 import logger from "@/lib/config/logger";
 import cloudinary from "@/lib/config/cloudinary"; // For file uploads
+import { requireAdmin } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
 export const config = {
@@ -20,6 +21,8 @@ export const config = {
 
 // GET all custom manufacturing requests (for admin side)
 export async function GET(req: NextRequest) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
     const query = Object.fromEntries(req.nextUrl.searchParams.entries());

@@ -4,6 +4,7 @@ import blogService from "@/lib/services/blogService";
 import { handleApiError } from "@/lib/utils/errorHandler";
 import { validateRequest } from "@/lib/middleware/validateRequest";
 import { blogFiltersSchema, createBlogSchema } from "@/lib/validators/blogValidator";
+import { requireAdmin } from '@/lib/auth/session';
 
 export const dynamic = "force-dynamic";
 
@@ -49,6 +50,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
 
   try {

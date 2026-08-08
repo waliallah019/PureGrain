@@ -7,6 +7,7 @@ import { validateRequest } from "@/lib/middleware/validateRequest"; // Your unch
 import { notificationUpdateBodySchema, notificationIdParamSchema } from "@/lib/validators/notificationValidator";
 import logger from "@/lib/config/logger";
 import { z } from "zod"; // Import Zod for manual validation
+import { requireAdmin } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,6 +15,8 @@ export const dynamic = 'force-dynamic';
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) { // Destructure params
   await connectDB();
   try {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
     const { id } = params;
 
     // 1. Manually validate the ID first (due to validateRequest's internal param derivation limitations)
@@ -66,6 +69,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) { // Destructure params
   await connectDB();
   try {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
     const { id } = params;
 
     // 1. Manually validate the ID (completely bypass validateRequest here for params)

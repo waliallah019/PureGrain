@@ -6,6 +6,7 @@ import { handleApiError } from "@/lib/utils/errorHandler";
 import { removeRawLeatherImagesSchema } from "@/lib/validators/rawLeatherValidator";
 import { validateRequest } from "@/lib/middleware/validateRequest";
 import logger from "@/lib/config/logger";
+import { requireAdmin } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,6 +15,8 @@ interface RawLeatherParams {
 }
 
 export async function PATCH(req: NextRequest, { params }: RawLeatherParams) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
     const requestBody = await req.json(); // Expecting JSON body for image URLs

@@ -180,6 +180,11 @@ export default function RawLeatherList({
       }
       if (filterIsArchived !== "") {
         queryParams.append("isArchived", filterIsArchived);
+      } else {
+        // "All" must mean archived + live. Without this the API falls back to
+        // hiding archived rows, so archived products were unreachable from the
+        // admin panel and could never be un-archived.
+        queryParams.append("includeArchived", "true");
       }
       if (filterPriceUnit) {
         queryParams.append("priceUnit", filterPriceUnit);
@@ -462,6 +467,12 @@ export default function RawLeatherList({
               placeholder="Search leather hides..."
               value={tempSearchTerm}
               onChange={(e) => handleTempFilterChange("search", e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleApplyFilters();
+                }
+              }}
               className="pl-9 pr-4 w-full"
             />
           </div>

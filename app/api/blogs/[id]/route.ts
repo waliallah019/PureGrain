@@ -4,6 +4,7 @@ import blogService from "@/lib/services/blogService";
 import { handleApiError } from "@/lib/utils/errorHandler";
 import { validateRequest } from "@/lib/middleware/validateRequest";
 import { blogIdSchema, updateBlogSchema } from "@/lib/validators/blogValidator";
+import { requireAdmin } from '@/lib/auth/session';
 
 export const dynamic = "force-dynamic";
 
@@ -41,6 +42,8 @@ export async function GET(req: NextRequest, { params }: BlogParams) {
 }
 
 export async function PUT(req: NextRequest, { params }: BlogParams) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
 
   try {
@@ -84,6 +87,8 @@ export async function PUT(req: NextRequest, { params }: BlogParams) {
 }
 
 export async function DELETE(req: NextRequest, { params }: BlogParams) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
 
   try {

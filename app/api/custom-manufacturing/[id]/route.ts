@@ -6,6 +6,7 @@ import customManufacturingService from '@/lib/services/customManufacturingServic
 import { updateCustomManufacturingRequestSchema } from '@/lib/validators/customManufacturingValidator';
 import { handleApiError } from '@/lib/utils/errorHandler';
 import logger from '@/lib/config/logger';
+import { requireAdmin } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,6 +28,8 @@ export async function GET(
   req: Request,
   { params }: { params: { id: string } }
 ) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
     const idValidation = idParamSchema.safeParse(params?.id);
@@ -63,6 +66,8 @@ export async function PUT(
   req: Request,
   { params }: { params: { id: string } }
 ) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
     const idValidation = idParamSchema.safeParse(params?.id);
@@ -124,6 +129,8 @@ export async function DELETE(
   req: Request,
   { params }: { params: { id: string } }
 ) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
     const idValidation = idParamSchema.safeParse(params?.id);

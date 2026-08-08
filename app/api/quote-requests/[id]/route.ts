@@ -6,10 +6,13 @@ import logger from '@/lib/config/logger';
 import { z } from 'zod';
 import { updateQuoteRequestRequestBodySchema } from '@/lib/validators/quoteValidator';
 import { IQuoteRequest } from '@/types/quote';
+import { requireAdmin } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
     // Await params as required by Next.js 15+
@@ -55,6 +58,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
     // 1. Await params as required by Next.js 15+

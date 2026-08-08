@@ -106,13 +106,11 @@ export default function SamplesPage() {
       }
 
       const apiUrl = `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/sample-requests?${queryParams.toString()}`;
-      console.log("[FE-List] Fetching sample requests from API:", apiUrl);
       const response = await axios.get(apiUrl);
 
       if (response.data.success) {
         setSampleRequests(response.data.data as ISampleRequest[]);
         setTotalRequestsCount(response.data.pagination.totalProducts);
-        console.log("[FE-List] Sample requests fetched successfully.");
       } else {
         throw new Error(response.data.message || "Failed to fetch sample requests.");
       }
@@ -202,13 +200,11 @@ export default function SamplesPage() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    console.log("[FE-List] Changing page to:", page);
   };
 
   const handleItemsPerPageChange = (value: string) => {
     setItemsPerPage(Number(value));
     setCurrentPage(1);
-    console.log("[FE-List] Changing items per page to:", value);
   };
 
   const handleSort = (column: SortKey) => {
@@ -219,7 +215,6 @@ export default function SamplesPage() {
       setSortOrder("desc");
     }
     setCurrentPage(1);
-    console.log(`[FE-List] Sorting by ${column}, order ${sortOrder}.`);
   };
 
   const renderSortIcon = (column: SortKey) => {

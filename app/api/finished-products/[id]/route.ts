@@ -11,6 +11,7 @@ import { validateRequest } from "@/lib/middleware/validateRequest";
 import logger from "@/lib/config/logger";
 import { parseFormData } from "@/lib/utils/parseFormData";
 import cloudinary from "@/lib/config/cloudinary";
+import { requireAdmin } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
 export const config = {
@@ -54,6 +55,8 @@ export async function GET(req: NextRequest, { params }: ProductParams) {
 
 // PUT update a finished product by ID
 export async function PUT(req: NextRequest, { params }: ProductParams) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
     const { id } = params;
@@ -130,6 +133,8 @@ export async function PUT(req: NextRequest, { params }: ProductParams) {
 
 // DELETE a finished product by ID
 export async function DELETE(req: NextRequest, { params }: ProductParams) {
+  const __admin = await requireAdmin(req);
+  if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
     const validation = await validateRequest(getFinishedProductByIdSchema, req, params);

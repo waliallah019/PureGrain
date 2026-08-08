@@ -153,6 +153,19 @@ export const getFinishedProductsFilterSchema = z.object({
       },
       z.boolean().optional(),
     ),
+    // Admin-only escape hatch. Without an explicit isArchived value the service
+    // hides archived rows, so the admin list's "All" option could never show
+    // them. Sending includeArchived=true drops the archived filter entirely so
+    // archived and live products come back together. The public storefront
+    // never sends it, so its behaviour is unchanged.
+    includeArchived: z.preprocess(
+      (val) => {
+        if (val === "true") return true;
+        if (val === "false") return false;
+        return undefined;
+      },
+      z.boolean().optional(),
+    ),
     isFeatured: z.preprocess(
       (val) => {
         if (val === "true") return true;

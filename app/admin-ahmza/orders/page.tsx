@@ -47,8 +47,20 @@ export default function OrdersPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Orders</h1>
-        <p className="text-muted-foreground">Manage customer orders and fulfillment</p>
+        <h1 className="text-3xl font-bold">Orders (Legacy / Demo)</h1>
+        <p className="text-muted-foreground">Legacy placeholder screen — not connected to live data</p>
+      </div>
+
+      <div
+        role="alert"
+        className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-200"
+      >
+        <strong className="font-semibold">Demo data — not live.</strong> This
+        screen shows sample placeholder orders and is not connected to the
+        database. Real order-equivalent data lives in the{" "}
+        <span className="font-medium">Quotes</span>,{" "}
+        <span className="font-medium">Sample Requests</span>, and{" "}
+        <span className="font-medium">Custom Requests</span> sections.
       </div>
 
       <Card>

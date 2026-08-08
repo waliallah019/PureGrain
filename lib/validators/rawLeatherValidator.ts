@@ -109,6 +109,12 @@ export const getRawLeatherFilterSchema = z.object({
     order: z.enum(['asc', 'desc']).optional(),
     isFeatured: booleanStringCoercer.optional(),
     isArchived: booleanStringCoercer.optional(),
+    // Admin-only escape hatch. Without an explicit isArchived value the service
+    // hides archived rows, which means the admin list's "All" option could never
+    // show them. Sending includeArchived=true drops the archived filter entirely
+    // so both archived and live products come back. The public catalog never
+    // sends it, so its behaviour is unchanged.
+    includeArchived: booleanStringCoercer.optional(),
     priceUnit: z.string().optional(),
     discountAvailable: booleanStringCoercer.optional(),
     negotiable: booleanStringCoercer.optional(),
