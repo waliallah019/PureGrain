@@ -14,15 +14,16 @@ import { requireAdmin } from '@/lib/auth/session';
 export const dynamic = 'force-dynamic';
 
 interface ProductTypeRouteParams {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 // GET a single product type by ID
 export async function GET(req: NextRequest, { params }: ProductTypeRouteParams) {
   await connectDB();
   try {
+    const resolvedParams = await params;
     // FIX: Pass params within the parsedBody object as the third argument
-    const validation = await validateRequest(getProductTypeByIdSchema, req, { params });
+    const validation = await validateRequest(getProductTypeByIdSchema, req, { params: resolvedParams });
     if (!validation.success) {
       return validation.errorResponse;
     }
@@ -52,9 +53,10 @@ export async function PUT(req: NextRequest, { params }: ProductTypeRouteParams) 
   if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
+    const resolvedParams = await params;
     const body = await req.json();
     // FIX: Pass params within the parsedBody object, merging with the actual body
-    const validation = await validateRequest(updateProductTypeSchema, req, { body, params });
+    const validation = await validateRequest(updateProductTypeSchema, req, { body, params: resolvedParams });
 
     if (!validation.success) {
       return validation.errorResponse;
@@ -87,8 +89,9 @@ export async function DELETE(req: NextRequest, { params }: ProductTypeRouteParam
   if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
+    const resolvedParams = await params;
     // FIX: Pass params within the parsedBody object
-    const validation = await validateRequest(deleteProductTypeSchema, req, { params });
+    const validation = await validateRequest(deleteProductTypeSchema, req, { params: resolvedParams });
     if (!validation.success) {
       return validation.errorResponse;
     }

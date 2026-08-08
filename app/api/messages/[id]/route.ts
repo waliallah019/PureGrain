@@ -12,7 +12,7 @@ import { requireAdmin } from '@/lib/auth/session';
 export const dynamic = 'force-dynamic';
 
 // GET message by ID (This one is tricky with your validateRequest)
-export async function GET(req: NextRequest, context: { params: Promise<{ id: string }> | { id: string } }) {
+export async function GET(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   const __admin = await requireAdmin(req);
   if (!__admin.ok) return __admin.response;
   await connectDB();
@@ -41,7 +41,7 @@ export async function GET(req: NextRequest, context: { params: Promise<{ id: str
 }
 
 // PATCH message status (and potentially send reply)
-export async function PATCH(req: NextRequest, context: { params: Promise<{ id: string }> | { id: string } }) {
+export async function PATCH(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   const __admin = await requireAdmin(req);
   if (!__admin.ok) return __admin.response;
   await connectDB();
@@ -88,7 +88,7 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
 }
 
 // DELETE message
-export async function DELETE(req: NextRequest, context: { params: Promise<{ id: string }> | { id: string } }) {
+export async function DELETE(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   const __admin = await requireAdmin(req);
   if (!__admin.ok) return __admin.response;
   await connectDB();

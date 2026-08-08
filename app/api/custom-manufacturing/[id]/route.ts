@@ -26,13 +26,14 @@ const updateBodySchema = updateCustomManufacturingRequestSchema.shape.body
 // GET handler for fetching a single request by ID
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const __admin = await requireAdmin(req);
   if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
-    const idValidation = idParamSchema.safeParse(params?.id);
+    const resolvedParams = await params;
+    const idValidation = idParamSchema.safeParse(resolvedParams?.id);
     if (!idValidation.success) {
       return NextResponse.json(
         {
@@ -64,13 +65,14 @@ export async function GET(
 // PUT handler for updating a request by ID (e.g., status update)
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const __admin = await requireAdmin(req);
   if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
-    const idValidation = idParamSchema.safeParse(params?.id);
+    const resolvedParams = await params;
+    const idValidation = idParamSchema.safeParse(resolvedParams?.id);
     if (!idValidation.success) {
       return NextResponse.json(
         {
@@ -127,13 +129,14 @@ export async function PUT(
 // DELETE handler for deleting a request by ID
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const __admin = await requireAdmin(req);
   if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
-    const idValidation = idParamSchema.safeParse(params?.id);
+    const resolvedParams = await params;
+    const idValidation = idParamSchema.safeParse(resolvedParams?.id);
     if (!idValidation.success) {
       return NextResponse.json(
         {

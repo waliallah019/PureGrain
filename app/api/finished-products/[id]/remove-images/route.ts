@@ -9,7 +9,7 @@ import logger from "@/lib/config/logger";
 import { requireAdmin } from '@/lib/auth/session';
 
 interface ProductParams {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export async function PATCH(req: NextRequest, { params }: ProductParams) {
@@ -17,8 +17,9 @@ export async function PATCH(req: NextRequest, { params }: ProductParams) {
   if (!__admin.ok) return __admin.response;
   await connectDB();
   try {
+    const { id: routeId } = await params;
     const requestBody = await req.json(); // Expecting JSON body for image URLs
-    const validation = await validateRequest(removeImagesSchema, req, { ...requestBody, id: params.id }); // Pass ID to the validation body
+    const validation = await validateRequest(removeImagesSchema, req, { ...requestBody, id: routeId }); // Pass ID to the validation body
 
     if (!validation.success) {
       return validation.errorResponse;

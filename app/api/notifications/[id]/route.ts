@@ -12,12 +12,12 @@ import { requireAdmin } from '@/lib/auth/session';
 export const dynamic = 'force-dynamic';
 
 // PATCH notification status (e.g., mark as read/unread)
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) { // Destructure params
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) { // Destructure params
   await connectDB();
   try {
   const __admin = await requireAdmin(req);
   if (!__admin.ok) return __admin.response;
-    const { id } = params;
+    const { id } = await params;
 
     // 1. Manually validate the ID first (due to validateRequest's internal param derivation limitations)
     const idValidationResult = notificationIdParamSchema.safeParse({ id }); // Validate as object { id: '...' }
@@ -66,12 +66,12 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 }
 
 // DELETE notification
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) { // Destructure params
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) { // Destructure params
   await connectDB();
   try {
   const __admin = await requireAdmin(req);
   if (!__admin.ok) return __admin.response;
-    const { id } = params;
+    const { id } = await params;
 
     // 1. Manually validate the ID (completely bypass validateRequest here for params)
     const idValidationResult = notificationIdParamSchema.safeParse({ id }); // Validate as object { id: '...' }

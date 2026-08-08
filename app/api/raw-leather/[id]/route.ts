@@ -19,13 +19,13 @@ export const config = {
 };
 
 interface RawLeatherParams {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 // GET single raw leather entry by ID
 export async function GET(req: NextRequest, { params }: RawLeatherParams) {
   // Use a local variable for params.id to satisfy Next.js's static analysis
-  const rawLeatherId = params.id;
+  const rawLeatherId = (await params).id;
   await connectDB();
   try {
     // --- WORKAROUND START: Manually merge ID into parsedBody ---
@@ -61,7 +61,7 @@ export async function PUT(req: NextRequest, { params }: RawLeatherParams) {
   const __admin = await requireAdmin(req);
   if (!__admin.ok) return __admin.response;
   // Use a local variable for params.id to satisfy Next.js's static analysis
-  const rawLeatherId = params.id;
+  const rawLeatherId = (await params).id;
   await connectDB();
   try {
     const formData = await req.formData();
@@ -186,7 +186,7 @@ export async function DELETE(req: NextRequest, { params }: RawLeatherParams) {
   const __admin = await requireAdmin(req);
   if (!__admin.ok) return __admin.response;
   // Use a local variable for params.id to satisfy Next.js's static analysis
-  const rawLeatherId = params.id;
+  const rawLeatherId = (await params).id;
   await connectDB();
   try {
     // --- WORKAROUND START: Manually merge ID into parsedBody ---
@@ -196,7 +196,7 @@ export async function DELETE(req: NextRequest, { params }: RawLeatherParams) {
       return validation.errorResponse;
     }
     // Access id from validated body, as schema expects it there
-    const { id } = validation.data.body; 
+    const { id } = validation.data.body;
 
     const isDeleted = await rawLeatherService.deleteRawLeather(id);
 
