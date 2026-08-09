@@ -281,12 +281,16 @@ export function Header() {
         </div>
       </div>
 
+      {/* Marquee is a dark strip in both themes. `primary` flips to gold in
+          dark and `bone` flips to a dark surface, so the gradient mid-stop and
+          the text are pinned to tokens that stay dark/light respectively:
+          leather-foreground is near-white in both themes. */}
       {showMarquee && (
-        <div className="border-t border-brass/40 bg-gradient-to-r from-leather via-primary to-leather shadow-[0_6px_24px_rgba(0,0,0,0.25)]">
+        <div className="border-t border-brass/40 bg-gradient-to-r from-leather via-primary to-leather dark:via-background shadow-[0_6px_24px_rgba(0,0,0,0.25)]">
           <div className="overflow-hidden py-1.5">
             <div className="marquee-track">
               {[0, 1].map((repeatIndex) => (
-                <div key={repeatIndex} className="flex items-center gap-6 px-6 whitespace-nowrap text-xs sm:text-sm uppercase tracking-[0.14em] font-semibold text-bone">
+                <div key={repeatIndex} className="flex items-center gap-6 px-6 whitespace-nowrap text-xs sm:text-sm uppercase tracking-[0.14em] font-semibold text-leather-foreground">
                   <span className="font-extrabold">Free Samples Available</span>
                   <span className="text-brass text-sm">●</span>
                   <span>Premium Leather for Global Buyers</span>

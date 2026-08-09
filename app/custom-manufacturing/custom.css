@@ -65,7 +65,7 @@
 
 /* TEXTURES */
 .cmPage .leather-texture {
-    background-color: var(--bg-primary);
+    background-color: var(--text-on-light);
     background-image:
         repeating-linear-gradient(45deg, rgba(255,240,220,0.018) 0 2px, transparent 2px 6px),
         repeating-linear-gradient(-45deg, rgba(0,0,0,0.04) 0 1px, transparent 1px 4px),
@@ -257,7 +257,7 @@
     line-height: 1.55;
 }
 .cmPage .feature-list i { color: var(--accent-gold); margin-top: 6px; flex-shrink: 0; font-size: 0.85rem; }
-.cmPage .feature-list strong { color: var(--bg-primary); font-weight: 600; }
+.cmPage .feature-list strong { color: var(--text-on-light); font-weight: 600; }
 
 .cmPage .pull-note {
     background: var(--bg-cream);
@@ -349,7 +349,7 @@
 .cmPage .how-card__body h3 {
     font-size: 1.25rem;
     margin-bottom: 8px;
-    color: var(--bg-primary);
+    color: var(--text-on-light);
 }
 .cmPage .how-card__body p {
     color: var(--text-on-light-mute);
@@ -525,7 +525,7 @@
     border: 3px solid var(--bg-cream);
     z-index: 2;
 }
-.cmPage .process-step h3 { margin: 6px 0 8px; color: var(--bg-primary); }
+.cmPage .process-step h3 { margin: 6px 0 8px; color: var(--text-on-light); }
 .cmPage .process-step p { color: var(--text-on-light-mute); margin: 0; }
 @media (max-width: 600px) {
     .cmPage .process::before { left: 21px; }
@@ -721,7 +721,7 @@
     display: inline-block;
     width: 16px; height: 16px;
     border: 2px solid rgba(255,255,255,0.4);
-    border-top-color: var(--bg-primary);
+    border-top-color: var(--text-on-light);
     border-radius: 50%;
     animation: cmSpin 0.8s linear infinite;
 }
@@ -781,7 +781,7 @@
 }
 .cmPage .cm-modal h3 {
     font-size: 1.6rem;
-    color: var(--bg-primary);
+    color: var(--text-on-light);
     margin-bottom: 12px;
 }
 .cmPage .cm-modal p {

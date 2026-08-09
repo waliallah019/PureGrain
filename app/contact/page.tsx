@@ -336,7 +336,7 @@ export default function ContactPage() {
                       General Inquiries:{" "}
                       <a
                         href="mailto:info@puregrain.com"
-                        className="text-leather hover:text-brass transition-colors"
+                        className="text-leather dark:text-tan hover:text-brass transition-colors"
                       >
                         info@puregrain.com
                       </a>
@@ -344,7 +344,7 @@ export default function ContactPage() {
                       Sales & Orders:{" "}
                       <a
                         href="mailto:trade@puregrain.com"
-                        className="text-leather hover:text-brass transition-colors"
+                        className="text-leather dark:text-tan hover:text-brass transition-colors"
                       >
                         sales@puregrain.com
                       </a>
@@ -360,7 +360,7 @@ export default function ContactPage() {
                       Main:{" "}
                       <a
                         href="tel:+921234567890"
-                        className="text-leather hover:text-brass transition-colors"
+                        className="text-leather dark:text-tan hover:text-brass transition-colors"
                       >
                         +92 308 4578957
                       </a>
@@ -368,7 +368,7 @@ export default function ContactPage() {
                       International:{" "}
                       <a
                         href="tel:+12025550123"
-                        className="text-leather hover:text-brass transition-colors"
+                        className="text-leather dark:text-tan hover:text-brass transition-colors"
                       >
                         +1 (202) 555-0123
                       </a>
@@ -398,7 +398,7 @@ export default function ContactPage() {
                       href="http://instagram.com/puregrainexports/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-leather hover:text-brass transition-colors break-all"
+                      className="text-sm text-leather dark:text-tan hover:text-brass transition-colors break-all"
                     >
                       instagram.com/puregrainexports
                     </a>

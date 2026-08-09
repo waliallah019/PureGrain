@@ -34,7 +34,7 @@ import { cn } from '@/lib/utils'; // Import cn for conditional classNames
 type QuoteRequestProductCategory = 'raw-leather' | 'finished-products' | 'custom';
 const productCategories: QuoteRequestProductCategory[] = ['raw-leather', 'finished-products', 'custom'];
 const leatherTypes = ["Cowhide", "Buffalo", "Goat", "Sheep", "Exotic", "Other"];
-const finishTypes = ["Aniline", "Semi-Aniline", "Pigmented", "Nubuck", "Suede", "Other"];
+const finishTypes = ["Aniline", "Semi-Aniline", "Natural", "Pigmented", "Nubuck", "Suede", "Other"];
 const timelines = ['asap', '1-2weeks', '1month', '2-3months', 'flexible', 'custom'];
 
 

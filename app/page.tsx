@@ -624,7 +624,7 @@ export default function PureGrainLanding() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="text-center"
               >
-                <p className="font-serif text-3xl md:text-4xl font-semibold text-leather mb-2">
+                <p className="font-serif text-3xl md:text-4xl font-semibold text-leather dark:text-tan mb-2">
                   {stat.value}
                 </p>
                 <p className="text-sm text-muted-foreground">{stat.label}</p>
@@ -742,7 +742,7 @@ export default function PureGrainLanding() {
                         </div>
 
                         <div className="p-6 border-t border-border">
-                          <h3 className="font-serif text-xl font-medium text-foreground group-hover:text-leather transition-colors">
+                          <h3 className="font-serif text-xl font-medium text-foreground group-hover:text-leather dark:group-hover:text-tan transition-colors">
                             {category.title}
                           </h3>
                         </div>
@@ -840,7 +840,7 @@ export default function PureGrainLanding() {
             <div>
               <Link
                 href="/catalog/raw-leather"
-                className="inline-flex items-center gap-2 text-sm font-medium text-leather hover:text-brass transition-colors mb-4"
+                className="inline-flex items-center gap-2 text-sm font-medium text-leather dark:text-tan hover:text-brass transition-colors mb-4"
               >
                 View Leather Hides <ArrowRight size={16} />
               </Link>
@@ -885,7 +885,7 @@ export default function PureGrainLanding() {
                         <p className="text-[11px] font-semibold uppercase tracking-wider text-brass mb-1.5">
                           {product.leatherType}
                         </p>
-                        <h3 className="font-serif text-base sm:text-lg font-medium text-foreground mb-3 leading-snug line-clamp-1 group-hover:text-leather transition-colors">
+                        <h3 className="font-serif text-base sm:text-lg font-medium text-foreground mb-3 leading-snug line-clamp-1 group-hover:text-leather dark:group-hover:text-tan transition-colors">
                           {product.name}
                         </h3>
                         <div className="grid grid-cols-2 gap-x-3 gap-y-2 text-xs mb-3">
@@ -926,7 +926,7 @@ export default function PureGrainLanding() {
             <div>
               <Link
                 href="/catalog/finished-products"
-                className="inline-flex items-center gap-2 text-sm font-medium text-leather hover:text-brass transition-colors mb-4"
+                className="inline-flex items-center gap-2 text-sm font-medium text-leather dark:text-tan hover:text-brass transition-colors mb-4"
               >
                 View Finished Products <ArrowRight size={16} />
               </Link>
@@ -971,7 +971,7 @@ export default function PureGrainLanding() {
                         <p className="text-[11px] font-semibold uppercase tracking-wider text-brass mb-1.5">
                           {product.productType}
                         </p>
-                        <h3 className="font-serif text-base sm:text-lg font-medium text-foreground mb-3 leading-snug line-clamp-1 group-hover:text-leather transition-colors">
+                        <h3 className="font-serif text-base sm:text-lg font-medium text-foreground mb-3 leading-snug line-clamp-1 group-hover:text-leather dark:group-hover:text-tan transition-colors">
                           {product.name}
                         </h3>
                         <div className="grid grid-cols-2 gap-x-3 gap-y-2 text-xs mb-3">
@@ -1058,7 +1058,7 @@ export default function PureGrainLanding() {
                   <industry.icon
                     size={28}
                     strokeWidth={1.5}
-                    className="text-leather group-hover:text-brass transition-colors"
+                    className="text-leather dark:text-tan group-hover:text-brass transition-colors"
                   />
                 </div>
                 <h3 className="font-serif text-lg font-medium text-foreground mb-2">{industry.name}</h3>
@@ -1126,7 +1126,7 @@ export default function PureGrainLanding() {
                   className="relative"
                 >
                   <div className="w-16 h-16 flex items-center justify-center bg-background border border-border mb-6 relative z-10">
-                    <span className="font-serif text-2xl font-semibold text-leather">{step.number}</span>
+                    <span className="font-serif text-2xl font-semibold text-leather dark:text-tan">{step.number}</span>
                   </div>
 
                   <h3 className="font-serif text-lg font-medium text-foreground mb-3">{step.title}</h3>
@@ -1180,7 +1180,7 @@ export default function PureGrainLanding() {
                 {globalRegions.map((region) => (
                   <div key={region.name} className="p-4 border border-leather-foreground/10">
                     <h4 className="font-serif text-base font-medium mb-1">{region.name}</h4>
-                    <p className="text-xs text-leather-foreground/50">{region.countries}</p>
+                    <p className="text-xs text-leather-foreground/70">{region.countries}</p>
                   </div>
                 ))}
               </motion.div>

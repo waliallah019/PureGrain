@@ -317,7 +317,7 @@ export default function ProductDetailContent({
                     <div className="flex items-start justify-between gap-4 mb-3">
                       <div>
                         <p className="text-xs text-brass mb-2">{p.productType}</p>
-                        <h3 className="font-serif text-xl font-medium text-foreground group-hover:text-leather transition-colors">
+                        <h3 className="font-serif text-xl font-medium text-foreground group-hover:text-leather dark:group-hover:text-tan transition-colors">
                           {p.name}
                         </h3>
                       </div>
@@ -333,7 +333,7 @@ export default function ProductDetailContent({
                           </span>
                         )}
                         {p.availability && (
-                          <span className="text-[11px] uppercase tracking-wide px-2 py-1 border border-leather/40 text-leather min-w-[92px] text-center">
+                          <span className="text-[11px] uppercase tracking-wide px-2 py-1 border border-leather/40 dark:border-tan/30 text-leather dark:text-tan min-w-[92px] text-center">
                             {p.availability}
                           </span>
                         )}
@@ -370,7 +370,7 @@ export default function ProductDetailContent({
                         </span>
                       ))}
                     </div>
-                    <span className="inline-flex items-center gap-2 text-sm font-medium text-leather group-hover:text-brass transition-colors">
+                    <span className="inline-flex items-center gap-2 text-sm font-medium text-leather dark:text-tan group-hover:text-brass transition-colors">
                       View Details <ArrowRight size={14} />
                     </span>
                   </div>

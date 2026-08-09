@@ -268,6 +268,7 @@ export default function RawLeatherPage() {
                         <SelectItem value="all">All Finishes</SelectItem>
                         <SelectItem value="Aniline">Aniline</SelectItem>
                         <SelectItem value="Semi-Aniline">Semi-Aniline</SelectItem>
+                        <SelectItem value="Natural">Natural</SelectItem>
                         <SelectItem value="Pigmented">Pigmented</SelectItem>
                         <SelectItem value="Pull-up">Pull-Up</SelectItem>
                         <SelectItem value="Crazy Horse">Crazy Horse</SelectItem>
