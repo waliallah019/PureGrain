@@ -41,7 +41,7 @@ const RawLeatherSchema: Schema = new Schema(
     finish: {
       type: String,
       required: true,
-      enum: ["Aniline", "Semi-Aniline", "Pigmented", "Pull-up", "Crazy Horse", "Waxed", "Nappa", "Embossed"],
+      enum: ["Aniline", "Semi-Aniline", "Natural", "Pigmented", "Pull-up", "Crazy Horse", "Waxed", "Nappa", "Embossed"],
       trim: true,
     },
     thickness: { type: String, required: true, trim: true },

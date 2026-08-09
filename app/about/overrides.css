@@ -30,7 +30,7 @@
 
 .policyPage .policy-summary-box {
   border-left: 4px solid #C49A6C;
-  background: #FAF7F4;
+  background: hsl(var(--background));
   padding: 1.5rem 1.75rem;
   border-radius: 6px;
   margin: 0 0 2rem;
@@ -38,7 +38,7 @@
 .policyPage .policy-summary-box h3 {
   font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 20px;
-  color: #2C1810;
+  color: hsl(var(--foreground));
   margin: 0 0 0.75rem;
   font-weight: 600;
   line-height: 1.25;
@@ -50,7 +50,7 @@
   font-family: "Jost", Helvetica, Arial, sans-serif;
   font-size: 15px;
   line-height: 1.55;
-  color: #4A3728;
+  color: hsl(var(--muted-foreground));
 }
 .policyPage .policy-summary-box li::before {
   content: "\2713";
@@ -68,8 +68,8 @@
   margin: 0 0 2.5rem;
 }
 .policyPage .policy-fact-card {
-  border: 1px solid #E8DDD5;
-  background: #FAF7F4;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--background));
   border-radius: 8px;
   padding: 1.25rem;
 }
@@ -83,13 +83,13 @@
   display: block;
   font-family: "Jost", Helvetica, Arial, sans-serif;
   font-size: 15px;
-  color: #2C1810;
+  color: hsl(var(--foreground));
   margin-bottom: 0.4rem;
   font-weight: 600;
 }
 .policyPage .policy-fact-card p {
   font-size: 13px;
-  color: #7A6558;
+  color: hsl(var(--muted-foreground));
   margin: 0;
   line-height: 1.6;
 }
@@ -149,7 +149,7 @@
 }
 .policyPage .problem-list li {
   border: 1px solid var(--border-tan-soft);
-  background: #fff;
+  background: hsl(var(--card));
   border-radius: 12px;
   padding: 1.25rem;
 }
@@ -169,7 +169,7 @@
 .policyPage .clarity-card {
   margin-top: 1.5rem;
   border: 1px solid var(--border-tan-soft);
-  background: #fff;
+  background: hsl(var(--card));
   border-radius: 12px;
   padding: 1.5rem;
 }
@@ -201,7 +201,7 @@
   border: 1px solid var(--border-tan-soft);
   border-radius: 12px;
   padding: 0.75rem;
-  background: #fff;
+  background: hsl(var(--card));
 }
 .policyPage .problem-image img {
   width: 100%;
@@ -266,7 +266,7 @@
 }
 .policyPage .scope-card {
   border: 1px solid var(--border-tan-soft);
-  background: #fff;
+  background: hsl(var(--card));
   border-radius: 14px;
   overflow: hidden;
 }
@@ -327,7 +327,7 @@
 .policyPage .best-fit {
   margin-top: 1.5rem;
   border: 1px solid var(--border-tan-soft);
-  background: #fff;
+  background: hsl(var(--card));
   border-radius: 12px;
   padding: 1.5rem;
 }
@@ -372,7 +372,7 @@
 }
 .policyPage .about-process__card {
   border: 1px solid var(--border-tan-soft);
-  background: #fff;
+  background: hsl(var(--card));
   border-radius: 10px;
   padding: 1.5rem;
 }
@@ -434,7 +434,7 @@
 /* Incorporation letter */
 .policyPage .doc-frame {
   border: 1px solid var(--border-tan-soft);
-  background: #fff;
+  background: hsl(var(--card));
   border-radius: 12px;
   padding: 1rem;
   margin-top: 1.5rem;
@@ -474,7 +474,7 @@
 .policyPage .btn-secondary:hover {
   background: var(--bg-primary);
   color: var(--text-on-dark);
-  border-color: var(--bg-primary);
+  border-color: var(--text-on-light);
 }
 
 /* Closing */
@@ -548,10 +548,10 @@
 
 /* ----- 1. Trust Stats Bar ----- */
 .policyPage .about-stats-bar {
-  background: #FAF7F4;
+  background: hsl(var(--background));
   padding: 2.5rem 0;
-  border-top: 1px solid #E8DDD5;
-  border-bottom: 1px solid #E8DDD5;
+  border-top: 1px solid hsl(var(--border));
+  border-bottom: 1px solid hsl(var(--border));
 }
 .policyPage .about-stats-bar__grid {
   display: grid;
@@ -561,7 +561,7 @@
 .policyPage .about-stat {
   text-align: center;
   padding: 0.5rem 1.25rem;
-  border-right: 1px solid #E8DDD5;
+  border-right: 1px solid hsl(var(--border));
 }
 .policyPage .about-stat:last-child { border-right: 0; }
 .policyPage .about-stat__num {
@@ -569,7 +569,7 @@
   font-family: "Cormorant Garamond", Georgia, serif;
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 600;
-  color: #2C1810;
+  color: hsl(var(--foreground));
   line-height: 1.1;
 }
 .policyPage .about-stat__label {
@@ -577,14 +577,14 @@
   margin-top: 0.5rem;
   font-family: "Jost", sans-serif;
   font-size: 13px;
-  color: #7A6558;
+  color: hsl(var(--muted-foreground));
   line-height: 1.5;
 }
 @media (max-width: 900px) {
   .policyPage .about-stats-bar__grid { grid-template-columns: repeat(2, 1fr); }
   .policyPage .about-stat:nth-child(2) { border-right: 0; }
   .policyPage .about-stat:nth-child(1),
-  .policyPage .about-stat:nth-child(2) { border-bottom: 1px solid #E8DDD5; padding-bottom: 1.5rem; }
+  .policyPage .about-stat:nth-child(2) { border-bottom: 1px solid hsl(var(--border)); padding-bottom: 1.5rem; }
   .policyPage .about-stat:nth-child(3),
   .policyPage .about-stat:nth-child(4) { padding-top: 1.5rem; }
 }
@@ -609,9 +609,9 @@
   transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
 }
 .policyPage .about-btn--primary {
-  background: #2C1810;
+  background: hsl(var(--leather));
   color: #FDF8F3;
-  border-color: #2C1810;
+  border-color: hsl(var(--leather));
 }
 .policyPage .about-btn--primary:hover {
   background: var(--accent-tan);
@@ -620,11 +620,11 @@
 }
 .policyPage .about-btn--outline {
   background: transparent;
-  color: #2C1810;
-  border-color: #2C1810;
+  color: hsl(var(--foreground));
+  border-color: hsl(var(--leather));
 }
 .policyPage .about-btn--outline:hover {
-  background: #2C1810;
+  background: hsl(var(--leather));
   color: #FDF8F3;
   transform: translateY(-2px);
 }
@@ -648,26 +648,26 @@
 .policyPage .about-cta-center__note {
   margin-top: 0.75rem;
   font-size: 13px;
-  color: #7A6558;
+  color: hsl(var(--muted-foreground));
 }
 
 /* CTA Final */
 .policyPage .about-cta-final {
-  background: #FAF7F4;
+  background: hsl(var(--background));
   text-align: center;
   padding: 4.5rem 1.5rem;
-  border-top: 1px solid #E8DDD5;
-  border-bottom: 1px solid #E8DDD5;
+  border-top: 1px solid hsl(var(--border));
+  border-bottom: 1px solid hsl(var(--border));
 }
 .policyPage .about-cta-final h2 {
   font-family: "Cormorant Garamond", Georgia, serif;
   margin: 0 0 0.75rem;
-  color: #2C1810;
+  color: hsl(var(--foreground));
 }
 .policyPage .about-cta-final p {
   max-width: 640px;
   margin: 0 auto 2rem;
-  color: #7A6558;
+  color: hsl(var(--muted-foreground));
   font-size: 15px;
 }
 .policyPage .about-cta-final__buttons {
@@ -692,8 +692,8 @@
 }
 .policyPage .testimonial-card {
   position: relative;
-  background: #fff;
-  border: 1px solid #E8DDD5;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
   border-radius: 8px;
   padding: 1.5rem;
   display: flex;
@@ -710,20 +710,20 @@
 .policyPage .testimonial-card__quote {
   font-family: "Jost", sans-serif;
   font-size: 14.5px;
-  color: #4A3728;
+  color: hsl(var(--muted-foreground));
   line-height: 1.65;
   margin: 0 0 1rem;
   font-style: italic;
 }
 .policyPage .testimonial-card__divider {
   height: 1px;
-  background: #E8DDD5;
+  background: hsl(var(--border));
   margin: 0.5rem 0 1rem;
 }
 .policyPage .testimonial-card__author {
   margin: 0;
   font-size: 13px;
-  color: #2C1810;
+  color: hsl(var(--foreground));
   font-weight: 500;
 }
 .policyPage .testimonial-card__flag {
@@ -741,8 +741,8 @@
   grid-template-columns: auto 1fr;
   gap: 1.75rem;
   align-items: center;
-  background: #FAF7F4;
-  border: 1px solid #E8DDD5;
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
   border-radius: 8px;
   padding: 2rem;
   margin-top: 1.5rem;
@@ -751,7 +751,7 @@
   width: 96px;
   height: 96px;
   border-radius: 999px;
-  background: #2C1810;
+  background: hsl(var(--leather));
   color: #FDF8F3;
   display: inline-flex;
   align-items: center;
@@ -766,17 +766,17 @@
   font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 1.4rem;
   margin: 0 0 0.5rem;
-  color: #2C1810;
+  color: hsl(var(--foreground));
 }
 .policyPage .founder-card__name span {
   font-size: 1rem;
-  color: #7A6558;
+  color: hsl(var(--muted-foreground));
   font-weight: 400;
 }
 .policyPage .founder-card__bio {
   margin: 0 0 1rem;
   font-size: 14.5px;
-  color: #4A3728;
+  color: hsl(var(--muted-foreground));
   line-height: 1.65;
 }
 .policyPage .founder-card__social {
@@ -788,7 +788,7 @@
   font-weight: 500;
   transition: color 0.25s ease;
 }
-.policyPage .founder-card__social:hover { color: #2C1810; }
+.policyPage .founder-card__social:hover { color: hsl(var(--foreground)); }
 .policyPage .founder-card__social i { font-size: 18px; }
 @media (max-width: 700px) {
   .policyPage .founder-card { grid-template-columns: 1fr; text-align: center; }
@@ -804,15 +804,15 @@
   padding: 8px 16px;
   border: 1px solid #C49A6C;
   border-radius: 6px;
-  color: #2C1810;
+  color: hsl(var(--foreground));
   font-family: "Jost", sans-serif;
   font-size: 13px;
   font-weight: 500;
   transition: background 0.2s ease, color 0.2s ease;
 }
 .policyPage .about-download-btn:hover {
-  background: #FAF7F4;
-  color: #2C1810;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
 }
 
 /* ----- 5. Process Stepper ----- */
@@ -832,7 +832,7 @@
   left: 10%;
   right: 10%;
   height: 2px;
-  background: #E8DDD5;
+  background: hsl(var(--border));
   z-index: 0;
 }
 .policyPage .about-process-step {
@@ -845,7 +845,7 @@
   width: 40px;
   height: 40px;
   border-radius: 999px;
-  background: #2C1810;
+  background: hsl(var(--leather));
   color: #fff;
   display: inline-flex;
   align-items: center;
@@ -854,7 +854,7 @@
   font-weight: 600;
   font-size: 14px;
   margin: 0 auto 0.75rem;
-  border: 3px solid #FAF7F4;
+  border: 3px solid hsl(var(--background));
 }
 .policyPage .about-process-step__icon {
   display: block;
@@ -866,12 +866,12 @@
   font-family: "Jost", sans-serif;
   font-size: 14px;
   font-weight: 600;
-  color: #2C1810;
+  color: hsl(var(--foreground));
   margin: 0 0 0.4rem;
 }
 .policyPage .about-process-step p {
   font-size: 12.5px;
-  color: #7A6558;
+  color: hsl(var(--muted-foreground));
   margin: 0;
   line-height: 1.55;
 }
@@ -912,8 +912,8 @@
   margin-top: 2rem;
 }
 .policyPage .about-serve-card {
-  background: #fff;
-  border: 1px solid #E8DDD5;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
   border-radius: 8px;
   padding: 1.25rem;
   transition: border-color 0.2s ease, transform 0.2s ease;
@@ -932,12 +932,12 @@
   font-family: "Jost", sans-serif;
   font-size: 15px;
   font-weight: 600;
-  color: #2C1810;
+  color: hsl(var(--foreground));
   margin: 0 0 0.4rem;
 }
 .policyPage .about-serve-card p {
   font-size: 13px;
-  color: #7A6558;
+  color: hsl(var(--muted-foreground));
   margin: 0;
   line-height: 1.6;
 }
@@ -956,8 +956,8 @@
   margin-top: 2rem;
 }
 .policyPage .about-region-card {
-  background: #fff;
-  border: 1px solid #E8DDD5;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
   border-radius: 8px;
   padding: 1.25rem;
   transition: border-color 0.2s ease;
@@ -973,12 +973,12 @@
   font-family: "Jost", sans-serif;
   font-size: 15px;
   font-weight: 600;
-  color: #2C1810;
+  color: hsl(var(--foreground));
   margin: 0 0 0.3rem;
 }
 .policyPage .about-region-card p {
   font-size: 13px;
-  color: #7A6558;
+  color: hsl(var(--muted-foreground));
   margin: 0;
   line-height: 1.55;
 }
@@ -986,7 +986,7 @@
   margin-top: 1.5rem;
   text-align: center;
   font-size: 14px;
-  color: #7A6558;
+  color: hsl(var(--muted-foreground));
 }
 .policyPage .about-regions__note a {
   color: #C49A6C;
@@ -1014,7 +1014,7 @@
   gap: 6px;
   transition: color 0.2s ease;
 }
-.policyPage .about-link-row a:hover { color: #2C1810; }
+.policyPage .about-link-row a:hover { color: hsl(var(--foreground)); }
 
 /* ----- 9. FAQ ----- */
 .policyPage .about-faq .faq {
@@ -1024,8 +1024,8 @@
   margin-top: 1.5rem;
 }
 .policyPage .about-faq .faq-item {
-  background: #fff;
-  border: 1px solid #E8DDD5;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
   border-radius: 8px;
   overflow: hidden;
   transition: border-color 0.2s ease;
@@ -1046,7 +1046,7 @@
   font-family: "Jost", sans-serif;
   font-size: 15px;
   font-weight: 500;
-  color: #2C1810;
+  color: hsl(var(--foreground));
   cursor: pointer;
 }
 .policyPage .about-faq .faq-q__icon {
@@ -1056,7 +1056,7 @@
   width: 26px;
   height: 26px;
   border-radius: 999px;
-  background: #FAF7F4;
+  background: hsl(var(--background));
   color: #C49A6C;
   font-size: 12px;
   flex-shrink: 0;
@@ -1075,7 +1075,7 @@
 .policyPage .about-faq .faq-a__inner {
   padding: 0 1.25rem 1.1rem;
   font-size: 14px;
-  color: #4A3728;
+  color: hsl(var(--muted-foreground));
   line-height: 1.65;
 }
 
@@ -1085,7 +1085,7 @@
 .policyPage .story-lead {
   font-size: 1.1rem;
   line-height: 1.85;
-  color: #2C1810;
+  color: hsl(var(--foreground));
   font-weight: 500;
   font-family: 'Jost', sans-serif;
   margin-bottom: 1.25rem;
@@ -1093,13 +1093,13 @@
 
 .policyPage .story-callout {
   border-left: 4px solid #C49A6C;
-  background: #FAF7F4;
+  background: hsl(var(--background));
   padding: 1rem 1.25rem;
   margin: 1.75rem 0;
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.2rem;
   font-style: italic;
-  color: #2C1810;
+  color: hsl(var(--foreground));
   border-radius: 0 6px 6px 0;
 }
 
@@ -1111,7 +1111,7 @@
 }
 
 .policyPage .story-criteria-item {
-  background: #FAF7F4;
+  background: hsl(var(--background));
   border-left: 3px solid #C49A6C;
   border-radius: 0 6px 6px 0;
   padding: 0.75rem 0.75rem 0.75rem 1rem;
@@ -1133,14 +1133,14 @@
 .policyPage .story-criteria-item .criteria-header strong {
   font-family: 'Jost', sans-serif;
   font-size: 14px;
-  color: #2C1810;
+  color: hsl(var(--foreground));
   font-weight: 600;
 }
 
 .policyPage .story-criteria-item p {
   font-family: 'Jost', sans-serif;
   font-size: 13px;
-  color: #7A6558;
+  color: hsl(var(--muted-foreground));
   line-height: 1.6;
   margin: 0;
 }
@@ -1155,7 +1155,7 @@
    OUR STORY — alternating timeline
    ============================================================ */
 .policyPage .story-section {
-  background: #FDFAF6;
+  background: hsl(var(--background));
 }
 .policyPage .story-section .section-head {
   text-align: center;
@@ -1168,7 +1168,7 @@
 .policyPage .story-section .section-sub {
   max-width: 640px;
   margin: 1rem auto 0;
-  color: #7A6558;
+  color: hsl(var(--muted-foreground));
   font-size: 15px;
   line-height: 1.65;
 }
@@ -1221,7 +1221,7 @@
   width: 18px;
   height: 18px;
   border-radius: 999px;
-  background: #FAF7F4;
+  background: hsl(var(--background));
   border: 3px solid #C49A6C;
   transform: translate(-50%, -50%);
   z-index: 2;
@@ -1233,8 +1233,8 @@
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 14px 36px -18px rgba(44, 24, 16, 0.45);
-  border: 1px solid #E8DDD5;
-  background: #FAF7F4;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--background));
   aspect-ratio: 4 / 3;
 }
 .policyPage .story-step__media img {
@@ -1249,8 +1249,8 @@
 }
 
 .policyPage .story-step__body {
-  background: #fff;
-  border: 1px solid #E8DDD5;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
   border-radius: 10px;
   padding: 1.75rem 1.75rem;
   box-shadow: 0 8px 24px -16px rgba(44, 24, 16, 0.25);
@@ -1293,7 +1293,7 @@
   font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 1.75rem;
   line-height: 1.2;
-  color: #2C1810;
+  color: hsl(var(--foreground));
   margin: 0 0 0.85rem;
   font-weight: 600;
 }
@@ -1301,7 +1301,7 @@
   font-family: "Jost", sans-serif;
   font-size: 14.5px;
   line-height: 1.7;
-  color: #4A3728;
+  color: hsl(var(--muted-foreground));
   margin: 0 0 0.85rem;
 }
 .policyPage .story-step__body p:last-child { margin-bottom: 0; }
@@ -1310,7 +1310,7 @@
   margin-top: 1rem !important;
   margin-bottom: 0.5rem !important;
   font-weight: 600 !important;
-  color: #2C1810 !important;
+  color: hsl(var(--foreground)) !important;
   font-size: 13.5px !important;
 }
 

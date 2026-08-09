@@ -19,7 +19,7 @@ export const createRawLeatherSchema = z.object({
       "Cow", "Buffalo", "Goat", "Sheep", "Exotic"
     ], { message: "Invalid animal type." }).refine((val) => val.length > 0, { message: "Animal type is required." }),
     finish: z.enum([
-      "Aniline", "Semi-Aniline", "Pigmented", "Pull-up", "Crazy Horse", "Waxed", "Nappa", "Embossed"
+      "Aniline", "Semi-Aniline", "Natural", "Pigmented", "Pull-up", "Crazy Horse", "Waxed", "Nappa", "Embossed"
     ], { message: "Invalid finish type." }).refine((val) => val.length > 0, { message: "Finish type is required." }),
     thickness: z.string().trim().min(1, "Thickness is required."),
     size: z.string().trim().min(1, "Size is required."),
@@ -55,7 +55,7 @@ export const updateRawLeatherSchema = z.object({
       "Cow", "Buffalo", "Goat", "Sheep", "Exotic"
     ], { message: "Invalid animal type." }).optional(),
     finish: z.enum([
-      "Aniline", "Semi-Aniline", "Pigmented", "Pull-up", "Crazy Horse", "Waxed", "Nappa", "Embossed"
+      "Aniline", "Semi-Aniline", "Natural", "Pigmented", "Pull-up", "Crazy Horse", "Waxed", "Nappa", "Embossed"
     ], { message: "Invalid finish type." }).optional(),
     thickness: z.string().trim().min(1, "Thickness is required.").optional(),
     size: z.string().trim().min(1, "Size is required.").optional(),

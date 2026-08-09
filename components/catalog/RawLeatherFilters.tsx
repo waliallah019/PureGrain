@@ -11,7 +11,7 @@ import { Search, Filter as FilterIcon } from "lucide-react"; // Renamed to avoid
 // These should match the enums/expected values in your backend RawLeather model and validator
 const leatherTypes = ["Full-grain", "Top-grain", "Corrected Grain", "Suede", "Nubuck", "Patent"];
 const animals = ["Cow", "Buffalo", "Goat", "Sheep", "Exotic"];
-const finishes = ["Aniline", "Semi-Aniline", "Pigmented", "Pull-up", "Crazy Horse", "Waxed", "Nappa", "Embossed"];
+const finishes = ["Aniline", "Semi-Aniline", "Natural", "Pigmented", "Pull-up", "Crazy Horse", "Waxed", "Nappa", "Embossed"];
 // Thickness is more free-form, so a search filter might be better, or define specific ranges.
 // For now, let's use some example values as categories.
 const thicknessRanges = ["0.6-1.0mm", "1.0-1.5mm", "1.5-2.0mm+"]; // Example custom ranges

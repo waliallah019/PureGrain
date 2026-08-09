@@ -357,8 +357,7 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  background:
-    linear-gradient(
+  background: linear-gradient(
       180deg,
       rgba(20, 12, 7, 0.06) 0%,
       rgba(20, 12, 7, 0.18) 38%,
@@ -557,7 +556,7 @@
 .productsPage .prBtn--dark {
   background: var(--bg-primary);
   color: var(--text-on-dark);
-  border-color: var(--bg-primary);
+  border-color: var(--text-on-light);
 }
 .productsPage .prBtn--dark:hover { background: #1f1109; }
 .productsPage .prBtn--light {
@@ -572,8 +571,7 @@
 
 /* ============================== OEM PROCESS ============================== */
 .productsPage .prProcess {
-  background:
-    radial-gradient(circle at 12% 10%, rgba(196, 154, 108, 0.16), transparent 55%),
+  background: radial-gradient(circle at 12% 10%, rgba(196, 154, 108, 0.16), transparent 55%),
     linear-gradient(180deg, var(--bg-secondary), var(--bg-primary));
   color: var(--text-on-dark);
   padding: 96px 0;
@@ -845,8 +843,7 @@
 .productsPage .prCta {
   position: relative;
   padding: 96px 0;
-  background:
-    repeating-linear-gradient(
+  background: repeating-linear-gradient(
       45deg,
       rgba(0, 0, 0, 0.08) 0 1px,
       transparent 1px 5px
@@ -915,3 +912,8 @@
 .dark .productsPage .prFaqItem,
 .dark .productsPage .prAnchorPill,
 .dark .productsPage .prBtn--light { background: #221810; color: var(--text-on-light); }
+
+/* Tinted variant chips use a translucent rgba() background, so the tint follows
+   the dark card — but --accent-tan (#a0724a) only reaches ~3.7:1 on it, under
+   the 4.5:1 text minimum. Lift the tan for dark mode only. */
+.dark .productsPage { --accent-tan: #c9a17a; }

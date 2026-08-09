@@ -346,8 +346,7 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  background:
-    linear-gradient(180deg, rgba(20, 12, 7, 0.08) 0%, rgba(20, 12, 7, 0.18) 38%, rgba(20, 12, 7, 0.65) 100%),
+  background: linear-gradient(180deg, rgba(20, 12, 7, 0.08) 0%, rgba(20, 12, 7, 0.18) 38%, rgba(20, 12, 7, 0.65) 100%),
     repeating-linear-gradient(
       135deg,
       rgba(255, 255, 255, 0.02) 0 2px,
@@ -577,14 +576,13 @@
 .industriesPage .indBtn--dark {
   background: var(--bg-primary);
   color: var(--text-on-dark);
-  border-color: var(--bg-primary);
+  border-color: var(--text-on-light);
 }
 .industriesPage .indBtn--dark:hover { background: #1f1109; }
 
 /* =========================== CERTIFICATIONS BAND ========================= */
 .industriesPage .indCerts {
-  background:
-    radial-gradient(circle at 12% 10%, rgba(196, 154, 108, 0.16), transparent 55%),
+  background: radial-gradient(circle at 12% 10%, rgba(196, 154, 108, 0.16), transparent 55%),
     linear-gradient(180deg, var(--bg-secondary), var(--bg-primary));
   color: var(--text-on-dark);
   padding: 84px 0;
@@ -727,8 +725,7 @@
 .industriesPage .indCta {
   position: relative;
   padding: 88px 0;
-  background:
-    repeating-linear-gradient(
+  background: repeating-linear-gradient(
       45deg,
       rgba(0, 0, 0, 0.08) 0 1px,
       transparent 1px 5px
@@ -798,4 +795,27 @@
   background-image:
     linear-gradient(135deg, rgba(10,6,3,0.94) 0%, rgba(10,6,3,0.82) 60%, rgba(10,6,3,0.94) 100%),
     url("https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1900&q=80");
+}
+
+/* ---------------------------------------------------------------------------
+ * Dark-mode text on tinted chips.
+ * These chips use translucent rgba() tints, so their background adapts to the
+ * dark card automatically — but their text colours were hardcoded for a light
+ * surface and stayed dark, leaving dark-on-dark (~1.0–2.4:1). Lighten the text
+ * only; the tints and borders are left as-is.
+ * ------------------------------------------------------------------------- */
+.dark .industriesPage .indHideTag--cow   { color: #dCA97F; }
+.dark .industriesPage .indHideTag--goat  { color: #e6c67f; }
+.dark .industriesPage .indHideTag--sheep { color: #b9cd92; }
+.dark .industriesPage .indNote           { color: #ecc48a; }
+.dark .industriesPage .indProductTag,
+.dark .industriesPage .indPakNote        { color: #d3ab84; }
+
+/* The generic `.dark .indAnchorPill` background above also clobbered the
+   active pill's gold fill, which left its (correctly dark) label on a dark
+   pill. Restore the gold surface so the dark label reads again. */
+.dark .industriesPage .indAnchorPill.is-active {
+  background: var(--accent-gold);
+  border-color: var(--accent-gold);
+  color: #17100b;
 }

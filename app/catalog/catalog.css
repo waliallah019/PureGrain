@@ -58,7 +58,7 @@
 }
 
 .catalogPage .leather-texture {
-  background-color: var(--bg-primary);
+  background-color: var(--text-on-light);
   background-image:
     repeating-linear-gradient(45deg, rgba(255, 240, 220, 0.018) 0 2px, transparent 2px 6px),
     repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.04) 0 1px, transparent 1px 4px),
@@ -795,9 +795,9 @@
   font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.02em;
-  color: #4a3728;
-  background: #ffffff;
-  border: 1px solid #e8ddd5;
+  color: var(--text-on-light-mute);
+  background: var(--bg-parchment);
+  border: 1px solid var(--border-tan-soft);
   border-radius: 999px;
   white-space: nowrap;
   transition: border-color 150ms ease, color 150ms ease, background-color 150ms ease;
@@ -1317,7 +1317,7 @@
 
 .catalogPage .catalogSourcingColumn--gold .catalogSourcingColumn__title { color: var(--accent-gold); }
 .catalogPage .catalogSourcingColumn--tan  .catalogSourcingColumn__title { color: var(--accent-tan); }
-.catalogPage .catalogSourcingColumn--neutral .catalogSourcingColumn__title { color: var(--bg-secondary); }
+.catalogPage .catalogSourcingColumn--neutral .catalogSourcingColumn__title { color: var(--text-on-light); }
 
 .catalogPage .catalogSourcingColumn__steps {
   display: grid;
@@ -1410,7 +1410,7 @@
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #4a3728;
+  color: var(--text-on-light-mute);
 }
 
 .catalogPage .catalogInquiry__field input,
@@ -1509,6 +1509,9 @@
    page inverts cohesively (the dark hero/accent vars stay as-is).
    ================================================================ */
 .dark .catalogPage {
+  /* Lift the tan accent in dark mode: the light-mode value (#a0724a) only
+     reaches ~3.5:1 on the dark surface, below the 4.5:1 text threshold. */
+  --accent-tan: #c9a17a;
   --bg-cream: #17100b;
   --bg-parchment: #221810;
   --text-on-light: #f3ead8;

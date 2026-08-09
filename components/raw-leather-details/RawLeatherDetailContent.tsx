@@ -333,7 +333,7 @@ export default function RawLeatherDetailContent({
                       <div className="flex items-start justify-between gap-4 mb-3">
                         <div>
                           <p className="text-xs text-brass mb-2">{rl.leatherType}</p>
-                          <h3 className="font-serif text-xl font-medium text-foreground group-hover:text-leather transition-colors">
+                          <h3 className="font-serif text-xl font-medium text-foreground group-hover:text-leather dark:group-hover:text-tan transition-colors">
                             {rl.name}
                           </h3>
                         </div>
@@ -349,7 +349,7 @@ export default function RawLeatherDetailContent({
                             </span>
                           )}
                           {rl.negotiable && (
-                            <span className="text-[11px] uppercase tracking-wide px-2 py-1 border border-leather/40 text-leather min-w-[92px] text-center">
+                            <span className="text-[11px] uppercase tracking-wide px-2 py-1 border border-leather/40 dark:border-tan/30 text-leather dark:text-tan min-w-[92px] text-center">
                               Negotiable
                             </span>
                           )}
@@ -386,7 +386,7 @@ export default function RawLeatherDetailContent({
                           </span>
                         ))}
                       </div>
-                      <span className="inline-flex items-center gap-2 text-sm font-medium text-leather group-hover:text-brass transition-colors">
+                      <span className="inline-flex items-center gap-2 text-sm font-medium text-leather dark:text-tan group-hover:text-brass transition-colors">
                         View Details <ArrowRight size={14} />
                       </span>
                     </div>

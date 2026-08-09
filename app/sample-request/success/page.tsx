@@ -57,7 +57,7 @@ function SampleRequestSuccessInner() {
                   <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brass/15 text-brass text-xs font-semibold">
                     {idx + 1}
                   </span>
-                  <s.icon className="h-4 w-4 text-leather" />
+                  <s.icon className="h-4 w-4 text-leather dark:text-tan" />
                   <span className="text-foreground">{s.label}</span>
                 </li>
               ))}

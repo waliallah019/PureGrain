@@ -481,7 +481,7 @@
     }
  
     .pathway-card {
-        background: #ffffff;
+        background: hsl(var(--card));
         border-radius: var(--radius-lg);
         padding: 44px 40px 40px;
         box-shadow: var(--shadow-card);
@@ -661,7 +661,7 @@
         overflow-x: auto;
         border-radius: var(--radius-lg);
         box-shadow: var(--shadow-card);
-        background: #fff;
+        background: hsl(var(--card));
     }
     .lc-table {
         width: 100%;
@@ -751,7 +751,7 @@
         LC REQUIREMENTS
         ============================================================ */
     .req-card {
-        background: #fff;
+        background: hsl(var(--card));
         border-radius: var(--radius-lg);
         border-left: 4px solid var(--accent-tan);
         box-shadow: var(--shadow-card);
@@ -820,7 +820,7 @@
         margin: 0 auto;
     }
     .faq-item {
-        background: #fff;
+        background: hsl(var(--card));
         border: 1px solid var(--border-tan-soft);
         border-radius: var(--radius);
         margin-bottom: 14px;
@@ -1025,3 +1025,15 @@
         .reveal { opacity: 1; transform: none; transition: none; }
         * { animation: none !important; transition: none !important; }
     }
+/* Text sitting directly on the dark page/section background in dark mode. */
+.dark .policyPage td,
+.dark .policyPage .pathway-card__sub,
+.dark .policyPage .pathway-card__badge,
+.dark .policyPage a:not(.btn):not([class*="btn--"]) { color: var(--text-on-light); }
+
+/* Higher-specificity dark overrides: the base rules above (e.g.
+   `.lc-table tbody tr td`, `section.block`) outrank a plain `.dark .policyPage td`,
+   so they are matched selector-for-selector here. */
+.dark .policyPage section.block { background: hsl(var(--card)); }
+.dark .policyPage .lc-table tbody tr td,
+.dark .policyPage .lc-table tbody tr th { color: var(--text-on-light); }

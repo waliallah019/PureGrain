@@ -121,7 +121,7 @@ export default function RawLeatherList({
   // Removed hardcoded leatherTypes here, using the state `rawLeatherTypes`
   const animals = ["Cow", "Buffalo", "Goat", "Sheep", "Exotic"];
   const finishes = [
-    "Aniline", "Semi-Aniline", "Pigmented", "Pull-up", "Crazy Horse", "Waxed", "Nappa", "Embossed"
+    "Aniline", "Semi-Aniline", "Natural", "Pigmented", "Pull-up", "Crazy Horse", "Waxed", "Nappa", "Embossed"
   ];
   const priceUnits = ["per sq.ft.", "per kg"];
 

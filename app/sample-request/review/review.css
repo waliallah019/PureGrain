@@ -11,9 +11,21 @@
 }
 
 .reviewHero {
+  /* The site header is position:fixed (~113px tall with the marquee, ~72px
+     without), so it sits OUTSIDE normal flow. The previous 64px top padding
+     was smaller than the header, which clipped the "Your Sample Selection"
+     heading behind it on load. Clear the header first, then add the hero's
+     own breathing room. */
   padding: 64px 0 32px;
+  padding-top: calc(113px + 32px);
   background: hsl(var(--bone));
   border-bottom: 1px solid hsl(var(--border));
+}
+@media (max-width: 768px) {
+  .reviewHero {
+    /* Header is shorter on mobile (single row + marquee). */
+    padding-top: calc(96px + 24px);
+  }
 }
 
 .reviewHero__eyebrow {
@@ -214,7 +226,10 @@
   font-family: var(--font-serif, "Cormorant Garamond", serif);
   font-size: 22px;
   font-weight: 600;
-  color: hsl(var(--leather));
+  /* Sits on a --bone surface, so it must use the matching foreground token.
+     --leather is a dark *surface* colour in both themes, which rendered this
+     price as dark-on-dark (effectively invisible) in dark mode. */
+  color: hsl(var(--bone-foreground));
 }
 
 /* Action bar */
@@ -234,6 +249,22 @@
 .reviewBackLink:hover { color: hsl(var(--foreground)); }
 
 .reviewPaypalSlot { min-height: 50px; }
+
+/* PayPal renders its Smart Buttons (and the card-payment flow) inside
+   cross-origin iframes we cannot style. Those buttons are built for light
+   surfaces: the gaps between them and the "Powered by PayPal" strip are
+   white/transparent, which reads as broken white banding on our dark panel.
+   Giving the slot its own brand-cream surface in dark mode makes the payment
+   area look deliberate and keeps PayPal's own chrome legible. Light mode is
+   already cream, so it is left untouched. */
+.dark .reviewPaypalSlot {
+  /* --leather-foreground is the brand cream (#FDF8F3) in BOTH themes, so it
+     stays light here. (--primary-foreground would NOT work: primary becomes
+     gold in dark mode, so its foreground flips to dark.) */
+  background: hsl(var(--leather-foreground));
+  border-radius: 8px;
+  padding: 10px;
+}
 
 .reviewSkeleton {
   height: 18px;

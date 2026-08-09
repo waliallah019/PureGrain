@@ -138,7 +138,7 @@ import {
 export const sampleTypes: SampleRequestItemType[] = ['raw-leather', 'finished-products', 'both'];
 export const quantities = ["1-3 samples", "4-6 samples", "7-10 samples", "More than 10"];
 export const materialPreferences = ["Cowhide", "Buffalo", "Goat", "Sheep", "Mixed Selection", "Other"];
-export const finishTypes = ["Aniline", "Semi-Aniline", "Pigmented", "Suede", "Mixed Selection", "Other"];
+export const finishTypes = ["Aniline", "Semi-Aniline", "Natural", "Pigmented", "Suede", "Mixed Selection", "Other"];
 export const urgencies: Urgency[] = ["standard", "express", "rush"];
 export const businessTypes: BusinessType[] = ['wholesaler', 'retailer', 'manufacturer', 'distributor', 'designer', 'other'];
 export const intendedUses: IntendedUse[] = ['production', 'resale', 'testing', 'development', 'other'];

@@ -32,6 +32,7 @@ const animals = ["Cow", "Buffalo", "Goat", "Sheep", "Exotic"];
 const finishes = [
   "Aniline",
   "Semi-Aniline",
+  "Natural",
   "Pigmented",
   "Pull-up",
   "Crazy Horse",
@@ -367,9 +368,24 @@ export default function RawLeatherForm({
 
 
     const nonEmptyColors = formData.colors.filter(c => c.trim() !== "");
-    if (nonEmptyColors.length === 0) {
+    // Colours are optional in BOTH the Mongoose model (`default: []`) and the
+    // Zod create/update schemas (`.optional()`), so this client-side rule was
+    // stricter than the API. Bulk-imported hides ship with no colours, which
+    // meant ~45% of the catalogue could not be saved from this form at all —
+    // any edit (finish, price, un-archiving) was blocked by a colour error on
+    // an unrelated field. Keep the requirement when ADDING a hide so new
+    // entries stay complete, but don't block edits to existing ones.
+    if (isAddMode && nonEmptyColors.length === 0) {
       newErrors.colors = "At least one color is required.";
-    } else if (formData.colors.length > nonEmptyColors.length && formData.colors[formData.colors.length -1].trim() === "") {
+    } else if (
+      // Only police half-filled colour rows once the user has actually entered
+      // one. `formData.colors` seeds to [""] for a hide with no colours, so
+      // without this guard an untouched empty row tripped this branch and
+      // blocked the save with a colour error the user never caused.
+      nonEmptyColors.length > 0 &&
+      formData.colors.length > nonEmptyColors.length &&
+      formData.colors[formData.colors.length - 1].trim() === ""
+    ) {
       newErrors.colors = "Please fill all color fields or remove empty ones.";
     }
 
