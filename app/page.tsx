@@ -212,7 +212,9 @@ export default function PureGrainLanding() {
           title: type.name,
           description: sample?.description ?? "",
           image: sample?.images?.[0] ?? "/placeholder.svg?height=800&width=800",
-          href: "/catalog/raw-leather",
+          // Carry the type through as a filter so clicking a category lands on
+          // that category's results, not the unfiltered catalogue.
+          href: `/catalog/raw-leather?type=${encodeURIComponent(type.name)}`,
         }
       })
   }, [rawLeatherSamplePool, rawLeatherTypes])

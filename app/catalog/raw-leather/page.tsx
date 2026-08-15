@@ -18,6 +18,7 @@ import {
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { Button } from "@/components/ui/button"
+import { getPageItems } from "@/lib/utils/pagination"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -74,6 +75,12 @@ export default function RawLeatherPage() {
   const [selectedFinish, setSelectedFinish] = useState("all")
   const [sortBy, setSortBy] = useState("featured")
   const [gridCols, setGridCols] = useState<2 | 3 | 4>(3)
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [totalProducts, setTotalProducts] = useState(0)
+
+  // 12 divides evenly into the 2-, 3- and 4-column grid options.
+  const PAGE_SIZE = 12
 
   const resultsSectionRef = useRef<HTMLElement>(null)
   const prevFiltersRef = useRef({ activeType, selectedAnimal, selectedFinish, sortBy })
@@ -93,9 +100,28 @@ export default function RawLeatherPage() {
       prev.sortBy !== sortBy
     prevFiltersRef.current = { activeType, selectedAnimal, selectedFinish, sortBy }
     if (changed) {
+      // A changed filter invalidates the current page — otherwise you could sit
+      // on page 5 of a result set that now only has 2 pages and see nothing.
+      setPage(1)
       resultsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
     }
   }, [activeType, selectedAnimal, selectedFinish, sortBy])
+
+  // Searching also changes the result set, so it must reset the page too.
+  useEffect(() => {
+    setPage(1)
+  }, [searchTerm])
+
+  // Bring the grid back into view when paging, so clicking "Next" at the bottom
+  // of the list doesn't leave the user staring at the footer.
+  const isFirstPageRender = useRef(true)
+  useEffect(() => {
+    if (isFirstPageRender.current) {
+      isFirstPageRender.current = false
+      return
+    }
+    resultsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+  }, [page])
 
   useEffect(() => {
     const fetchTypes = async () => {
@@ -128,8 +154,8 @@ export default function RawLeatherPage() {
 
       try {
         const queryParams = new URLSearchParams()
-        queryParams.append("page", "1")
-        queryParams.append("limit", "100")
+        queryParams.append("page", String(page))
+        queryParams.append("limit", String(PAGE_SIZE))
 
         if (activeType !== "all") {
           queryParams.append("leatherType", activeType)
@@ -171,6 +197,13 @@ export default function RawLeatherPage() {
             queryParams.append("sortBy", backendSortBy)
             queryParams.append("order", backendOrder)
           }
+        } else if (activeType === "all") {
+          // Default view across every category: group the catalogue by leather
+          // type A-Z so browsing "All Hides" reads as an ordered catalogue
+          // rather than an arbitrary jumble. An explicit sort choice (price,
+          // name, newest) still wins — this only fills the default.
+          queryParams.append("sortBy", "leatherType")
+          queryParams.append("order", "asc")
         }
 
         const res = await fetch(`/api/raw-leather?${queryParams.toString()}`)
@@ -178,16 +211,27 @@ export default function RawLeatherPage() {
 
         const data = await res.json()
         setProducts(data.data || [])
+
+        const total = data.pagination?.totalProducts ?? 0
+        const pages = data.pagination?.totalPages ?? 1
+        setTotalProducts(total)
+        setTotalPages(Math.max(1, pages))
+
+        // If the requested page overshoots the result set (e.g. after a filter
+        // narrowed it), fall back to the last valid page instead of an empty grid.
+        if (page > pages && pages >= 1) setPage(pages)
       } catch (err: any) {
         setError(err.message || "Error loading leather hides")
         setProducts([])
+        setTotalProducts(0)
+        setTotalPages(1)
       } finally {
         setLoading(false)
       }
     }
 
     fetchRawLeather()
-  }, [activeType, searchTerm, selectedAnimal, selectedFinish, sortBy])
+  }, [activeType, searchTerm, selectedAnimal, selectedFinish, sortBy, page])
 
   const productTags = useMemo(() => {
     return products.reduce<Record<string, string[]>>((acc, product) => {
@@ -469,6 +513,59 @@ export default function RawLeatherPage() {
                   </article>
                 ))}
               </div>
+            )}
+
+            {!loading && !error && totalPages > 1 && (
+              <nav className="catalogPagination" aria-label="Leather hide pagination">
+                <button
+                  type="button"
+                  className="catalogPagination__btn"
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page <= 1}
+                  aria-label="Previous page"
+                >
+                  Previous
+                </button>
+
+                <ul className="catalogPagination__pages">
+                  {getPageItems(page, totalPages).map((item, i) =>
+                    item === "…" ? (
+                      <li key={`gap-${i}`} className="catalogPagination__gap" aria-hidden="true">
+                        …
+                      </li>
+                    ) : (
+                      <li key={item}>
+                        <button
+                          type="button"
+                          className={`catalogPagination__page${item === page ? " is-active" : ""}`}
+                          onClick={() => setPage(item as number)}
+                          aria-current={item === page ? "page" : undefined}
+                          aria-label={`Page ${item}`}
+                        >
+                          {item}
+                        </button>
+                      </li>
+                    )
+                  )}
+                </ul>
+
+                <button
+                  type="button"
+                  className="catalogPagination__btn"
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page >= totalPages}
+                  aria-label="Next page"
+                >
+                  Next
+                </button>
+              </nav>
+            )}
+
+            {!loading && !error && totalProducts > 0 && (
+              <p className="catalogPagination__count">
+                Showing {(page - 1) * PAGE_SIZE + 1}–
+                {Math.min(page * PAGE_SIZE, totalProducts)} of {totalProducts} hides
+              </p>
             )}
           </div>
         </section>
