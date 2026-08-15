@@ -11,6 +11,8 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { useLenis } from "@/lib/utils/lenis"
 import CurrencySwitcher from "@/components/CurrencySwitcher"
 
+const MOBILE_MAX_TYPES = 6
+
 export function Header() {
   const pathname = usePathname()
   const lenis = useLenis()
@@ -362,7 +364,7 @@ export function Header() {
                           >
                             All Finished Products
                           </Link>
-                          {finishedProductTypes.map((type) => (
+                          {finishedProductTypes.slice(0, MOBILE_MAX_TYPES).map((type) => (
                             <Link
                               key={type}
                               href={`/catalog/finished-products?type=${encodeURIComponent(type)}`}
@@ -392,7 +394,7 @@ export function Header() {
                           >
                             All Leather Hides
                           </Link>
-                          {rawLeatherTypes.map((type) => (
+                          {rawLeatherTypes.slice(0, MOBILE_MAX_TYPES).map((type) => (
                             <Link
                               key={type}
                               href={`/catalog/raw-leather?type=${encodeURIComponent(type)}`}

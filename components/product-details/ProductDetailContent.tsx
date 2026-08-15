@@ -74,12 +74,8 @@ export default function ProductDetailContent({
     return specs;
   }, [product]);
 
-  const getRelatedTags = (item: IProduct) => {
-    const baseTags = (item.tags || []).filter(Boolean);
-    const fallbackTags = (item.colorVariants || []).filter(Boolean);
-    const merged = baseTags.length > 0 ? baseTags : fallbackTags;
-    return Array.from(new Set(merged)).slice(0, 2);
-  };
+  // (Related-card tag pills were removed as redundant, so the tag/colour
+  // derivation that fed them is gone with them.)
 
   const handlePrevImage = () => {
     setSelectedIndex((prev) => (prev - 1 + images.length) % images.length);
@@ -208,7 +204,7 @@ export default function ProductDetailContent({
               <div className="mb-6 text-lg text-foreground">
                 <span className="text-foreground/70">Price:</span>{" "}
                 <span className="font-semibold inline-flex items-baseline gap-1">
-                  <PriceDisplay usdAmount={product.pricePerUnit} showOriginal />
+                  <PriceDisplay usdAmount={product.pricePerUnit} />
                   <span>/ {product.priceUnit}</span>
                 </span>
               </div>
@@ -304,7 +300,12 @@ export default function ProductDetailContent({
                   href={`/catalog/finished-products/${p._id}`}
                   className="group block card-industrial"
                 >
-                  <div className="w-full h-[180px] sm:h-[200px] md:h-[220px] overflow-hidden flex-shrink-0">
+                  {/* On mobile the grid drops to one column, so the card spans the
+                      full width — a fixed 180px height letterboxed the product
+                      into a thin strip. An aspect ratio scales the image with the
+                      card instead. Fixed heights are kept from `sm:` up, where
+                      the multi-column widths already suit them. */}
+                  <div className="w-full aspect-[4/3] sm:aspect-auto sm:h-[200px] md:h-[220px] overflow-hidden flex-shrink-0">
                     <Image
                       src={p.images?.[0] || "/placeholder-image.jpg"}
                       alt={p.name}
@@ -313,64 +314,56 @@ export default function ProductDetailContent({
                       className="w-full h-full object-cover object-center block transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
-                  <div className="p-6">
-                    <div className="flex items-start justify-between gap-4 mb-3">
-                      <div>
-                        <p className="text-xs text-brass mb-2">{p.productType}</p>
-                        <h3 className="font-serif text-xl font-medium text-foreground group-hover:text-leather dark:group-hover:text-tan transition-colors">
-                          {p.name}
-                        </h3>
-                      </div>
-                      <div className="flex flex-col items-end gap-2">
-                        {p.isFeatured && (
-                          <span className="text-[11px] uppercase tracking-wide px-2 py-1 border border-brass text-brass min-w-[92px] text-center">
-                            Featured
-                          </span>
-                        )}
-                        {p.sampleAvailable && (
-                          <span className="text-[11px] uppercase tracking-wide px-2 py-1 border border-border text-muted-foreground bg-muted/40 min-w-[92px] text-center">
-                            Sample
-                          </span>
-                        )}
-                        {p.availability && (
-                          <span className="text-[11px] uppercase tracking-wide px-2 py-1 border border-leather/40 dark:border-tan/30 text-leather dark:text-tan min-w-[92px] text-center">
-                            {p.availability}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground mb-4">
-                      <p>
-                        <span className="text-foreground/80">Material:</span>{" "}
+                  {/* Compulsory fields only. The product-type eyebrow and the
+                      "Type:" meta row both repeated the same value (and these
+                      are already same-category suggestions), and the tag pills
+                      duplicated it again — all removed. The name now uses the
+                      body sans at a smaller size, clamped to two lines, so it
+                      no longer dominates the card or push rows out of sync. */}
+                  <div className="p-5">
+                    <h3 className="text-[0.95rem] font-semibold leading-snug text-foreground line-clamp-2 min-h-[2.6em] group-hover:text-leather dark:group-hover:text-tan transition-colors">
+                      {p.name}
+                    </h3>
+
+                    <div className="mt-3 flex items-baseline justify-between gap-3 text-sm text-muted-foreground">
+                      {/* Label dropped: at 4-up the "Material:" prefix pushed the
+                          value into a mid-word ellipsis ("Genuine Leath…").
+                          The value alone is unambiguous on a leather card and
+                          now fits in full. */}
+                      <span className="truncate text-foreground/80">
                         {p.materialUsed}
-                      </p>
-                      <p>
-                        <span className="text-foreground/80">Type:</span>{" "}
-                        {p.productType}
-                      </p>
-                      <p>
-                        <span className="text-foreground/80">MOQ:</span>{" "}
-                        {p.moq} units
-                      </p>
-                      <p>
-                        <span className="text-foreground/80">Price:</span>{" "}
-                        <span className="inline-flex items-baseline gap-1">
-                          <PriceDisplay usdAmount={p.pricePerUnit} />
-                          <span>/ {p.priceUnit}</span>
-                        </span>
-                      </p>
+                      </span>
+                      <span className="whitespace-nowrap">
+                        <span className="text-foreground/80">MOQ:</span> {p.moq}
+                      </span>
                     </div>
-                    <div className="flex flex-wrap gap-1.5 mb-4">
-                      {getRelatedTags(p).map((tag) => (
-                        <span
-                          key={tag}
-                          className="text-[10px] uppercase tracking-wide px-2 py-0.5 border border-border/70 text-muted-foreground"
-                        >
-                          {tag}
+
+                    <p className="mt-3 pt-3 border-t border-border flex items-baseline gap-1.5 text-xl font-bold text-foreground">
+                      <PriceDisplay usdAmount={p.pricePerUnit} />
+                      <span className="text-xs font-medium text-muted-foreground">
+                        / {p.priceUnit}
+                      </span>
+                    </p>
+
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      {p.isFeatured && (
+                        <span className="text-[10px] uppercase tracking-wide px-2 py-0.5 border border-brass text-brass">
+                          Featured
                         </span>
-                      ))}
+                      )}
+                      {p.sampleAvailable && (
+                        <span className="text-[10px] uppercase tracking-wide px-2 py-0.5 border border-border text-muted-foreground bg-muted/40">
+                          Sample Available
+                        </span>
+                      )}
+                      {p.availability && (
+                        <span className="text-[10px] uppercase tracking-wide px-2 py-0.5 border border-leather/40 dark:border-tan/30 text-leather dark:text-tan">
+                          {p.availability}
+                        </span>
+                      )}
                     </div>
-                    <span className="inline-flex items-center gap-2 text-sm font-medium text-leather dark:text-tan group-hover:text-brass transition-colors">
+
+                    <span className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-leather dark:text-tan group-hover:text-brass transition-colors">
                       View Details <ArrowRight size={14} />
                     </span>
                   </div>

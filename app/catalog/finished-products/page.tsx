@@ -18,6 +18,7 @@ import {
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { Button } from "@/components/ui/button"
+import { getPageItems } from "@/lib/utils/pagination"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -66,6 +67,12 @@ export default function FinishedProductsPage() {
   const [selectedAvailability, setSelectedAvailability] = useState("all")
   const [sortBy, setSortBy] = useState("featured")
   const [gridCols, setGridCols] = useState<2 | 3 | 4>(3)
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [totalProducts, setTotalProducts] = useState(0)
+
+  // 12 divides evenly into the 2-, 3- and 4-column grid options.
+  const PAGE_SIZE = 12
 
   const resultsSectionRef = useRef<HTMLElement>(null)
   const prevFiltersRef = useRef({ activeType, selectedMaterial, selectedAvailability, sortBy })
@@ -85,9 +92,28 @@ export default function FinishedProductsPage() {
       prev.sortBy !== sortBy
     prevFiltersRef.current = { activeType, selectedMaterial, selectedAvailability, sortBy }
     if (changed) {
+      // A changed filter invalidates the current page — otherwise you could sit
+      // on page 5 of a result set that now only has 2 pages and see nothing.
+      setPage(1)
       resultsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
     }
   }, [activeType, selectedMaterial, selectedAvailability, sortBy])
+
+  // Searching also changes the result set, so it must reset the page too.
+  useEffect(() => {
+    setPage(1)
+  }, [searchTerm])
+
+  // Bring the grid back into view when paging, so clicking "Next" at the bottom
+  // of the list doesn't leave the user staring at the footer.
+  const isFirstPageRender = useRef(true)
+  useEffect(() => {
+    if (isFirstPageRender.current) {
+      isFirstPageRender.current = false
+      return
+    }
+    resultsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+  }, [page])
 
   useEffect(() => {
     const fetchTypes = async () => {
@@ -120,8 +146,8 @@ export default function FinishedProductsPage() {
 
       try {
         const queryParams = new URLSearchParams()
-        queryParams.append("page", "1")
-        queryParams.append("limit", "100")
+        queryParams.append("page", String(page))
+        queryParams.append("limit", String(PAGE_SIZE))
 
         if (activeType !== "all") {
           queryParams.append("productType", activeType)
@@ -163,6 +189,13 @@ export default function FinishedProductsPage() {
             queryParams.append("sortBy", backendSortBy)
             queryParams.append("order", backendOrder)
           }
+        } else if (activeType === "all") {
+          // Default view across every category: group the catalogue by product
+          // type A-Z so browsing "All Products" reads as an ordered catalogue
+          // rather than an arbitrary jumble. An explicit sort choice (price,
+          // name, newest) still wins — this only fills the default.
+          queryParams.append("sortBy", "productType")
+          queryParams.append("order", "asc")
         }
 
         const res = await fetch(`/api/finished-products?${queryParams.toString()}`)
@@ -170,26 +203,31 @@ export default function FinishedProductsPage() {
 
         const data = await res.json()
         setProducts(data.data || [])
+
+        const total = data.pagination?.totalProducts ?? 0
+        const pages = data.pagination?.totalPages ?? 1
+        setTotalProducts(total)
+        setTotalPages(Math.max(1, pages))
+
+        // If the requested page overshoots the result set (e.g. after a filter
+        // narrowed it), fall back to the last valid page instead of showing an
+        // empty grid.
+        if (page > pages && pages >= 1) setPage(pages)
       } catch (err: any) {
         setError(err.message || "Error loading products")
         setProducts([])
+        setTotalProducts(0)
+        setTotalPages(1)
       } finally {
         setLoading(false)
       }
     }
 
     fetchProducts()
-  }, [activeType, searchTerm, selectedMaterial, selectedAvailability, sortBy])
+  }, [activeType, searchTerm, selectedMaterial, selectedAvailability, sortBy, page])
 
-  const productTags = useMemo(() => {
-    return products.reduce<Record<string, string[]>>((acc, product) => {
-      const baseTags = (product.tags || []).filter(Boolean)
-      const fallbackTags = (product.colorVariants || []).filter(Boolean)
-      const merged = baseTags.length > 0 ? baseTags : fallbackTags
-      acc[product._id] = Array.from(new Set(merged)).slice(0, 3)
-      return acc
-    }, {})
-  }, [products])
+  // (The per-product tag pills were removed from the card as redundant, so the
+  // tag/colour-variant derivation that fed them is gone with them.)
 
   return (
     <div className="catalogPage min-h-screen">
@@ -386,7 +424,7 @@ export default function FinishedProductsPage() {
             ) : (
               <div className={`catalogProductGrid catalogProductGrid--cols-${gridCols}`}>
                 {products.map((product) => (
-                  <article key={product._id} className="catalogFeatureCard">
+                  <article key={product._id} className="catalogFeatureCard catalogFeatureCard--fp">
                     <Link href={`/catalog/finished-products/${product._id}`}>
                       <div className="catalogFeatureCard__media">
                         <img
@@ -395,29 +433,22 @@ export default function FinishedProductsPage() {
                         />
                       </div>
                       <div className="catalogFeatureCard__body">
-                        <div className="catalogFeatureCard__top">
-                          <span className="catalogFeatureCard__type">{product.productType}</span>
-                          <span className="catalogLine" aria-hidden="true"></span>
-                        </div>
+                        {/* Product type intentionally omitted: the type strip above
+                            already scopes the grid, so repeating it (previously both
+                            as an eyebrow and as a "Type:" meta row) was redundant.
+                            MOQ now occupies that slot instead. */}
                         <h3>{product.name}</h3>
                         <div className="catalogFeatureMeta">
                           <p><span>Material:</span> {product.materialUsed}</p>
-                          <p><span>Type:</span> {product.productType}</p>
                           <p><span>MOQ:</span> {product.moq} units</p>
                         </div>
                         <p className="catalogFeatureCard__price">
-                          <span>Price</span>
                           {renderPrice(product.pricePerUnit, product.priceUnit)}
                         </p>
                         <div className="catalogChipRow">
                           {product.isFeatured && <span className="catalogChip catalogChip--gold">Featured</span>}
-                          {product.sampleAvailable && <span className="catalogChip">Sample</span>}
+                          {product.sampleAvailable && <span className="catalogChip">Sample Available</span>}
                           {product.availability && <span className="catalogChip catalogChip--accent">{product.availability}</span>}
-                        </div>
-                        <div className="catalogTagPills">
-                          {(productTags[product._id] || []).slice(0, 2).map((tag) => (
-                            <span key={tag}>{tag}</span>
-                          ))}
                         </div>
                         <span className="catalogFeatureCard__link">
                           View Details
@@ -428,6 +459,59 @@ export default function FinishedProductsPage() {
                   </article>
                 ))}
               </div>
+            )}
+
+            {!loading && !error && totalPages > 1 && (
+              <nav className="catalogPagination" aria-label="Product pagination">
+                <button
+                  type="button"
+                  className="catalogPagination__btn"
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page <= 1}
+                  aria-label="Previous page"
+                >
+                  Previous
+                </button>
+
+                <ul className="catalogPagination__pages">
+                  {getPageItems(page, totalPages).map((item, i) =>
+                    item === "…" ? (
+                      <li key={`gap-${i}`} className="catalogPagination__gap" aria-hidden="true">
+                        …
+                      </li>
+                    ) : (
+                      <li key={item}>
+                        <button
+                          type="button"
+                          className={`catalogPagination__page${item === page ? " is-active" : ""}`}
+                          onClick={() => setPage(item as number)}
+                          aria-current={item === page ? "page" : undefined}
+                          aria-label={`Page ${item}`}
+                        >
+                          {item}
+                        </button>
+                      </li>
+                    )
+                  )}
+                </ul>
+
+                <button
+                  type="button"
+                  className="catalogPagination__btn"
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page >= totalPages}
+                  aria-label="Next page"
+                >
+                  Next
+                </button>
+              </nav>
+            )}
+
+            {!loading && !error && totalProducts > 0 && (
+              <p className="catalogPagination__count">
+                Showing {(page - 1) * PAGE_SIZE + 1}–
+                {Math.min(page * PAGE_SIZE, totalProducts)} of {totalProducts} products
+              </p>
             )}
           </div>
         </section>

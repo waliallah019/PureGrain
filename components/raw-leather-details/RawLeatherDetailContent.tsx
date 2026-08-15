@@ -216,7 +216,7 @@ export default function RawLeatherDetailContent({
               <div className="mb-6 text-lg text-foreground">
                 <span className="text-foreground/70">Price:</span>{" "}
                 <span className="font-semibold inline-flex items-baseline gap-1">
-                  <PriceDisplay usdAmount={rawLeather.pricePerSqFt} showOriginal />
+                  <PriceDisplay usdAmount={rawLeather.pricePerSqFt} />
                   <span>/ sq ft</span>
                 </span>
               </div>

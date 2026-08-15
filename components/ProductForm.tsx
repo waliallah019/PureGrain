@@ -879,7 +879,10 @@ export default function ProductForm({
               name="isActive"
               checked={formData.isActive}
               onChange={handleChange}
-              disabled={formData.isArchived} // Disable isActive if archived
+              // Not disabled by isArchived: a product saved as active AND
+              // archived (as the bulk imports were) would lock both boxes and
+              // leave no way to change either. handleChange already keeps the
+              // two mutually exclusive, so the guard is redundant here.
               className="h-4 w-4 border border-gray-300 rounded text-primary
                 focus:ring-primary focus:ring-offset-2
                 disabled:opacity-50 disabled:cursor-not-allowed
@@ -898,7 +901,8 @@ export default function ProductForm({
               name="isArchived"
               checked={formData.isArchived}
               onChange={handleChange}
-              disabled={formData.isActive} // Disable isArchived if active
+              // See the Active checkbox above — mutual disabling deadlocked any
+              // product that was both active and archived.
               className="h-4 w-4 border border-gray-300 rounded text-primary
                 focus:ring-primary focus:ring-offset-2
                 disabled:opacity-50 disabled:cursor-not-allowed

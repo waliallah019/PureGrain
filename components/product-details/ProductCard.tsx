@@ -217,7 +217,7 @@ export default function ProductCard({ product, viewMode = 'grid' }: ProductCardP
               <div>
                 <div className="text-xs text-muted-foreground">Starting from</div>
                 <div className="text-xl font-bold text-amber-700 dark:text-amber-400">
-                  <PriceDisplay usdAmount={pricePerUnit} showOriginal />
+                  <PriceDisplay usdAmount={pricePerUnit} />
                 </div>
               </div>
             )}

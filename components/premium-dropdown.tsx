@@ -9,30 +9,72 @@ type PremiumDropdownProps = {
   className?: string
 }
 
+/** Keeps the panel a predictable height regardless of how many types exist. */
+const MAX_TYPES_PER_COLUMN = 5
+
+async function fetchTypeNames(endpoint: string): Promise<string[]> {
+  try {
+    const res = await fetch(endpoint)
+    if (!res.ok) return []
+    const json = await res.json()
+    if (!Array.isArray(json.data)) return []
+    return Array.from(
+      new Set<string>(
+        json.data
+          .map((item: { name?: string }) => item?.name)
+          .filter((n: unknown): n is string => typeof n === "string" && n.length > 0)
+      )
+    ).sort((a, b) => a.localeCompare(b))
+  } catch {
+    return []
+  }
+}
+
 export function PremiumDropdown({ className }: PremiumDropdownProps) {
   const [isOpen, setIsOpen] = React.useState(false)
+  const [hideTypes, setHideTypes] = React.useState<string[]>([])
+  const [productTypes, setProductTypes] = React.useState<string[]>([])
+
+  // These lists were previously hardcoded to categories that don't exist in the
+  // catalogue ("Full Grain Leather", "Furniture & Upholstery", ...) and every
+  // entry linked to the unfiltered catalogue, so the menu neither reflected the
+  // real inventory nor actually filtered anything. Both now come from the same
+  // taxonomy endpoints the catalogue pages use.
+  React.useEffect(() => {
+    let cancelled = false
+    Promise.all([
+      fetchTypeNames("/api/raw-leather-types"),
+      fetchTypeNames("/api/product-types"),
+    ]).then(([hides, products]) => {
+      if (cancelled) return
+      setHideTypes(hides)
+      setProductTypes(products)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const menuItems = [
     {
       category: "LEATHER HIDES",
-      items: [
-        { title: "Full Grain Leather", href: "/catalog/raw-leather" },
-        { title: "Top Grain Leather", href: "/catalog/raw-leather" },
-        { title: "Suede & Nubuck", href: "/catalog/raw-leather" },
-        { title: "Specialty Finishes", href: "/catalog/raw-leather" },
-      ],
+      viewAll: "/catalog/raw-leather",
+      items: hideTypes.slice(0, MAX_TYPES_PER_COLUMN).map((name) => ({
+        title: name,
+        href: `/catalog/raw-leather?type=${encodeURIComponent(name)}`,
+      })),
     },
     {
       category: "FINISHED PRODUCTS",
-      items: [
-        { title: "Footwear & Accessories", href: "/catalog/finished-products" },
-        { title: "Furniture & Upholstery", href: "/catalog/finished-products" },
-        { title: "Bags & Leather Goods", href: "/catalog/finished-products" },
-        { title: "Automotive Leather", href: "/catalog/finished-products" },
-      ],
+      viewAll: "/catalog/finished-products",
+      items: productTypes.slice(0, MAX_TYPES_PER_COLUMN).map((name) => ({
+        title: name,
+        href: `/catalog/finished-products?type=${encodeURIComponent(name)}`,
+      })),
     },
     {
       category: "CUSTOM MANUFACTURING",
+      viewAll: "/custom-manufacturing",
       items: [
         { title: "Design Custom Orders", href: "/custom-manufacturing" },
         { title: "Bulk Customization", href: "/custom-manufacturing" },
@@ -76,6 +118,16 @@ export function PremiumDropdown({ className }: PremiumDropdownProps) {
                     <div className="h-px w-0 group-hover:w-full bg-gradient-to-r from-primary to-transparent transition-all duration-300 mt-1" />
                   </Link>
                 ))}
+
+                {/* Always reachable, and the only entry while the taxonomy is
+                    still loading, so the column is never empty. */}
+                <Link
+                  href={section.viewAll}
+                  className="inline-flex items-center gap-1.5 pt-1 text-sm font-medium text-primary hover:underline"
+                >
+                  View all
+                  <span aria-hidden="true">→</span>
+                </Link>
               </div>
             </div>
           ))}

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
-import { Instagram, Mail, MapPin, Phone } from "lucide-react"
+import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone } from "lucide-react"
 import type { IRawLeatherType } from "@/types/rawLeather"
 
 export function Footer() {
@@ -25,12 +25,22 @@ export function Footer() {
     fetchTypes()
   }, [])
 
+  // Cap the list: rendering every type made this column grow without bound as
+  // the catalogue grew, which unbalanced the footer grid (and on mobile turned
+  // it into a long scroll). A "View all" link keeps the rest reachable.
+  const MAX_FOOTER_TYPES = 6
+
   const productLinks = useMemo(
     () =>
-      rawLeatherTypes.map((type) => ({
-        href: `/catalog/raw-leather?type=${encodeURIComponent(type.name)}`,
-        label: type.name,
-      })),
+      rawLeatherTypes
+        .map((type) => type.name)
+        .filter(Boolean)
+        .sort((a, b) => a.localeCompare(b))
+        .slice(0, MAX_FOOTER_TYPES)
+        .map((name) => ({
+          href: `/catalog/raw-leather?type=${encodeURIComponent(name)}`,
+          label: name,
+        })),
     [rawLeatherTypes]
   )
 
@@ -69,16 +79,35 @@ export function Footer() {
             <p className="text-[hsl(var(--footer-foreground)/0.7)] text-sm leading-relaxed mb-4">
               Premium leather sourcing for discerning manufacturers. Trusted by leading brands worldwide for consistent quality and reliable supply.
             </p>
-            <div className="flex gap-4">
-              <a
-                href="http://instagram.com/puregrainexports/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 flex items-center justify-center border border-[hsl(var(--footer-foreground)/0.2)] hover:border-brass hover:text-brass transition-colors"
-                aria-label="Instagram"
-              >
-                <Instagram size={18} />
-              </a>
+            <div className="flex flex-wrap gap-3">
+              {[
+                {
+                  href: "https://instagram.com/puregrainexports/",
+                  label: "Instagram",
+                  Icon: Instagram,
+                },
+                {
+                  href: "https://www.facebook.com/puregrainexports",
+                  label: "Facebook",
+                  Icon: Facebook,
+                },
+                {
+                  href: "https://www.linkedin.com/company/puregrainexports",
+                  label: "LinkedIn",
+                  Icon: Linkedin,
+                },
+              ].map(({ href, label, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 flex items-center justify-center border border-[hsl(var(--footer-foreground)/0.2)] hover:border-brass hover:text-brass transition-colors"
+                  aria-label={label}
+                >
+                  <Icon size={18} />
+                </a>
+              ))}
             </div>
           </div>
 
@@ -96,6 +125,15 @@ export function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link
+                  href="/catalog/raw-leather"
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-brass hover:underline"
+                >
+                  View all types
+                  <span aria-hidden="true">→</span>
+                </Link>
+              </li>
             </ul>
           </div>
 

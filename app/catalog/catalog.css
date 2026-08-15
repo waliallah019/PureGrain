@@ -1545,3 +1545,189 @@
     linear-gradient(180deg, rgba(10, 6, 3, 0.88) 0%, rgba(10, 6, 3, 0.72) 50%, rgba(10, 6, 3, 0.62) 100%),
     url("/hero-leather-espresso.jpg");
 }
+
+/* ===========================================================================
+ * Finished-product card refinements  (.catalogFeatureCard--fp)
+ * ---------------------------------------------------------------------------
+ * Scoped to a modifier so the raw-leather grid, which reuses the same
+ * .catalogFeatureCard markup, keeps its current appearance untouched.
+ * Image dimensions (.catalogFeatureCard__media) are deliberately NOT altered.
+ * ========================================================================= */
+
+/* Product name — was set in the display serif (Cormorant Garamond), whose
+   high stroke contrast and small x-height made long product names hard to
+   read at card size. Switch to the body sans and clamp to two lines so every
+   card in a row keeps the same height regardless of name length. */
+.catalogPage .catalogFeatureCard--fp h3 {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.005em;
+  color: var(--text-on-light);
+  margin: 0 0 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: calc(2 * 1.4em); /* reserve 2 lines so rows align */
+}
+
+/* Meta — two balanced columns (Material | MOQ). `min-width: 0` stops long
+   material names from forcing the ragged wrap the old 3-item grid produced. */
+.catalogPage .catalogFeatureCard--fp .catalogFeatureMeta {
+  grid-template-columns: 1fr auto;
+  gap: 6px 16px;
+  margin-top: 0;
+  align-items: baseline;
+}
+.catalogPage .catalogFeatureCard--fp .catalogFeatureMeta p {
+  min-width: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.catalogPage .catalogFeatureCard--fp .catalogFeatureMeta p:last-child {
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* Price — the old row used space-between with a separate "PRICE" label, which
+   pushed the amount and the unit to opposite edges and left a large dead gap
+   mid-card. Now the amount leads, with the unit sitting directly beside it. */
+.catalogPage .catalogFeatureCard--fp .catalogFeatureCard__price {
+  justify-content: flex-start;
+  align-items: baseline;
+  gap: 6px;
+  margin: 14px 0 14px;
+  padding-top: 12px;
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  /* `.catalogFeatureCard p` (class+class+element) outranks the base price rule,
+     so the amount was inheriting the muted body colour. Restate it here — the
+     price is the card's focal point and needs full-strength contrast. */
+  color: var(--text-on-light);
+}
+/* Neutralise the old "PRICE" label rule: with the label gone, its
+   :first-child selector would otherwise shrink the amount itself to 0.7rem. */
+.catalogPage .catalogFeatureCard--fp .catalogFeatureCard__price > span:first-child {
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-transform: none;
+  color: inherit;
+}
+.catalogPage .catalogFeatureCard--fp .catalogFeatureCard__priceUnit {
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--text-on-light-mute);
+}
+
+/* Status chips sit right under the price; tighten the gap to the CTA. */
+.catalogPage .catalogFeatureCard--fp .catalogChipRow {
+  margin-bottom: 14px;
+  gap: 6px;
+}
+.catalogPage .catalogFeatureCard--fp .catalogFeatureCard__link {
+  margin-top: 0;
+}
+
+/* Small screens: keep the two meta columns readable rather than cramped. */
+@media (max-width: 480px) {
+  .catalogPage .catalogFeatureCard--fp h3 { font-size: 0.95rem; }
+  .catalogPage .catalogFeatureCard--fp .catalogFeatureCard__price { font-size: 1.3rem; }
+  .catalogPage .catalogFeatureCard--fp .catalogFeatureMeta { gap: 4px 12px; }
+}
+
+/* ===========================================================================
+ * Catalog pagination (shared by finished-products and raw-leather grids)
+ * ========================================================================= */
+.catalogPage .catalogPagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 40px;
+}
+
+.catalogPage .catalogPagination__pages {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.catalogPage .catalogPagination__btn,
+.catalogPage .catalogPagination__page {
+  min-width: 40px;
+  height: 40px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-on-light);
+  background: transparent;
+  border: 1px solid var(--border-tan-soft);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.catalogPage .catalogPagination__page {
+  padding: 0 8px;
+}
+
+.catalogPage .catalogPagination__btn:hover:not(:disabled),
+.catalogPage .catalogPagination__page:hover:not(.is-active) {
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+}
+
+.catalogPage .catalogPagination__btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.catalogPage .catalogPagination__page.is-active {
+  background: var(--accent-gold);
+  border-color: var(--accent-gold);
+  color: #17100b;
+}
+
+.catalogPage .catalogPagination__gap {
+  min-width: 24px;
+  text-align: center;
+  color: var(--text-on-light-mute);
+  user-select: none;
+}
+
+.catalogPage .catalogPagination__count {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--text-on-light-mute);
+}
+
+/* Mobile: drop the word buttons to icons-width and tighten spacing so the
+   control never overflows a 320px viewport. */
+@media (max-width: 520px) {
+  .catalogPage .catalogPagination { gap: 6px; }
+  .catalogPage .catalogPagination__btn {
+    padding: 0 10px;
+    min-width: 0;
+    font-size: 0.78rem;
+  }
+  .catalogPage .catalogPagination__page {
+    min-width: 34px;
+    height: 34px;
+    font-size: 0.8rem;
+  }
+  .catalogPage .catalogPagination__pages { gap: 4px; }
+}
