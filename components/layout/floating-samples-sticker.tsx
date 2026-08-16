@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSampleTrayVisible } from "@/hooks/use-sample-tray-visible";
 
 export function FloatingSamplesSticker() {
   const pathname = usePathname();
@@ -16,6 +17,7 @@ export function FloatingSamplesSticker() {
   }, [pathname]);
 
   const isHomePage = pathname === "/";
+  const trayVisible = useSampleTrayVisible();
 
   useEffect(() => {
     if (!isCustomerFacingRoute) {
@@ -67,24 +69,42 @@ export function FloatingSamplesSticker() {
     return null;
   }
 
-  // Add extra top margin for mobile to clear the ticker/announcement bar
-  // top-24 (6rem) → top-28 (7rem) for xs, top-32 (8rem) for sm, top-36 (9rem) for lg
+  // Bottom-LEFT corner. WhatsApp owns bottom-right; splitting them across the
+  // two corners keeps each one a single, unambiguous target instead of a stacked
+  // pair crowding one side.
+  //
+  // Sizes step with the breakpoint so the badge stays proportionate: it should
+  // read as a peer of the 44/52px WhatsApp FAB, not dominate the viewport. On a
+  // 375px screen 64px is ~17% of the width, which is about the practical ceiling
+  // for a persistent floating badge.
+  //   <640px : 64px   640-1023px : 76px   >=1024px : 88px
+  //
+  // The sample-tray bar is a full-width fixed bar along the bottom, so when it
+  // is showing the badge lifts above it — the same clearance WhatsAppButton
+  // applies. Done as an inline style rather than an arbitrary Tailwind class
+  // because `calc()` containing `env(...)` (and therefore a comma) is fragile to
+  // pass through Tailwind's arbitrary-value parser; inline also beats the
+  // `bottom-4 sm:bottom-6` utilities without needing `!important`.
+  // 64px is the desktop bar height and safely clears the 56px mobile one too.
+  const trayClearance = "calc(64px + env(safe-area-inset-bottom, 0px) + 16px)";
+
   return (
     <div
-      className={`fixed top-28 right-3 sm:top-32 sm:right-6 lg:top-36 z-40 transition-all duration-300 ${
+      className={`fixed left-4 z-40 transition-all duration-300 sm:left-6 ${
+        trayVisible ? "" : "bottom-4 sm:bottom-6"
+      } ${
         isVisible
-          ? "opacity-100 translate-y-0 pointer-events-auto"
-          : "opacity-0 -translate-y-4 pointer-events-none"
+          ? "pointer-events-auto translate-y-0 opacity-100"
+          : "pointer-events-none translate-y-4 opacity-0"
       }`}
+      style={trayVisible ? { bottom: trayClearance } : undefined}
       aria-hidden={!isVisible}
     >
-      <Link
-        href="/request-sample/pay"
-        aria-label="Get free samples"
-        className="relative block"
-      >
+      <Link href="/request-sample/pay" aria-label="Get free samples" className="relative block">
+        {/* Glow tinted to the brand brass rather than red/amber, so the halo
+            reads as part of the palette even though the sticker artwork is red. */}
         <span
-          className="absolute inset-2 rounded-full bg-gradient-to-br from-red-500/55 via-red-500/35 to-amber-400/45 blur-xl scale-110 -z-10 animate-pulse"
+          className="absolute inset-2 -z-10 scale-110 animate-pulse rounded-full bg-gradient-to-br from-brass/55 via-brass/35 to-accent/40 blur-xl"
           aria-hidden="true"
         />
         <Image
@@ -92,7 +112,7 @@ export function FloatingSamplesSticker() {
           alt="Free Samples"
           width={112}
           height={112}
-          className="h-[84px] w-[84px] sm:h-[112px] sm:w-[112px] object-contain drop-shadow-xl hover:scale-105 transition-transform"
+          className="h-16 w-16 object-contain drop-shadow-xl transition-transform hover:scale-105 sm:h-[76px] sm:w-[76px] lg:h-[88px] lg:w-[88px]"
           priority={false}
         />
       </Link>

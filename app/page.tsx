@@ -1,156 +1,261 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react"
-import { Button } from "@/components/ui/button"
-import PriceDisplay from "@/components/PriceDisplay"
+import { useEffect, useMemo, useRef, useState } from "react"
+import Link from "next/link"
+import { motion, useReducedMotion, useScroll, useSpring } from "framer-motion"
 import {
   ArrowRight,
   Briefcase,
   Car,
   CheckCircle2,
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
+  FlaskConical,
   Footprints,
   Globe,
   Globe2,
   Layers,
   Quote,
+  Scissors,
   Shield,
   Sofa,
   Truck,
   Users,
   Watch,
 } from "lucide-react"
-import Link from "next/link"
+
+import PriceDisplay from "@/components/PriceDisplay"
 import { Footer } from "@/components/layout/footer"
 import { Header } from "@/components/layout/header"
-import { motion, AnimatePresence, type Variants } from "framer-motion"
+import { HeroSlider, type HeroSlide } from "@/components/landing/HeroSlider"
+import {
+  CountUp,
+  Reveal,
+  SectionHeading,
+  Stagger,
+  StaggerItem,
+} from "@/components/landing/primitives"
 import type { IRawLeather, IRawLeatherType } from "@/types/rawLeather"
 import type { IProduct } from "@/types/product"
 
+/* -------------------------------------------------------------------------- */
+/* Static content                                                             */
+/* -------------------------------------------------------------------------- */
+
+const HERO_SLIDES: HeroSlide[] = [
+  {
+    image: "/hero-leather-warm.jpg",
+    imageAlt: "Full-grain leather hide with a warm natural finish",
+    label: "Premium B2B Leather Supply",
+    headline: "Premium Leather for Serious Manufacturers",
+    description:
+      "Source exceptional quality leather at scale. From full grain to custom finishes, we supply discerning brands with materials that define craftsmanship.",
+    primaryCta: { label: "Explore Collection", href: "/catalog" },
+    secondaryCta: { label: "Request Free Samples", href: "/sample-request" },
+  },
+  {
+    image: "/hero-leather-tan.jpg",
+    imageAlt: "Stacked tan leather hides showing consistent colour across a batch",
+    label: "Artisan Craftsmanship",
+    headline: "Exceptional Finishes, Unmatched Quality",
+    description:
+      "Vegetable-tanned, aniline-dyed and custom finishes, crafted for furniture, fashion and automotive applications — matched to your specification.",
+    primaryCta: { label: "View Finishes", href: "/catalog/raw-leather" },
+    secondaryCta: { label: "Contact Sales", href: "/contact" },
+  },
+  {
+    image: "/hero-leather-espresso.jpg",
+    imageAlt: "Dark espresso leather hide with a fine natural grain",
+    label: "Global Leather Partner",
+    headline: "Trusted by Manufacturers Worldwide",
+    description:
+      "25+ years of expertise and exports to 40+ countries. We deliver consistent quality leather that powers leading brands across industries.",
+    primaryCta: { label: "Browse Catalog", href: "/catalog" },
+    secondaryCta: { label: "Get a Quote", href: "/quote-request" },
+  },
+]
+
+/**
+ * Trust strip. `value` drives the count-up; credentials that aren't numbers
+ * (ISO 9001) pass `display` instead and render statically — animating a
+ * certification number would read as decorative rather than factual.
+ */
+const TRUST_STATS: Array<{
+  value?: number
+  suffix?: string
+  display?: string
+  label: string
+  detail: string
+}> = [
+  { value: 25, suffix: "+", label: "Years Exporting", detail: "Continuous operation since 1999" },
+  { value: 40, suffix: "+", label: "Countries Served", detail: "Across six continents" },
+  { display: "ISO 9001", label: "Quality Certified", detail: "Audited quality management" },
+  { value: 500, suffix: "K+", label: "Sq. Ft. Monthly", detail: "Sustained supply capacity" },
+]
+
+/**
+ * The two ways a buyer can work with Pure Grain. This mirrors the real split in
+ * the catalogue and the navigation ("Leather Hides" vs "Finished Products") and
+ * matches the language used on the About page, so a first-time visitor can
+ * self-select instead of guessing which half of the business they need.
+ */
+const SUPPLY_PATHS = [
+  {
+    eyebrow: "Bulk Material",
+    title: "Leather Hides",
+    description:
+      "Full hides and sides supplied by the square foot for manufacturers running their own production. Specify thickness, finish and colour; we match it batch to batch.",
+    points: ["Sold per sq ft", "Custom thickness & finish", "Consistent across large orders"],
+    href: "/catalog/raw-leather",
+    cta: "Browse Leather Hides",
+    icon: Layers,
+    image: "/hero-leather-tan.jpg",
+    imageAlt: "Rolled and stacked leather hides ready for bulk despatch",
+  },
+  {
+    eyebrow: "Wholesale Goods",
+    title: "Finished Products",
+    description:
+      "Ready-made leather goods produced to wholesale order — bags, jackets, belts and accessories — manufactured in our partner units and shipped under your labelling.",
+    points: ["Wholesale MOQ", "White-label ready", "Made to your specification"],
+    href: "/catalog/finished-products",
+    cta: "Browse Finished Products",
+    icon: Scissors,
+    image: "/hero-leather-espresso.jpg",
+    imageAlt: "Finished leather goods showing stitching and edge detail",
+  },
+]
+
+const WHY_CHOOSE_US = [
+  {
+    icon: Shield,
+    title: "Consistent Quality at Scale",
+    description:
+      "Every batch meets exacting standards. Rigorous quality control ensures uniformity across large orders.",
+  },
+  {
+    icon: Layers,
+    title: "Custom Finishes & Thickness",
+    description:
+      "From embossing to specialised treatments, we tailor leather specifications to your exact requirements.",
+  },
+  {
+    icon: CheckCircle2,
+    title: "Ethical Sourcing",
+    description:
+      "Traceable supply chains with responsible tanning practices. Certified sustainable leather options available.",
+  },
+  {
+    icon: Users,
+    title: "Long-term Partnership Mindset",
+    description:
+      "We invest in relationships, not transactions. Dedicated account managers for consistent service.",
+  },
+  {
+    icon: Truck,
+    title: "Reliable Global Shipping",
+    description:
+      "Established logistics networks for timely delivery. Export documentation and customs expertise included.",
+  },
+  {
+    icon: Globe2,
+    title: "Industry Expertise",
+    description:
+      "Deep knowledge of footwear, furniture, automotive and fashion applications. We understand your needs.",
+  },
+]
+
+const INDUSTRIES = [
+  { icon: Footprints, name: "Footwear", description: "Premium leather for luxury shoes, boots and athletic footwear." },
+  { icon: Sofa, name: "Furniture", description: "Durable upholstery leather for sofas, chairs and interior design." },
+  { icon: Car, name: "Automotive", description: "High-performance leather for vehicle interiors and marine applications." },
+  { icon: Briefcase, name: "Fashion & Bags", description: "Supple leather for handbags, jackets and fashion accessories." },
+  { icon: Watch, name: "Accessories", description: "Fine leather for watch straps, belts and small leather goods." },
+]
+
+const PROCESS_STEPS = [
+  {
+    number: "01",
+    title: "Browse & Shortlist",
+    description: "Explore the collection and identify materials that match your specification.",
+  },
+  {
+    number: "02",
+    title: "Request Samples",
+    description: "Order physical samples to evaluate quality, texture and colour in your own environment.",
+  },
+  {
+    number: "03",
+    title: "Discuss Requirements",
+    description: "Work with our team to finalise specifications, customisations and quantities.",
+  },
+  {
+    number: "04",
+    title: "Production & QC",
+    description: "Your order enters production with quality control checks at every stage.",
+  },
+  {
+    number: "05",
+    title: "Global Delivery",
+    description: "Reliable logistics ensures timely delivery with full export documentation.",
+  },
+]
+
+const GLOBAL_REGIONS = [
+  { name: "North America", countries: "USA, Canada, Mexico" },
+  { name: "Europe", countries: "UK, Germany, Italy, France, Spain" },
+  { name: "Asia Pacific", countries: "Japan, South Korea, Australia" },
+  { name: "Middle East", countries: "UAE, Saudi Arabia, Qatar" },
+  { name: "South America", countries: "Brazil, Argentina, Chile" },
+  { name: "Africa", countries: "South Africa, Nigeria, Kenya" },
+]
+
+const TESTIMONIALS = [
+  {
+    quote:
+      "PureGrain has been our primary leather supplier for over 8 years. Their consistency in quality across large orders is unmatched.",
+    author: "Marco Bianchi",
+    role: "Procurement Director",
+    company: "Bellissimo Calzature",
+    country: "Italy",
+  },
+  {
+    quote:
+      "The custom finishing options allowed us to create a signature leather for our furniture line that sets us apart in the market.",
+    author: "Sarah Thompson",
+    role: "Head of Materials",
+    company: "Heritage Furnishings",
+    country: "United Kingdom",
+  },
+  {
+    quote:
+      "From sample to bulk delivery, the process is seamless. Their automotive-grade leather meets our stringent quality requirements.",
+    author: "Hans Weber",
+    role: "Supply Chain Manager",
+    company: "Precision Auto Interiors",
+    country: "Germany",
+  },
+]
+
+/* -------------------------------------------------------------------------- */
+/* Page                                                                       */
+/* -------------------------------------------------------------------------- */
+
 export default function PureGrainLanding() {
-  const [currentSlide, setCurrentSlide] = useState(0)
-  const [slideDirection, setSlideDirection] = useState<1 | -1>(1)
-  const [autoplayResetKey, setAutoplayResetKey] = useState(0)
-  const touchStartX = useRef<number | null>(null)
-  const touchStartY = useRef<number | null>(null)
-  const [categoryTrackIndex, setCategoryTrackIndex] = useState(0)
-  const [categoryVisibleCount, setCategoryVisibleCount] = useState(4)
-  const [isCategoryTrackAnimating, setIsCategoryTrackAnimating] = useState(true)
+  const reduce = useReducedMotion()
+
   const [rawLeatherTypes, setRawLeatherTypes] = useState<IRawLeatherType[]>([])
   const [featuredRawLeather, setFeaturedRawLeather] = useState<IRawLeather[]>([])
   const [featuredProducts, setFeaturedProducts] = useState<IProduct[]>([])
   const [rawLeatherSamplePool, setRawLeatherSamplePool] = useState<IRawLeather[]>([])
   const [isCatalogLoading, setIsCatalogLoading] = useState(true)
   const [dataError, setDataError] = useState<string | null>(null)
-  const slides = [
-    {
-      image: "/hero-leather-warm.jpg",
-      label: "Premium B2B Leather Supply",
-      headline: "Premium Leather for Serious Manufacturers",
-      description:
-        "Source exceptional quality leather at scale. From full grain to custom finishes, we supply discerning brands with materials that define craftsmanship.",
-      primaryCta: { label: "Explore Collection", href: "/catalog" },
-      secondaryCta: { label: "Custom Manufacturing", href: "/custom-manufacturing" },
-    },
-    {
-      image: "/hero-leather-tan.jpg",
-      label: "Artisan Craftsmanship",
-      headline: "Exceptional Finishes, Unmatched Quality",
-      description:
-        "Discover our range of vegetable-tanned, aniline-dyed, and custom finishes crafted for furniture, fashion, and automotive applications.",
-      primaryCta: { label: "View Finishes", href: "/catalog" },
-      secondaryCta: { label: "Contact Sales", href: "/contact" },
-    },
-    {
-      image: "/hero-leather-espresso.jpg",
-      label: "Global Leather Partner",
-      headline: "Trusted by Manufacturers Worldwide",
-      description:
-        "With 25+ years of expertise and exports to 40+ countries, we deliver consistent quality leather that powers leading brands across industries.",
-      primaryCta: { label: "Our Industries", href: "/about" },
-      secondaryCta: { label: "Browse Catalog", href: "/catalog" },
-    },
-  ]
-
-  useEffect(() => {
-    slides.forEach((slide) => {
-      const image = new window.Image()
-      image.src = slide.image
-    })
-  }, [])
-
-  const paginateSlide = (direction: 1 | -1, resetAutoplay = false) => {
-    setSlideDirection(direction)
-    setCurrentSlide((prev) => (prev + direction + slides.length) % slides.length)
-    if (resetAutoplay) {
-      setAutoplayResetKey((prev) => prev + 1)
-    }
-  }
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      paginateSlide(1)
-    }, 5000)
-    return () => clearInterval(interval)
-  }, [slides.length, autoplayResetKey])
-
-  const slide = slides[currentSlide]
-  const goToPreviousSlide = () => {
-    paginateSlide(-1, true)
-  }
-
-  const goToNextSlide = () => {
-    paginateSlide(1, true)
-  }
-
-  const handleHeroTouchStart = (event: React.TouchEvent<HTMLElement>) => {
-    const touch = event.touches[0]
-    touchStartX.current = touch.clientX
-    touchStartY.current = touch.clientY
-  }
-
-  const handleHeroTouchEnd = (event: React.TouchEvent<HTMLElement>) => {
-    if (touchStartX.current === null || touchStartY.current === null) return
-
-    const touch = event.changedTouches[0]
-    const deltaX = touch.clientX - touchStartX.current
-    const deltaY = touch.clientY - touchStartY.current
-
-    touchStartX.current = null
-    touchStartY.current = null
-
-    if (Math.abs(deltaX) < 50 || Math.abs(deltaX) < Math.abs(deltaY)) return
-
-    if (deltaX > 0) {
-      goToPreviousSlide()
-    } else {
-      goToNextSlide()
-    }
-  }
-
-  const heroSlideEase = [0.22, 1, 0.36, 1] as const
-
-  const slideMotionVariants: Variants = {
-    active: {
-      opacity: 1,
-      scale: 1,
-      transition: { duration: 0.9, ease: heroSlideEase },
-    },
-    inactive: {
-      opacity: 0,
-      scale: 1.035,
-      transition: { duration: 0.9, ease: heroSlideEase },
-    },
-  }
 
   useEffect(() => {
     let isActive = true
 
     const fetchLandingData = async () => {
       setIsCatalogLoading(true)
-
       try {
         const [typesRes, rawLeatherRes, featuredRawRes, featuredProductsRes] = await Promise.all([
           fetch("/api/raw-leather-types"),
@@ -182,13 +287,11 @@ export default function PureGrainLanding() {
         console.error("Error loading homepage data:", error)
         setDataError("Unable to load live catalog data right now.")
       } finally {
-        if (!isActive) return
-        setIsCatalogLoading(false)
+        if (isActive) setIsCatalogLoading(false)
       }
     }
 
     fetchLandingData()
-
     return () => {
       isActive = false
     }
@@ -198,9 +301,7 @@ export default function PureGrainLanding() {
     if (!rawLeatherTypes.length) return []
     const sampleByType = new Map<string, IRawLeather>()
     rawLeatherSamplePool.forEach((item) => {
-      if (!sampleByType.has(item.leatherType)) {
-        sampleByType.set(item.leatherType, item)
-      }
+      if (!sampleByType.has(item.leatherType)) sampleByType.set(item.leatherType, item)
     })
 
     return rawLeatherTypes
@@ -210,7 +311,7 @@ export default function PureGrainLanding() {
         return {
           id: type._id,
           title: type.name,
-          description: sample?.description ?? "",
+          count: rawLeatherSamplePool.filter((item) => item.leatherType === type.name).length,
           image: sample?.images?.[0] ?? "/placeholder.svg?height=800&width=800",
           // Carry the type through as a filter so clicking a category lands on
           // that category's results, not the unfiltered catalogue.
@@ -219,1111 +320,785 @@ export default function PureGrainLanding() {
       })
   }, [rawLeatherSamplePool, rawLeatherTypes])
 
-  useEffect(() => {
-    const updateCategoryVisibleCount = () => {
-      const width = window.innerWidth
-
-      if (width >= 1280) {
-        setCategoryVisibleCount(4)
-      } else if (width >= 1024) {
-        setCategoryVisibleCount(3)
-      } else if (width >= 768) {
-        setCategoryVisibleCount(2)
-      } else {
-        setCategoryVisibleCount(1)
-      }
-    }
-
-    updateCategoryVisibleCount()
-    window.addEventListener("resize", updateCategoryVisibleCount)
-
-    return () => {
-      window.removeEventListener("resize", updateCategoryVisibleCount)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!leatherCategoryCards.length) {
-      setCategoryTrackIndex(0)
-      return
-    }
-
-    setIsCategoryTrackAnimating(false)
-    setCategoryTrackIndex(leatherCategoryCards.length)
-  }, [leatherCategoryCards.length])
-
-  const categoryLoopCards = useMemo(() => {
-    if (!leatherCategoryCards.length) return []
-    return [...leatherCategoryCards, ...leatherCategoryCards, ...leatherCategoryCards]
-  }, [leatherCategoryCards])
-
-  const logicalCategoryIndex = leatherCategoryCards.length
-    ? ((categoryTrackIndex % leatherCategoryCards.length) + leatherCategoryCards.length) %
-      leatherCategoryCards.length
-    : 0
-
-  useEffect(() => {
-    if (isCatalogLoading || leatherCategoryCards.length <= 1) return
-
-    const interval = setInterval(() => {
-      setIsCategoryTrackAnimating(true)
-      setCategoryTrackIndex((prev) => prev + 1)
-    }, 3000)
-
-    return () => clearInterval(interval)
-  }, [isCatalogLoading, leatherCategoryCards.length])
-
-  useEffect(() => {
-    if (!leatherCategoryCards.length) return
-
-    const length = leatherCategoryCards.length
-    if (categoryTrackIndex >= length * 2 || categoryTrackIndex < length) {
-      const timeoutId = window.setTimeout(() => {
-        setIsCategoryTrackAnimating(false)
-        setCategoryTrackIndex((prev) => {
-          const logical = ((prev % length) + length) % length
-          return logical + length
-        })
-      }, 560)
-
-      return () => window.clearTimeout(timeoutId)
-    }
-  }, [categoryTrackIndex, leatherCategoryCards.length])
-
-  useEffect(() => {
-    if (isCategoryTrackAnimating) return
-
-    const frame = window.requestAnimationFrame(() => {
-      setIsCategoryTrackAnimating(true)
-    })
-
-    return () => window.cancelAnimationFrame(frame)
-  }, [isCategoryTrackAnimating])
-
-  const handlePreviousCategorySet = () => {
-    if (leatherCategoryCards.length <= 1) return
-    setIsCategoryTrackAnimating(true)
-    setCategoryTrackIndex((prev) => prev - 1)
-  }
-
-  const handleNextCategorySet = () => {
-    if (leatherCategoryCards.length <= 1) return
-    setIsCategoryTrackAnimating(true)
-    setCategoryTrackIndex((prev) => prev + 1)
-  }
-
-  const trustStats = [
-    { value: "25+", label: "Years of Experience" },
-    { value: "40+", label: "Countries Served" },
-    { value: "ISO 9001", label: "Quality Certified" },
-    { value: "500K+", label: "Sq. Ft. Monthly Supply" },
-  ]
-
-  const whyChooseUsFeatures = [
-    {
-      icon: Shield,
-      title: "Consistent Quality at Scale",
-      description:
-        "Every batch meets exacting standards. Rigorous quality control ensures uniformity across large orders.",
-    },
-    {
-      icon: Layers,
-      title: "Custom Finishes & Thickness",
-      description:
-        "From embossing to specialized treatments, we tailor leather specifications to your exact requirements.",
-    },
-    {
-      icon: CheckCircle2,
-      title: "Ethical Sourcing",
-      description:
-        "Traceable supply chains with responsible tanning practices. Certified sustainable leather options available.",
-    },
-    {
-      icon: Users,
-      title: "Long-term Partnership Mindset",
-      description:
-        "We invest in relationships, not transactions. Dedicated account managers for consistent service.",
-    },
-    {
-      icon: Truck,
-      title: "Reliable Global Shipping",
-      description:
-        "Established logistics networks for timely delivery. Export documentation and customs expertise included.",
-    },
-    {
-      icon: Globe2,
-      title: "Industry Expertise",
-      description:
-        "Deep knowledge of footwear, furniture, automotive, and fashion applications. We understand your needs.",
-    },
-  ]
-
-  const industries = [
-    {
-      icon: Footprints,
-      name: "Footwear",
-      description: "Premium leather for luxury shoes, boots, and athletic footwear.",
-    },
-    {
-      icon: Sofa,
-      name: "Furniture",
-      description: "Durable upholstery leather for sofas, chairs, and interior design.",
-    },
-    {
-      icon: Car,
-      name: "Automotive",
-      description: "High-performance leather for vehicle interiors and marine applications.",
-    },
-    {
-      icon: Briefcase,
-      name: "Fashion & Bags",
-      description: "Supple leather for handbags, jackets, and fashion accessories.",
-    },
-    {
-      icon: Watch,
-      name: "Accessories",
-      description: "Fine leather for watch straps, belts, and small leather goods.",
-    },
-  ]
-
-  const processSteps = [
-    {
-      number: "01",
-      title: "Browse & Shortlist",
-      description:
-        "Explore our leather collection and identify materials that match your specifications.",
-    },
-    {
-      number: "02",
-      title: "Request Samples",
-      description:
-        "Order physical samples to evaluate quality, texture, and color in your environment.",
-    },
-    {
-      number: "03",
-      title: "Discuss Requirements",
-      description:
-        "Work with our team to finalize specifications, customizations, and quantities.",
-    },
-    {
-      number: "04",
-      title: "Production & QC",
-      description:
-        "Your order enters production with rigorous quality control at every stage.",
-    },
-    {
-      number: "05",
-      title: "Global Delivery",
-      description:
-        "Reliable logistics ensures timely delivery with full export documentation.",
-    },
-  ]
-
-  const globalRegions = [
-    { name: "North America", countries: "USA, Canada, Mexico" },
-    { name: "Europe", countries: "UK, Germany, Italy, France, Spain" },
-    { name: "Asia Pacific", countries: "Japan, South Korea, Australia" },
-    { name: "Middle East", countries: "UAE, Saudi Arabia, Qatar" },
-    { name: "South America", countries: "Brazil, Argentina, Chile" },
-    { name: "Africa", countries: "South Africa, Nigeria, Kenya" },
-  ]
-
-  const testimonials = [
-    {
-      quote:
-        "PureGrain has been our primary leather supplier for over 8 years. Their consistency in quality across large orders is unmatched.",
-      author: "Marco Bianchi",
-      role: "Procurement Director",
-      company: "Bellissimo Calzature",
-      country: "Italy",
-    },
-    {
-      quote:
-        "The custom finishing options allowed us to create a signature leather for our furniture line that sets us apart in the market.",
-      author: "Sarah Thompson",
-      role: "Head of Materials",
-      company: "Heritage Furnishings",
-      country: "United Kingdom",
-    },
-    {
-      quote:
-        "From sample to bulk delivery, the process is seamless. Their automotive-grade leather meets our stringent quality requirements.",
-      author: "Hans Weber",
-      role: "Supply Chain Manager",
-      company: "Precision Auto Interiors",
-      country: "Germany",
-    },
-  ]
-
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
-      {/* Hero Section - Cinematic Slider */}
-      <section
-        id="home-hero"
-        className="relative min-h-screen flex items-center overflow-hidden bg-[hsl(30_10%_12%)]"
-        onTouchStart={handleHeroTouchStart}
-        onTouchEnd={handleHeroTouchEnd}
-        style={
-          {
-            "--hero-overlay-strong": "30 10% 12%",
-            "--hero-overlay-mid": "30 10% 12%",
-            "--hero-overlay-light": "30 10% 12%",
-            "--hero-text": "40 20% 96%",
-            "--hero-text-muted": "40 20% 96%",
-          } as CSSProperties
-        }
-      >
-        <div className="absolute inset-0 bg-[hsl(var(--hero-overlay-strong))]" />
-        <div className="absolute inset-0">
-          {slides.map((item, index) => {
-            const isActive = index === currentSlide
 
-            return (
-              <motion.div
-                key={item.image}
-                variants={slideMotionVariants}
-                initial={index === 0 ? "active" : "inactive"}
-                animate={isActive ? "active" : "inactive"}
-                className="absolute inset-0 will-change-transform [backface-visibility:hidden]"
-                aria-hidden={!isActive}
-                style={{ pointerEvents: "none" }}
-              >
-                <img
-                  src={item.image}
-                  alt="Premium leather texture"
-                  className="w-full h-full object-cover"
-                  loading={index === 0 ? "eager" : "lazy"}
-                  fetchPriority={index === 0 ? "high" : "auto"}
-                  decoding="async"
+      <HeroSlider slides={HERO_SLIDES} />
+
+      <TrustStrip />
+      <SupplyPaths />
+      <LeatherCategories
+        cards={leatherCategoryCards}
+        isLoading={isCatalogLoading}
+        error={dataError}
+      />
+      <WhyChooseUs />
+      <FeaturedMaterials
+        hides={featuredRawLeather}
+        products={featuredProducts}
+        isLoading={isCatalogLoading}
+      />
+      <Industries />
+      <Process reduce={Boolean(reduce)} />
+      <GlobalReach />
+      <Testimonials />
+      <ClosingCta />
+
+      <Footer />
+    </div>
+  )
+}
+
+/* -------------------------------------------------------------------------- */
+/* Sections                                                                   */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Numbers animate on arrival so they read as measured facts rather than
+ * decoration, and each carries a one-line qualifier — an unexplained "500K+" is
+ * a claim, "500K+ sq ft monthly, sustained supply capacity" is information.
+ */
+function TrustStrip() {
+  return (
+    <section className="border-y border-border bg-bone">
+      <div className="container-wide py-12 lg:py-14">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4 lg:gap-4">
+          {TRUST_STATS.map((stat, index) => (
+            <Reveal
+              key={stat.label}
+              delay={index * 0.08}
+              className="relative text-center lg:px-4 lg:text-left"
+            >
+              {/* Hairline separators between columns on desktop only. */}
+              {index > 0 ? (
+                <span
+                  aria-hidden="true"
+                  className="absolute -left-2 top-1 hidden h-[calc(100%-0.5rem)] w-px bg-border lg:block"
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-[hsl(var(--hero-overlay-strong)/0.9)] via-[hsl(var(--hero-overlay-mid)/0.7)] to-[hsl(var(--hero-overlay-light)/0.4)]" />
-              </motion.div>
-            )
-          })}
-        </div>
-
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-24 text-center">
-          <div className="max-w-3xl mx-auto">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentSlide}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.6 }}
-                className="flex flex-col items-center"
-              >
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                  className="text-label text-brass mb-6"
-                >
-                  {slide.label}
-                </motion.p>
-
-                <motion.h1
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.3, delay: 0.05 }}
-                  className="heading-display text-[hsl(var(--hero-text))] mb-6"
-                >
-                  {slide.headline}
-                </motion.h1>
-
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.3, delay: 0.1 }}
-                  className="text-body text-[hsl(var(--hero-text-muted)/0.8)] mb-10 max-w-2xl"
-                >
-                  {slide.description}
-                </motion.p>
-
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.3, delay: 0.15 }}
-                  className="flex flex-col sm:flex-row gap-4 justify-center"
-                >
-                  <Button
-                    size="lg"
-                    className="btn-brass"
-                    asChild
-                  >
-                    <Link href={slide.primaryCta.href}>
-                      {slide.primaryCta.label}
-                      <ChevronRight className="ml-2 w-4 h-4" />
-                    </Link>
-                  </Button>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="
-  text-sm uppercase tracking-wide
-  px-8 py-4
-  bg-transparent text-white
-  border border-white/50
-  hover:bg-white hover:text-amber-900
-  transition-colors duration-300
-"
-
-                    asChild
-                  >
-                    <Link href={slide.secondaryCta.href}>
-                      {slide.secondaryCta.label}
-                    </Link>
-                  </Button>
-                </motion.div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </div>
-
-        <button
-          type="button"
-          onClick={goToPreviousSlide}
-          aria-label="Previous slide"
-          className="hidden md:block absolute left-4 sm:left-6 lg:left-8 top-1/2 -translate-y-1/2 z-20 h-10 w-10 rounded-full border border-white/25 bg-white/10 text-white transition-colors duration-200 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
-        >
-          <ChevronLeft className="mx-auto h-4 w-4" />
-        </button>
-
-        <button
-          type="button"
-          onClick={goToNextSlide}
-          aria-label="Next slide"
-          className="hidden md:block absolute right-4 sm:right-6 lg:right-8 top-1/2 -translate-y-1/2 z-20 h-10 w-10 rounded-full border border-white/25 bg-white/10 text-white transition-colors duration-200 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
-        >
-          <ChevronRight className="mx-auto h-4 w-4" />
-        </button>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 0.6 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        >
-          <span className="text-xs uppercase tracking-widest text-white/60">Scroll</span>
-          <motion.div animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>
-            <ChevronDown className="text-white/60" size={20} />
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* Trust Strip */}
-      <section className="bg-bone border-y border-border">
-        <div className="container-wide py-12">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-4">
-            {trustStats.map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="text-center"
-              >
-                <p className="font-serif text-3xl md:text-4xl font-semibold text-leather dark:text-tan mb-2">
-                  {stat.value}
-                </p>
-                <p className="text-sm text-muted-foreground">{stat.label}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Leather Categories */}
-      <section className="section-padding">
-        <div className="container-wide">
-          <div className="max-w-2xl mb-16">
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-label text-brass mb-4"
-            >
-              Our Collection
-            </motion.p>
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="heading-section text-foreground mb-4"
-            >
-              Leather Categories
-            </motion.h2>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-            >
-              <div className="divider-brass mb-6" />
-              <p className="text-body">
-                From traditional tanning to modern finishes, explore our comprehensive range of premium leather materials.
+              ) : null}
+              <p className="font-serif text-4xl font-semibold text-leather dark:text-tan md:text-5xl">
+                {stat.display ?? (
+                  <CountUp value={stat.value ?? 0} suffix={stat.suffix ?? ""} />
+                )}
               </p>
-            </motion.div>
-          </div>
+              <p className="mt-2 text-sm font-medium text-foreground">{stat.label}</p>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{stat.detail}</p>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
 
-          {dataError ? (
-            <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
-              {dataError}
+/**
+ * Path selection. The single most useful thing this page can do for a new B2B
+ * visitor is tell them which half of the business they need.
+ */
+function SupplyPaths() {
+  return (
+    <section className="section-padding">
+      <div className="container-wide">
+        <SectionHeading
+          eyebrow="What We Supply"
+          title="Two ways to work with us"
+          lede="Pure Grain supplies bulk leather to manufacturers and wholesale finished goods to brands and distributors. Start with whichever fits your production."
+        />
+
+        <div className="mt-14 grid gap-6 lg:grid-cols-2 lg:gap-8">
+          {SUPPLY_PATHS.map((path, index) => (
+            <Reveal key={path.title} delay={index * 0.1}>
+              <Link
+                href={path.href}
+                className="group relative flex h-full flex-col overflow-hidden border border-border bg-card shadow-card transition-all duration-300 hover:border-brass/50 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2"
+              >
+                <div className="relative h-52 overflow-hidden sm:h-60">
+                  <img
+                    src={path.image}
+                    alt={path.imageAlt}
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 bg-gradient-to-t from-leather/90 via-leather/40 to-transparent"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-6">
+                    <div>
+                      <p className="text-eyebrow-on-dark">{path.eyebrow}</p>
+                      <h3 className="heading-subsection mt-2 text-leather-foreground">{path.title}</h3>
+                    </div>
+                    <span className="flex h-12 w-12 shrink-0 items-center justify-center border border-brass/50 bg-leather/40 text-brass backdrop-blur-sm">
+                      <path.icon size={22} strokeWidth={1.5} />
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex flex-1 flex-col p-6 sm:p-8">
+                  <p className="text-sm leading-relaxed text-muted-foreground">{path.description}</p>
+
+                  <ul className="mt-6 space-y-2.5">
+                    {path.points.map((point) => (
+                      <li key={point} className="flex items-center gap-3 text-sm text-foreground/90">
+                        <CheckCircle2 size={16} className="shrink-0 text-brass-ink" strokeWidth={2} />
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <span className="mt-8 flex items-center gap-2 border-t border-border pt-6 text-sm font-semibold uppercase tracking-wide text-brass-ink">
+                    {path.cta}
+                    <ArrowRight
+                      size={16}
+                      className="transition-transform duration-300 group-hover:translate-x-1"
+                    />
+                  </span>
+                </div>
+              </Link>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+type CategoryCard = {
+  id: string
+  title: string
+  count: number
+  image: string
+  href: string
+}
+
+/**
+ * Horizontal rail of leather categories.
+ *
+ * This replaced a hand-built infinite carousel that cloned the card array three
+ * times and coordinated six effects to fake the wrap-around. A scroll-snap rail
+ * gets native momentum scrolling and touch handling on mobile for none of that
+ * state, and the arrows just call scrollBy().
+ */
+function LeatherCategories({
+  cards,
+  isLoading,
+  error,
+}: {
+  cards: CategoryCard[]
+  isLoading: boolean
+  error: string | null
+}) {
+  const railRef = useRef<HTMLDivElement>(null)
+  const [atStart, setAtStart] = useState(true)
+  const [atEnd, setAtEnd] = useState(false)
+
+  const syncArrows = () => {
+    const el = railRef.current
+    if (!el) return
+    setAtStart(el.scrollLeft <= 8)
+    setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 8)
+  }
+
+  useEffect(() => {
+    syncArrows()
+  }, [cards.length])
+
+  const scrollByCard = (direction: 1 | -1) => {
+    const el = railRef.current
+    if (!el) return
+    const card = el.querySelector<HTMLElement>("[data-rail-card]")
+    const step = card ? card.offsetWidth + 24 : el.clientWidth * 0.8
+    el.scrollBy({ left: direction * step, behavior: "smooth" })
+  }
+
+  return (
+    <section className="section-padding bg-bone">
+      <div className="container-wide">
+        <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+          <SectionHeading
+            eyebrow="Our Collection"
+            title="Leather Categories"
+            lede="From traditional tanning to modern finishes, explore the full range of premium leather we hold."
+          />
+
+          <Reveal delay={0.2} className="flex shrink-0 items-center gap-2">
+            <button
+              type="button"
+              onClick={() => scrollByCard(-1)}
+              disabled={atStart}
+              aria-label="Previous categories"
+              className="flex h-11 w-11 items-center justify-center border border-border text-foreground transition-colors hover:border-brass hover:text-brass-ink disabled:cursor-not-allowed disabled:opacity-35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollByCard(1)}
+              disabled={atEnd}
+              aria-label="Next categories"
+              className="flex h-11 w-11 items-center justify-center border border-border text-foreground transition-colors hover:border-brass hover:text-brass-ink disabled:cursor-not-allowed disabled:opacity-35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </Reveal>
+        </div>
+
+        <div className="mt-12">
+          {error ? (
+            <div className="border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
+              {error}
             </div>
-          ) : isCatalogLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-px bg-border">
+          ) : isLoading ? (
+            <div className="grid grid-cols-2 gap-6 md:grid-cols-3 xl:grid-cols-4">
               {Array.from({ length: 4 }).map((_, index) => (
-                <div key={`category-loading-${index}`} className="bg-background">
-                  <div className="aspect-square animate-pulse bg-secondary" />
-                  <div className="p-6 border-t border-border">
-                    <div className="h-6 w-2/3 animate-pulse bg-secondary" />
+                <div key={`cat-skel-${index}`} className="border border-border bg-card">
+                  <div className="aspect-[4/5] animate-pulse bg-secondary" />
+                  <div className="p-5">
+                    <div className="h-5 w-2/3 animate-pulse bg-secondary" />
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <p className="text-xs text-muted-foreground">
-                  Showing {Math.min(categoryVisibleCount, leatherCategoryCards.length)} of {leatherCategoryCards.length} categories
-                </p>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={handlePreviousCategorySet}
-                    aria-label="Previous categories"
-                    className="h-10 w-10 rounded-full border border-border text-foreground hover:border-brass/50 hover:text-brass transition-colors"
-                  >
-                    <ChevronLeft className="mx-auto h-4 w-4" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleNextCategorySet}
-                    aria-label="Next categories"
-                    className="h-10 w-10 rounded-full border border-border text-foreground hover:border-brass/50 hover:text-brass transition-colors"
-                  >
-                    <ChevronRight className="mx-auto h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="overflow-hidden border border-border">
-                <motion.div
-                  className="flex"
-                  animate={{ x: `-${(categoryTrackIndex * 100) / categoryVisibleCount}%` }}
-                  transition={
-                    isCategoryTrackAnimating
-                      ? { duration: 0.55, ease: [0.22, 1, 0.36, 1] }
-                      : { duration: 0 }
-                  }
+            <div
+              ref={railRef}
+              onScroll={syncArrows}
+              className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            >
+              {cards.map((category) => (
+                <Link
+                  key={category.id}
+                  data-rail-card
+                  href={category.href}
+                  className="group relative w-[74vw] shrink-0 snap-start overflow-hidden border border-border bg-card shadow-card transition-all duration-300 hover:border-brass/50 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 sm:w-[46%] lg:w-[31%] xl:w-[23.5%]"
                 >
-                  {categoryLoopCards.map((category, index) => (
+                  <div className="relative aspect-[4/5] overflow-hidden">
+                    <img
+                      src={category.image}
+                      alt={`${category.title} leather`}
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                    {/* Permanent bottom scrim. The previous version faded in a
+                        transparent overlay on hover, so the "View Collection"
+                        label appeared directly on the photograph with nothing
+                        behind it and was frequently unreadable. */}
                     <div
-                      key={`${category.id}-${index}`}
-                      className="shrink-0 border-r border-border"
-                      style={{ width: `${100 / categoryVisibleCount}%` }}
-                    >
-                      <Link href={category.href} className="group block bg-background">
-                        <div className="relative aspect-square overflow-hidden">
-                          <img
-                            src={category.image}
-                            alt={category.title}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          />
-                          <div className="absolute inset-0 bg-transparent" />
-
-                          <div className="absolute inset-0 flex flex-col justify-end p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <span className="inline-flex items-center gap-2 text-brass text-sm font-medium">
-                              View Collection <ArrowRight size={16} />
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="p-6 border-t border-border">
-                          <h3 className="font-serif text-xl font-medium text-foreground group-hover:text-leather dark:group-hover:text-tan transition-colors">
-                            {category.title}
-                          </h3>
-                        </div>
-                      </Link>
+                      aria-hidden="true"
+                      className="absolute inset-0 bg-gradient-to-t from-leather/85 via-leather/20 to-transparent"
+                    />
+                    <div className="absolute inset-x-0 bottom-0 p-5">
+                      <h3 className="font-serif text-xl font-medium text-leather-foreground">
+                        {category.title}
+                      </h3>
+                      <div className="mt-1 flex items-center justify-between gap-3">
+                        <p className="text-xs text-leather-foreground/70">
+                          {category.count} {category.count === 1 ? "material" : "materials"}
+                        </p>
+                        <span className="inline-flex translate-y-1 items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-brass opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
+                          View <ArrowRight size={13} />
+                        </span>
+                      </div>
                     </div>
-                  ))}
-                </motion.div>
-              </div>
+                  </div>
+                </Link>
+              ))}
             </div>
           )}
         </div>
-      </section>
+      </div>
+    </section>
+  )
+}
 
-      {/* Why Choose Us */}
-      <section className="section-padding bg-primary text-primary-foreground dark:bg-background dark:text-foreground">
-        <div className="container-wide">
-          <div className="max-w-2xl mb-16">
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-label text-brass mb-4"
-            >
-              Why PureGrain
-            </motion.p>
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="heading-section mb-4"
-            >
-              Built for Serious Buyers
-            </motion.h2>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-            >
-              <div className="divider-brass mb-6" />
-              <p className="text-primary-foreground/70 dark:text-muted-foreground text-lg">
-                We understand B2B leather procurement. Our processes are designed for manufacturers who demand consistency, reliability, and expertise.
+function WhyChooseUs() {
+  return (
+    <section className="section-padding relative overflow-hidden bg-primary text-primary-foreground dark:bg-background dark:text-foreground">
+      <div aria-hidden="true" className="texture-grain absolute inset-0" />
+      <div className="container-wide relative">
+        <SectionHeading
+          eyebrow="Why PureGrain"
+          title="Built for Serious Buyers"
+          lede="We understand B2B leather procurement. Our processes are designed for manufacturers who demand consistency, reliability and expertise."
+          onDark
+        />
+
+        <Stagger className="mt-16 grid gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-3 lg:gap-x-12">
+          {WHY_CHOOSE_US.map((feature) => (
+            <StaggerItem key={feature.title} className="group">
+              <span className="inline-flex h-12 w-12 items-center justify-center border border-brass/35 text-brass transition-colors duration-300 group-hover:border-brass group-hover:bg-brass/10">
+                <feature.icon size={22} strokeWidth={1.5} />
+              </span>
+              <h3 className="mt-5 font-serif text-xl font-medium">{feature.title}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-primary-foreground/65 dark:text-muted-foreground">
+                {feature.description}
               </p>
-            </motion.div>
-          </div>
+            </StaggerItem>
+          ))}
+        </Stagger>
+      </div>
+    </section>
+  )
+}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
-            {whyChooseUsFeatures.map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="group"
+/** One card shape for both hides and finished products, so the two rows below
+ *  the same heading don't look like they came from different sites. */
+function MaterialCard({
+  href,
+  image,
+  eyebrow,
+  title,
+  facts,
+  chips,
+  price,
+}: {
+  href: string
+  image: string
+  eyebrow: string
+  title: string
+  facts: Array<{ label: string; value?: string | number }>
+  chips: string[]
+  price: { amount?: number; unit?: string }
+}) {
+  return (
+    <Link
+      href={href}
+      className="group flex h-full flex-col border border-border bg-card shadow-card transition-all duration-300 hover:border-brass/50 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2"
+    >
+      <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
+        <img
+          src={image}
+          alt={title}
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          loading="lazy"
+        />
+      </div>
+      <div className="flex flex-1 flex-col p-4 sm:p-5">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-brass-ink">{eyebrow}</p>
+        <h4 className="mt-1.5 line-clamp-1 font-serif text-lg font-medium leading-snug text-foreground transition-colors group-hover:text-leather dark:group-hover:text-tan">
+          {title}
+        </h4>
+
+        <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 text-xs">
+          {facts.map((fact) => (
+            <div key={fact.label} className="min-w-0">
+              <span className="block text-muted-foreground">{fact.label}</span>
+              <span className="block truncate text-foreground/90">{fact.value ?? "—"}</span>
+            </div>
+          ))}
+        </div>
+
+        {chips.length ? (
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {chips.slice(0, 3).map((chip) => (
+              <span
+                key={chip}
+                className="bg-secondary px-1.5 py-0.5 text-[10px] text-secondary-foreground"
               >
-                <feature.icon size={32} className="text-brass mb-4" strokeWidth={1.5} />
-                <h3 className="font-serif text-xl font-medium mb-3">{feature.title}</h3>
-                <p className="text-primary-foreground/60 dark:text-muted-foreground text-sm leading-relaxed">
-                  {feature.description}
-                </p>
-              </motion.div>
+                {chip}
+              </span>
             ))}
           </div>
+        ) : null}
+
+        {price.amount ? (
+          <div className="mt-auto flex items-baseline gap-1 border-t border-border pt-3">
+            <PriceDisplay
+              usdAmount={price.amount}
+              className="text-sm font-semibold text-foreground"
+            />
+            <span className="text-xs text-muted-foreground">/ {price.unit}</span>
+          </div>
+        ) : null}
+      </div>
+    </Link>
+  )
+}
+
+function MaterialSkeleton() {
+  return (
+    <div className="border border-border bg-card">
+      <div className="aspect-[4/3] animate-pulse bg-secondary" />
+      <div className="space-y-3 p-4 sm:p-5">
+        <div className="h-3 w-1/3 animate-pulse bg-secondary" />
+        <div className="h-5 w-3/4 animate-pulse bg-secondary" />
+        <div className="grid grid-cols-2 gap-3">
+          <div className="h-4 w-full animate-pulse bg-secondary" />
+          <div className="h-4 w-full animate-pulse bg-secondary" />
         </div>
-      </section>
+        <div className="h-4 w-1/2 animate-pulse bg-secondary" />
+      </div>
+    </div>
+  )
+}
 
-      {/* Featured Collections */}
-      <section className="section-padding">
-        <div className="container-wide">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
-            <div className="max-w-xl">
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="text-label text-brass mb-4"
-              >
-                Featured Materials
-              </motion.p>
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-                className="heading-section text-foreground"
-              >
-                Popular Selections
-              </motion.h2>
-            </div>
-          </div>
+function FeaturedMaterials({
+  hides,
+  products,
+  isLoading,
+}: {
+  hides: IRawLeather[]
+  products: IProduct[]
+  isLoading: boolean
+}) {
+  const groups = [
+    {
+      key: "hides",
+      title: "Featured Leather Hides",
+      href: "/catalog/raw-leather",
+      linkLabel: "View all hides",
+      empty: "No featured hides published yet.",
+      items: hides.slice(0, 4).map((item) => ({
+        id: item._id,
+        href: `/catalog/raw-leather/${item._id}`,
+        image: item.images?.[0] ?? "/placeholder.svg?height=800&width=600",
+        eyebrow: item.leatherType,
+        title: item.name,
+        facts: [
+          { label: "Thickness", value: item.thickness },
+          { label: "Finish", value: item.finish },
+        ],
+        chips: item.colors ?? [],
+        price: { amount: item.pricePerSqFt, unit: "sq ft" },
+      })),
+    },
+    {
+      key: "products",
+      title: "Featured Finished Products",
+      href: "/catalog/finished-products",
+      linkLabel: "View all products",
+      empty: "No featured products published yet.",
+      items: products.slice(0, 4).map((item) => ({
+        id: item._id,
+        href: `/catalog/finished-products/${item._id}`,
+        image: item.images?.[0] ?? "/placeholder.svg?height=800&width=600",
+        eyebrow: item.productType,
+        title: item.name,
+        facts: [
+          { label: "Material", value: item.materialUsed },
+          { label: "Availability", value: item.availability },
+        ],
+        chips: item.tags ?? [],
+        price: { amount: item.pricePerUnit, unit: item.priceUnit },
+      })),
+    },
+  ]
 
-          <div className="space-y-12">
-            <div>
-              <Link
-                href="/catalog/raw-leather"
-                className="inline-flex items-center gap-2 text-sm font-medium text-leather dark:text-tan hover:text-brass transition-colors mb-4"
-              >
-                View Leather Hides <ArrowRight size={16} />
-              </Link>
-              <h3 className="font-serif text-xl font-medium text-foreground mb-6">Featured Leather Hides</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                {isCatalogLoading
-                  ? Array.from({ length: 4 }).map((_, index) => (
-                      <div key={`raw-loading-${index}`} className="bg-card border border-border overflow-hidden">
-                        <div className="aspect-[4/3] animate-pulse bg-secondary" />
-                        <div className="p-4 sm:p-5 space-y-3">
-                          <div className="h-3 w-1/3 animate-pulse bg-secondary" />
-                          <div className="h-5 w-3/4 animate-pulse bg-secondary" />
-                          <div className="grid grid-cols-2 gap-3">
-                            <div className="h-4 w-full animate-pulse bg-secondary" />
-                            <div className="h-4 w-full animate-pulse bg-secondary" />
-                          </div>
-                          <div className="h-4 w-1/2 animate-pulse bg-secondary" />
-                        </div>
-                      </div>
-                    ))
-                  : featuredRawLeather.slice(0, 8).map((product, index) => (
-                  <motion.div
-                    key={product._id}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="h-full"
-                  >
-                    <Link
-                      href={`/catalog/raw-leather/${product._id}`}
-                      className="group flex flex-col h-full bg-card border border-border shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass/50 focus-visible:ring-offset-2"
-                    >
-                      <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
-                        <img
-                          src={product.images?.[0] ?? "/placeholder.svg?height=800&width=600"}
-                          alt={product.name}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                      </div>
-                      <div className="flex flex-col flex-1 p-4 sm:p-5">
-                        <p className="text-[11px] font-semibold uppercase tracking-wider text-brass mb-1.5">
-                          {product.leatherType}
-                        </p>
-                        <h3 className="font-serif text-base sm:text-lg font-medium text-foreground mb-3 leading-snug line-clamp-1 group-hover:text-leather dark:group-hover:text-tan transition-colors">
-                          {product.name}
-                        </h3>
-                        <div className="grid grid-cols-2 gap-x-3 gap-y-2 text-xs mb-3">
-                          <div className="min-w-0">
-                            <span className="block text-muted-foreground">Thickness</span>
-                            <span className="text-foreground/90 truncate block">{product.thickness}</span>
-                          </div>
-                          <div className="min-w-0">
-                            <span className="block text-muted-foreground">Finish</span>
-                            <span className="text-foreground/90 truncate block">{product.finish}</span>
-                          </div>
-                        </div>
-                        {product.colors?.length ? (
-                          <div className="flex flex-wrap gap-1.5 mb-3">
-                            {product.colors.slice(0, 3).map((color) => (
-                              <span
-                                key={color}
-                                className="text-[10px] px-1.5 py-0.5 bg-secondary text-secondary-foreground"
-                              >
-                                {color}
-                              </span>
-                            ))}
-                          </div>
-                        ) : null}
-                        {product.pricePerSqFt ? (
-                          <div className="mt-auto pt-3 border-t border-border flex items-baseline gap-1">
-                            <PriceDisplay usdAmount={product.pricePerSqFt} className="text-sm font-semibold text-foreground" />
-                            <span className="text-xs text-muted-foreground">/ sq ft</span>
-                          </div>
-                        ) : null}
-                      </div>
-                    </Link>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
+  return (
+    <section className="section-padding">
+      <div className="container-wide">
+        <SectionHeading
+          eyebrow="Featured Materials"
+          title="Popular Selections"
+          lede="A live view of what buyers are specifying most this season, straight from the catalogue."
+        />
 
-            <div>
-              <Link
-                href="/catalog/finished-products"
-                className="inline-flex items-center gap-2 text-sm font-medium text-leather dark:text-tan hover:text-brass transition-colors mb-4"
-              >
-                View Finished Products <ArrowRight size={16} />
-              </Link>
-              <h3 className="font-serif text-xl font-medium text-foreground mb-6">Featured Products</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                {isCatalogLoading
-                  ? Array.from({ length: 4 }).map((_, index) => (
-                      <div key={`product-loading-${index}`} className="bg-card border border-border overflow-hidden">
-                        <div className="aspect-[4/3] animate-pulse bg-secondary" />
-                        <div className="p-4 sm:p-5 space-y-3">
-                          <div className="h-3 w-1/3 animate-pulse bg-secondary" />
-                          <div className="h-5 w-3/4 animate-pulse bg-secondary" />
-                          <div className="grid grid-cols-2 gap-3">
-                            <div className="h-4 w-full animate-pulse bg-secondary" />
-                            <div className="h-4 w-full animate-pulse bg-secondary" />
-                          </div>
-                          <div className="h-4 w-1/2 animate-pulse bg-secondary" />
-                        </div>
-                      </div>
-                    ))
-                  : featuredProducts.slice(0, 8).map((product, index) => (
-                  <motion.div
-                    key={product._id}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="h-full"
-                  >
-                    <Link
-                      href={`/catalog/finished-products/${product._id}`}
-                      className="group flex flex-col h-full bg-card border border-border shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass/50 focus-visible:ring-offset-2"
-                    >
-                      <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
-                        <img
-                          src={product.images?.[0] ?? "/placeholder.svg?height=800&width=600"}
-                          alt={product.name}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                      </div>
-                      <div className="flex flex-col flex-1 p-4 sm:p-5">
-                        <p className="text-[11px] font-semibold uppercase tracking-wider text-brass mb-1.5">
-                          {product.productType}
-                        </p>
-                        <h3 className="font-serif text-base sm:text-lg font-medium text-foreground mb-3 leading-snug line-clamp-1 group-hover:text-leather dark:group-hover:text-tan transition-colors">
-                          {product.name}
-                        </h3>
-                        <div className="grid grid-cols-2 gap-x-3 gap-y-2 text-xs mb-3">
-                          <div className="min-w-0">
-                            <span className="block text-muted-foreground">Material</span>
-                            <span className="text-foreground/90 truncate block">{product.materialUsed}</span>
-                          </div>
-                          <div className="min-w-0">
-                            <span className="block text-muted-foreground">Availability</span>
-                            <span className="text-foreground/90 truncate block">{product.availability}</span>
-                          </div>
-                        </div>
-                        {product.tags?.length ? (
-                          <div className="flex flex-wrap gap-1.5 mb-3">
-                            {product.tags.slice(0, 3).map((tag) => (
-                              <span
-                                key={tag}
-                                className="text-[10px] px-1.5 py-0.5 bg-secondary text-secondary-foreground"
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        ) : null}
-                        {product.pricePerUnit ? (
-                          <div className="mt-auto pt-3 border-t border-border flex items-baseline gap-1">
-                            <PriceDisplay usdAmount={product.pricePerUnit} className="text-sm font-semibold text-foreground" />
-                            <span className="text-xs text-muted-foreground">/ {product.priceUnit}</span>
-                          </div>
-                        ) : null}
-                      </div>
-                    </Link>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Industries Served */}
-      <section className="section-padding bg-bone">
-        <div className="container-wide">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-label text-brass mb-4"
-            >
-              Industries
-            </motion.p>
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="heading-section text-foreground mb-4"
-            >
-              Trusted Across Sectors
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="text-body"
-            >
-              We supply leading manufacturers across multiple industries, understanding the unique requirements of each application.
-            </motion.p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-            {industries.map((industry, index) => (
-              <motion.div
-                key={industry.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="group text-center p-6 bg-background border border-border hover:border-brass/50 transition-all duration-300"
-              >
-                <div className="w-12 h-12 mx-auto mb-4 flex items-center justify-center">
-                  <industry.icon
-                    size={28}
-                    strokeWidth={1.5}
-                    className="text-leather dark:text-tan group-hover:text-brass transition-colors"
-                  />
-                </div>
-                <h3 className="font-serif text-lg font-medium text-foreground mb-2">{industry.name}</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">{industry.description}</p>
-              </motion.div>
-            ))}
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.5 }}
-            className="text-center mt-12"
-          >
-            <Link href="/about" className="btn-secondary">
-              Explore Industry Solutions
-            </Link>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Process */}
-      <section className="section-padding">
-        <div className="container-wide">
-          <div className="max-w-2xl mb-16">
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-label text-brass mb-4"
-            >
-              How It Works
-            </motion.p>
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="heading-section text-foreground mb-4"
-            >
-              From Inquiry to Delivery
-            </motion.h2>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-            >
-              <div className="divider-brass" />
-            </motion.div>
-          </div>
-
-          <div className="relative">
-            <div className="hidden lg:block absolute top-8 left-0 right-0 h-px bg-border" />
-
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
-              {processSteps.map((step, index) => (
-                <motion.div
-                  key={step.number}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="relative"
+        <div className="mt-14 space-y-16">
+          {groups.map((group) => (
+            <div key={group.key}>
+              <div className="mb-6 flex flex-wrap items-baseline justify-between gap-3 border-b border-border pb-4">
+                <h3 className="font-serif text-xl font-medium text-foreground">{group.title}</h3>
+                <Link
+                  href={group.href}
+                  className="group inline-flex items-center gap-2 text-sm font-semibold text-brass-ink transition-colors hover:text-brass"
                 >
-                  <div className="w-16 h-16 flex items-center justify-center bg-background border border-border mb-6 relative z-10">
-                    <span className="font-serif text-2xl font-semibold text-leather dark:text-tan">{step.number}</span>
-                  </div>
-
-                  <h3 className="font-serif text-lg font-medium text-foreground mb-3">{step.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Global Reach */}
-      <section className="section-padding bg-leather text-leather-foreground overflow-hidden">
-        <div className="container-wide">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <div>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="text-label text-brass mb-4"
-              >
-                Global Export
-              </motion.p>
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-                className="heading-section mb-6"
-              >
-                Delivering Excellence Worldwide
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2 }}
-                className="text-lg text-leather-foreground/70 mb-8"
-              >
-                With established logistics networks across six continents, we ensure reliable, timely delivery of premium leather to manufacturers worldwide. Our export expertise handles documentation, customs, and compliance seamlessly.
-              </motion.p>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3 }}
-                className="grid grid-cols-2 gap-4"
-              >
-                {globalRegions.map((region) => (
-                  <div key={region.name} className="p-4 border border-leather-foreground/10">
-                    <h4 className="font-serif text-base font-medium mb-1">{region.name}</h4>
-                    <p className="text-xs text-leather-foreground/70">{region.countries}</p>
-                  </div>
-                ))}
-              </motion.div>
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="relative flex items-center justify-center"
-            >
-              <div className="relative w-80 h-80 lg:w-96 lg:h-96">
-                <div className="absolute inset-0 border border-leather-foreground/10 rounded-full" />
-                <div className="absolute inset-4 border border-leather-foreground/10 rounded-full" />
-                <div className="absolute inset-8 border border-leather-foreground/10 rounded-full" />
-
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-32 h-32 bg-brass/10 rounded-full flex items-center justify-center">
-                    <Globe size={48} className="text-brass" strokeWidth={1} />
-                  </div>
-                </div>
-
-                <div className="absolute top-8 left-1/2 w-2 h-2 bg-brass rounded-full" />
-                <div className="absolute bottom-16 left-12 w-2 h-2 bg-brass rounded-full" />
-                <div className="absolute top-1/3 right-8 w-2 h-2 bg-brass rounded-full" />
-                <div className="absolute bottom-1/4 right-16 w-2 h-2 bg-brass rounded-full" />
-                <div className="absolute top-1/2 left-4 w-2 h-2 bg-brass rounded-full" />
+                  {group.linkLabel}
+                  <ArrowRight
+                    size={15}
+                    className="transition-transform duration-300 group-hover:translate-x-1"
+                  />
+                </Link>
               </div>
-            </motion.div>
-          </div>
+
+              {isLoading ? (
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                  {Array.from({ length: 4 }).map((_, index) => (
+                    <MaterialSkeleton key={`${group.key}-skel-${index}`} />
+                  ))}
+                </div>
+              ) : group.items.length ? (
+                <Stagger className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                  {group.items.map((item) => (
+                    <StaggerItem key={item.id} className="h-full">
+                      <MaterialCard {...item} />
+                    </StaggerItem>
+                  ))}
+                </Stagger>
+              ) : (
+                <p className="border border-dashed border-border p-6 text-sm text-muted-foreground">
+                  {group.empty}
+                </p>
+              )}
+            </div>
+          ))}
         </div>
-      </section>
+      </div>
+    </section>
+  )
+}
 
-      {/* Testimonials */}
-      <section className="section-padding">
-        <div className="container-wide">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-label text-brass mb-4"
-            >
-              Client Testimonials
-            </motion.p>
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="heading-section text-foreground"
-            >
-              Trusted by Leading Manufacturers
-            </motion.h2>
+function Industries() {
+  return (
+    <section className="section-padding bg-bone">
+      <div className="container-wide">
+        <SectionHeading
+          align="center"
+          eyebrow="Industries"
+          title="Trusted Across Sectors"
+          lede="We supply leading manufacturers across multiple industries, and we understand the specific demands of each application."
+        />
+
+        <Stagger className="mt-14 grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-5">
+          {INDUSTRIES.map((industry) => (
+            <StaggerItem key={industry.name} className="h-full">
+              <Link
+                href="/industries"
+                className="group flex h-full flex-col items-center border border-border bg-background p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:border-brass/50 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2"
+              >
+                <span className="flex h-14 w-14 items-center justify-center border border-border text-leather transition-colors duration-300 group-hover:border-brass group-hover:bg-brass/10 group-hover:text-brass-ink dark:text-tan">
+                  <industry.icon size={26} strokeWidth={1.5} />
+                </span>
+                <h3 className="mt-4 font-serif text-lg font-medium text-foreground">{industry.name}</h3>
+                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                  {industry.description}
+                </p>
+              </Link>
+            </StaggerItem>
+          ))}
+        </Stagger>
+
+        <Reveal delay={0.3} className="mt-12 text-center">
+          <Link href="/industries" className="btn-secondary">
+            Explore Industry Solutions
+          </Link>
+        </Reveal>
+      </div>
+    </section>
+  )
+}
+
+/**
+ * The connecting line draws itself as the section scrolls past, which makes the
+ * five steps read as one sequence rather than five unrelated cards.
+ */
+function Process({ reduce }: { reduce: boolean }) {
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start 75%", "end 65%"],
+  })
+  const progress = useSpring(scrollYProgress, { stiffness: 90, damping: 28, mass: 0.4 })
+
+  return (
+    <section className="section-padding">
+      <div className="container-wide">
+        <SectionHeading
+          eyebrow="How It Works"
+          title="From Inquiry to Delivery"
+          lede="Five steps, the same every time — so you always know where your order stands."
+        />
+
+        <div ref={sectionRef} className="relative mt-16">
+          {/* Desktop: horizontal rail behind the step markers. Inset to 10% so
+              it starts and ends at the centre of the first/last marker (five
+              equal columns put those centres at 10% and 90%) rather than
+              running off to the container edges. */}
+          <div
+            aria-hidden="true"
+            className="absolute left-[10%] right-[10%] top-8 hidden h-px bg-border lg:block"
+          >
+            <motion.div
+              className="h-full origin-left bg-brass"
+              style={{ scaleX: reduce ? 1 : progress }}
+            />
+          </div>
+          {/* Mobile: vertical rail down the left of the stacked steps. */}
+          <div
+            aria-hidden="true"
+            className="absolute bottom-8 left-8 top-8 w-px bg-border md:hidden"
+          >
+            <motion.div
+              className="h-full w-full origin-top bg-brass"
+              style={{ scaleY: reduce ? 1 : progress }}
+            />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <motion.div
-                key={testimonial.author}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="relative p-8 bg-bone border border-border"
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3 lg:grid-cols-5">
+            {PROCESS_STEPS.map((step, index) => (
+              <Reveal
+                key={step.number}
+                delay={index * 0.08}
+                className="relative flex gap-5 md:block"
               >
-                <Quote size={32} className="text-brass/30 mb-6" strokeWidth={1} />
-                <blockquote className="text-foreground leading-relaxed mb-8">
-                  "{testimonial.quote}"
-                </blockquote>
-                <div className="border-t border-border pt-6">
-                  <p className="font-serif text-base font-medium text-foreground">{testimonial.author}</p>
-                  <p className="text-sm text-muted-foreground mt-1">{testimonial.role}</p>
-                  <p className="text-sm text-brass mt-1">
-                    {testimonial.company}, {testimonial.country}
+                <span className="relative z-10 flex h-16 w-16 shrink-0 items-center justify-center border border-border bg-background font-serif text-2xl font-semibold text-leather transition-colors duration-300 dark:text-tan">
+                  {step.number}
+                </span>
+                <div className="md:mt-6">
+                  <h3 className="font-serif text-lg font-medium text-foreground">{step.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    {step.description}
                   </p>
                 </div>
-              </motion.div>
+              </Reveal>
             ))}
           </div>
         </div>
-      </section>
+      </div>
+    </section>
+  )
+}
 
-      {/* CTA */}
-      <section className="relative py-24 lg:py-32 bg-bone text-foreground border-y border-border overflow-hidden">
-        {/* subtle leather-grain texture */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 opacity-[0.08] pointer-events-none"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 25% 30%, hsl(var(--leather)) 0%, transparent 45%), radial-gradient(circle at 75% 70%, hsl(var(--accent)) 0%, transparent 50%)",
-          }}
+function GlobalReach() {
+  const reduce = useReducedMotion()
+
+  return (
+    <section className="section-padding relative overflow-hidden bg-leather text-leather-foreground">
+      <div aria-hidden="true" className="texture-grain absolute inset-0" />
+      <div className="container-wide relative">
+        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+          <div>
+            <SectionHeading
+              eyebrow="Global Export"
+              title="Delivering Excellence Worldwide"
+              onDark
+              className="!max-w-none"
+            />
+            <Reveal delay={0.24}>
+              <p className="mt-6 text-base leading-relaxed text-leather-foreground/70 md:text-lg">
+                With established logistics networks across six continents, we deliver premium leather
+                on schedule. Our export team handles documentation, customs and compliance so your
+                production line is never waiting on paperwork.
+              </p>
+            </Reveal>
+
+            <Stagger className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {GLOBAL_REGIONS.map((region) => (
+                <StaggerItem key={region.name}>
+                  <div className="border border-leather-foreground/10 p-4 transition-colors duration-300 hover:border-brass/45 hover:bg-leather-foreground/5">
+                    <h4 className="font-serif text-base font-medium">{region.name}</h4>
+                    <p className="mt-1 text-xs text-leather-foreground/65">{region.countries}</p>
+                  </div>
+                </StaggerItem>
+              ))}
+            </Stagger>
+          </div>
+
+          <Reveal y={0} className="flex items-center justify-center">
+            <div className="relative aspect-square w-full max-w-[22rem] lg:max-w-[26rem]">
+              {/* Concentric rings, counter-rotating slowly. Purely atmospheric,
+                  so it is disabled entirely under reduced-motion. */}
+              {[0, 1, 2].map((ring) => (
+                <motion.div
+                  key={ring}
+                  className="absolute rounded-full border border-leather-foreground/10"
+                  style={{ inset: `${ring * 1.75}rem` }}
+                  animate={reduce ? undefined : { rotate: ring % 2 === 0 ? 360 : -360 }}
+                  transition={{ duration: 60 + ring * 20, repeat: Infinity, ease: "linear" }}
+                >
+                  <span
+                    className="absolute h-2 w-2 rounded-full bg-brass"
+                    style={{ top: "-4px", left: "50%" }}
+                  />
+                </motion.div>
+              ))}
+
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="flex h-32 w-32 items-center justify-center rounded-full border border-brass/25 bg-brass/10 lg:h-36 lg:w-36">
+                  <Globe size={48} className="text-brass" strokeWidth={1} />
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Testimonials() {
+  return (
+    <section className="section-padding">
+      <div className="container-wide">
+        <SectionHeading
+          align="center"
+          eyebrow="Client Testimonials"
+          title="Trusted by Leading Manufacturers"
         />
-        {/* top brass hairline */}
-        <div
-          aria-hidden="true"
-          className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brass to-transparent"
-        />
-        <div className="relative container-wide">
-          <div className="max-w-3xl mx-auto text-center">
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="heading-display mb-6"
-            >
+
+        <Stagger className="mt-14 grid gap-6 md:grid-cols-3 lg:gap-8">
+          {TESTIMONIALS.map((testimonial) => (
+            <StaggerItem key={testimonial.author} className="h-full">
+              <figure className="flex h-full flex-col border border-border bg-bone p-7 transition-all duration-300 hover:border-brass/40 hover:shadow-card-hover lg:p-8">
+                <Quote size={30} className="text-brass/35" strokeWidth={1} />
+                <blockquote className="mt-5 flex-1 leading-relaxed text-foreground">
+                  {testimonial.quote}
+                </blockquote>
+                <figcaption className="mt-7 border-t border-border pt-5">
+                  <p className="font-serif text-base font-medium text-foreground">
+                    {testimonial.author}
+                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground">{testimonial.role}</p>
+                  <p className="mt-1 text-sm font-medium text-brass-ink">
+                    {testimonial.company}, {testimonial.country}
+                  </p>
+                </figcaption>
+              </figure>
+            </StaggerItem>
+          ))}
+        </Stagger>
+      </div>
+    </section>
+  )
+}
+
+function ClosingCta() {
+  return (
+    <section className="relative overflow-hidden border-y border-border bg-bone py-24 lg:py-28">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.08]"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle at 25% 30%, hsl(var(--leather)) 0%, transparent 45%), radial-gradient(circle at 75% 70%, hsl(var(--accent)) 0%, transparent 50%)",
+        }}
+      />
+      <div aria-hidden="true" className="rule-brass-fade absolute inset-x-0 top-0 h-px" />
+
+      <div className="container-wide relative">
+        <div className="mx-auto max-w-3xl text-center">
+          <Reveal>
+            <p className="text-eyebrow">Next Step</p>
+          </Reveal>
+          <Reveal delay={0.08}>
+            <h2 className="heading-display mt-4 text-balance text-foreground">
               Looking for a Reliable Leather Supplier?
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="text-lg text-muted-foreground mb-10"
-            >
-              Let&apos;s discuss your requirements. From samples to bulk orders, we&apos;re ready to support your production needs with premium quality leather.
-            </motion.p>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="flex flex-col sm:flex-row justify-center gap-4"
-            >
-              <Link href="/catalog" className="btn-brass">
-                Browse Collection
+            </h2>
+          </Reveal>
+          <Reveal delay={0.16}>
+            <p className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground md:text-lg">
+              Tell us what you are producing and we will send matching samples. From first swatch to
+              bulk despatch, you deal with the same team throughout.
+            </p>
+          </Reveal>
+          <Reveal delay={0.24}>
+            <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row sm:gap-4">
+              <Link href="/sample-request" className="btn-brass group">
+                <FlaskConical size={16} className="mr-2" />
+                Request Free Samples
               </Link>
-              <Link
-                href="/contact"
-                className="inline-flex items-center justify-center px-8 py-4 border border-primary text-primary font-medium text-sm tracking-wide uppercase transition-all duration-300 hover:bg-primary hover:text-primary-foreground"
-              >
+              <Link href="/contact" className="btn-secondary">
                 Contact Sales
               </Link>
-            </motion.div>
-          </div>
+            </div>
+          </Reveal>
+          <Reveal delay={0.32}>
+            <p className="mt-6 text-xs text-muted-foreground">
+              Samples despatched worldwide · No obligation · Typical reply within one business day
+            </p>
+          </Reveal>
         </div>
-      </section>
-      
-      <Footer />
-    </div>
+      </div>
+    </section>
   )
 }

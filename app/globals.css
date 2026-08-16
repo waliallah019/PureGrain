@@ -2,7 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Jost:wght@300;400;500;600;700&display=swap');
+/* Jost + Cormorant Garamond are self-hosted by next/font in app/layout.tsx and
+   exposed as --font-sans / --font-serif. The Google Fonts @import that used to
+   live here downloaded both families a second time and blocked render. */
 
 @layer base {
   :root {
@@ -32,9 +34,17 @@
     --accent: 25 36% 46%;                /* #A0724A */
     --accent-foreground: 30 67% 97%;
 
-    /* Brass / Gold Accent */
+    /* Brass / Gold Accent — fills, borders, and text on DARK surfaces only. */
     --brass: 38 56% 51%;                 /* #C9943A */
     --brass-foreground: 17 47% 12%;
+
+    /* Text-safe brass for LIGHT surfaces. --brass only reaches ~2.5:1 on the
+       cream background; this deep antique brass clears 4.5:1 (WCAG AA). */
+    --brass-ink: 38 63% 34%;             /* #8E6420 */
+
+    /* Warm brown shadow tint — neutral black shadows read grey/dirty against
+       the cream background. */
+    --shadow-color: 20 45% 18%;
 
     /* Leather Brown (deeper espresso secondary) */
     --leather: 18 47% 16%;               /* #3D2314 */
@@ -99,6 +109,13 @@
     --brass: 38 56% 55%;
     --brass-foreground: 17 47% 10%;
 
+    /* On the espresso background the readable brass is the BRIGHT one, so
+       --brass-ink inverts here. Components can therefore use `text-brass-ink`
+       for "brass text on the page background" in both themes. */
+    --brass-ink: 38 62% 63%;
+
+    --shadow-color: 20 60% 3%;
+
     --leather: 18 47% 22%;
     --leather-foreground: 30 67% 97%;
 
@@ -148,13 +165,29 @@
     overscroll-behavior-y: none;
   }
   body {
-    @apply bg-background text-foreground antialiased;
-    font-family: 'Jost', 'Helvetica Neue', Arial, sans-serif;
+    @apply bg-background text-foreground antialiased font-sans;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-    @apply font-semibold tracking-tight;
+    @apply font-serif font-semibold tracking-tight;
+  }
+
+  /* Honour the OS "reduce motion" setting globally. Framer Motion's
+     useReducedMotion covers the JS-driven work; this neutralises the CSS
+     keyframe utilities (marquee, ken burns, pulses) and smooth scrolling. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
@@ -190,6 +223,19 @@
     @apply text-xs uppercase tracking-[0.2em] font-medium text-muted-foreground;
   }
 
+  /* Canonical section eyebrow. Every section on every page opens with one of
+     these, so it lives here rather than being re-spelled as
+     `text-label text-brass` (which failed contrast on light surfaces). */
+  .text-eyebrow {
+    @apply text-xs uppercase tracking-[0.2em] font-semibold text-brass-ink;
+  }
+
+  /* Same eyebrow, for use on the espresso/leather/photographic dark surfaces
+     where the bright brass is the readable one. */
+  .text-eyebrow-on-dark {
+    @apply text-xs uppercase tracking-[0.2em] font-semibold text-brass;
+  }
+
   .divider-brass {
     @apply w-16 h-px bg-brass;
   }
@@ -198,20 +244,24 @@
     @apply bg-card border border-border shadow-card transition-all duration-300;
   }
 
-  /* .card-industrial:hover {
+  .card-industrial:hover {
     @apply border-brass/50 shadow-card-hover;
-  } */
+  }
 
+  /* `rounded-none` is explicit on all three: shadcn's <Button> base class adds
+     `rounded-md`, so `<Button className="btn-brass">` rendered with rounded
+     corners while `<Link className="btn-brass">` rendered square — the same
+     button, two shapes, sometimes on the same page. */
   .btn-primary {
-    @apply inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground font-medium text-sm tracking-wide uppercase transition-all duration-300 hover:bg-leather;
+    @apply inline-flex items-center justify-center rounded-none px-8 py-4 bg-primary text-primary-foreground font-medium text-sm tracking-wide uppercase transition-all duration-300 hover:bg-leather focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-background;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-8 py-4 border border-primary text-primary font-medium text-sm tracking-wide uppercase transition-all duration-300 hover:bg-primary hover:text-primary-foreground;
+    @apply inline-flex items-center justify-center rounded-none px-8 py-4 border border-primary text-primary font-medium text-sm tracking-wide uppercase transition-all duration-300 hover:bg-primary hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-background;
   }
 
   .btn-brass {
-    @apply inline-flex items-center justify-center px-8 py-4 bg-brass text-brass-foreground font-medium text-sm tracking-wide uppercase transition-all duration-300 hover:bg-brass/90;
+    @apply inline-flex items-center justify-center rounded-none px-8 py-4 bg-brass text-brass-foreground font-medium text-sm tracking-wide uppercase transition-all duration-300 hover:bg-brass/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-background;
   }
 
   .link-underline {
@@ -256,34 +306,76 @@
     text-wrap: balance;
   }
 
-  /* Premium B2B Design Tokens */
+  /* Fine film grain. Leather is a tactile material and flat vector surfaces
+     read synthetic next to the product photography; a low-opacity noise layer
+     over the dark sections keeps them feeling physical. Inline SVG so there is
+     no extra request. */
+  .texture-grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Hairline that separates stacked sections without a hard 1px border. */
+  .rule-brass-fade {
+    background-image: linear-gradient(
+      to right,
+      transparent,
+      hsl(var(--brass) / 0.55),
+      transparent
+    );
+  }
+
+  /* Edge fade for horizontally scrolling rails, so cards dissolve at the
+     container edge instead of being visibly clipped. */
+  .mask-fade-x {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+  }
+
+  /* Legacy aliases. These used to hardcode #5c4033 / #d4a574 / #8b6f47, none of
+     which matched --leather (#3D2314) or --tan (#D4B896), so anything using
+     them drifted a shade or two off the palette and did not respond to the
+     theme. They now resolve to the tokens they were imitating. */
   .text-leather-brown {
-    color: #5c4033;
+    color: hsl(var(--leather));
   }
-  
+
   .bg-leather-brown {
-    background-color: #5c4033;
+    background-color: hsl(var(--leather));
   }
-  
+
   .border-leather-brown {
-    border-color: #5c4033;
+    border-color: hsl(var(--leather));
   }
-  
+
   .text-leather-tan {
-    color: #d4a574;
+    color: hsl(var(--tan));
   }
-  
+
   .bg-leather-tan {
-    background-color: #d4a574;
+    background-color: hsl(var(--tan));
   }
-  
+
   /* Premium gradients */
   .gradient-leather {
-    background: linear-gradient(135deg, #8b6f47 0%, #5c4033 50%, #3d2817 100%);
+    background: linear-gradient(
+      135deg,
+      hsl(var(--accent)) 0%,
+      hsl(var(--leather)) 50%,
+      hsl(var(--primary)) 100%
+    );
   }
-  
+
   .gradient-leather-subtle {
-    background: linear-gradient(135deg, rgba(139, 111, 71, 0.1) 0%, rgba(92, 64, 51, 0.05) 100%);
+    background: linear-gradient(
+      135deg,
+      hsl(var(--accent) / 0.12) 0%,
+      hsl(var(--leather) / 0.05) 100%
+    );
   }
   
   /* Textured backgrounds */
@@ -374,23 +466,24 @@
   /* Ensure links and small UI elements are readable */
   .site-leather-texture a { color: #FFDDAA; }
   
-  /* Premium shadows */
+  /* Premium shadows — tinted with --shadow-color so they stay warm on cream
+     and go properly deep on the espresso dark theme. */
   .shadow-leather {
-    box-shadow: 0 4px 20px rgba(92, 64, 51, 0.15), 0 1px 3px rgba(92, 64, 51, 0.1);
+    box-shadow: 0 4px 20px hsl(var(--shadow-color) / 0.15), 0 1px 3px hsl(var(--shadow-color) / 0.1);
   }
-  
+
   .shadow-leather-lg {
-    box-shadow: 0 10px 40px rgba(92, 64, 51, 0.2), 0 4px 10px rgba(92, 64, 51, 0.15);
+    box-shadow: 0 10px 40px hsl(var(--shadow-color) / 0.2), 0 4px 10px hsl(var(--shadow-color) / 0.15);
   }
-  
+
   /* Hover effects */
   .hover-lift {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
-  
+
   .hover-lift:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(92, 64, 51, 0.2);
+    box-shadow: 0 8px 25px hsl(var(--shadow-color) / 0.2);
   }
   
   /* Form enhancements */
@@ -405,7 +498,7 @@
     top: 0;
     bottom: 0;
     width: 3px;
-    background: linear-gradient(to bottom, #8b6f47, #5c4033);
+    background: linear-gradient(to bottom, hsl(var(--accent)), hsl(var(--leather)));
     opacity: 0;
     transition: opacity 0.3s ease;
   }
@@ -495,8 +588,8 @@
   /* Focus states */
   .focus-premium:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(139,111,71,0.15);
-    border-color: #8b6f47;
+    box-shadow: 0 0 0 3px hsl(var(--accent) / 0.2);
+    border-color: hsl(var(--accent));
   }
 
 }

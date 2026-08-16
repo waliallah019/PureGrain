@@ -265,7 +265,7 @@ export default function PaymentConfirmationPage() {
       <main className="flex-grow section-padding overflow-x-clip bg-gradient-to-b from-bone/70 via-background to-background dark:from-muted/25 dark:via-background dark:to-background">
         <div className="container-wide overflow-x-clip">
           <div className="mb-10 max-w-3xl">
-            <p className="text-label text-brass mb-3">Payment Confirmation</p>
+            <p className="text-eyebrow mb-3">Payment Confirmation</p>
             <h1 className="heading-subsection text-foreground mb-4">Confirm Your Transfer</h1>
             <div className="divider-brass mb-5" />
             <p className="text-muted-foreground">

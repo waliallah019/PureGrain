@@ -99,7 +99,7 @@ export default function AddToSampleTrayButton({
     <button
       type="button"
       onClick={handleClick}
-      className={`${baseClasses} border border-brass text-brass bg-transparent hover:bg-brass hover:text-brass-foreground ${className}`}
+      className={`${baseClasses} border border-brass text-brass-ink bg-transparent hover:bg-brass hover:text-brass-foreground ${className}`}
       aria-label="Add to sample tray"
     >
       <Plus className="mr-2 h-4 w-4" />

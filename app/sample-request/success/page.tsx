@@ -48,13 +48,13 @@ function SampleRequestSuccessInner() {
           </p>
 
           <div className="text-left mb-8">
-            <p className="text-xs uppercase tracking-[0.2em] text-brass mb-3">
+            <p className="text-xs uppercase tracking-[0.2em] text-brass-ink mb-3">
               What happens next
             </p>
             <ol className="space-y-3">
               {steps.map((s, idx) => (
                 <li key={s.label} className="flex items-center gap-3 text-sm">
-                  <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brass/15 text-brass text-xs font-semibold">
+                  <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brass/15 text-brass-ink text-xs font-semibold">
                     {idx + 1}
                   </span>
                   <s.icon className="h-4 w-4 text-leather dark:text-tan" />

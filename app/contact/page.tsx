@@ -1,10 +1,32 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { motion } from "framer-motion"
-import { Mail, MapPin, Phone, Clock, Loader2, Instagram, AlertCircle, CheckCircle2, X } from "lucide-react"
+import {
+  Mail,
+  MapPin,
+  Phone,
+  Clock,
+  Loader2,
+  Instagram,
+  AlertCircle,
+  CheckCircle2,
+  X,
+  ExternalLink,
+  MessageCircle,
+  Ship,
+} from "lucide-react"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
+import { Reveal, Stagger, StaggerItem } from "@/components/landing/primitives"
+import { PolicyHero } from "@/components/layout/policy-hero"
+import {
+  SITE,
+  SITE_ADDRESS_ONE_LINE,
+  SITE_MAP_EMBED_URL,
+  SITE_MAP_LINK_URL,
+} from "@/lib/site"
 
 type ContactFormData = {
   fullName: string
@@ -101,32 +123,37 @@ export default function ContactPage() {
     <div className="min-h-screen bg-background">
       <Header />
 
-      {/* Hero */}
-      <section className="pt-32 pb-16 bg-bone dark:bg-background">
-        <div className="container-wide">
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-label text-brass mb-4"
-          >
-            Get in Touch
-          </motion.p>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="heading-display text-foreground mb-6"
-          >
-            Contact Us
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-xl text-muted-foreground max-w-2xl"
-          >
-            Ready to discuss your leather requirements? Our team is here to help you find the perfect materials for your projects.
-          </motion.p>
+      {/* Shared policy-style hero (see components/layout/policy-hero.tsx) —
+          the same dark leather-texture treatment as Return Policy, Privacy and
+          Terms, so the site's non-catalogue pages open consistently. */}
+      <PolicyHero
+        eyebrow="Get in Touch"
+        title="Talk to the people who ship the leather"
+        subtitle="Tell us what you are producing and we will match it to the right hide, finish and quantity. Enquiries are answered by our Lahore office, usually within one business day."
+        trust={[
+          { icon: <MapPin size={14} />, label: `${SITE.address.city}, ${SITE.address.country}` },
+          {
+            icon: <Clock size={14} />,
+            label: `Office hours in ${SITE.timezone.abbr} (${SITE.timezone.utcOffset})`,
+          },
+          { icon: <MessageCircle size={14} />, label: SITE.whatsappNote },
+        ]}
+      />
+
+      {/* Direct channels immediately under the hero — a contact page should let
+          someone reach you without hunting for a number. */}
+      <section className="border-b border-border bg-bone">
+        <div className="container-wide py-8">
+          <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+            <a href={`mailto:${SITE.email}`} className="btn-brass w-full sm:w-auto">
+              <Mail size={16} className="mr-2 shrink-0" />
+              <span className="truncate">{SITE.email}</span>
+            </a>
+            <a href={`tel:${SITE.phoneHref}`} className="btn-secondary w-full sm:w-auto">
+              <Phone size={16} className="mr-2 shrink-0" />
+              {SITE.phoneDisplay}
+            </a>
+          </div>
         </div>
       </section>
 
@@ -312,96 +339,115 @@ export default function ContactPage() {
                 transition={{ delay: 0.1 }}
                 className="space-y-6"
               >
+                {/* Every value below comes from lib/site.ts. Previously this
+                    block was hand-typed and had drifted from the footer — wrong
+                    email domain, a tel: link that dialled a placeholder, and a
+                    reserved fictional US number. */}
                 <div className="flex gap-4">
-                  <MapPin size={20} className="text-brass flex-shrink-0 mt-1" />
+                  <MapPin size={20} className="mt-1 flex-shrink-0 text-brass-ink" />
                   <div>
-                    <h4 className="font-medium text-foreground mb-1">Head Office</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Kothi Mian Bashir Ahmed
+                    <h4 className="mb-1 font-medium text-foreground">Head Office</h4>
+                    <p className="text-sm leading-relaxed text-muted-foreground">
+                      {SITE.address.line1}
                       <br />
-                      Toheed Park, Daroghawala
+                      {SITE.address.line2}
                       <br />
-                      Lahore, Punjab
+                      {SITE.address.city} {SITE.address.postalCode}, {SITE.address.region}
                       <br />
-                      Pakistan
+                      {SITE.address.country}
                     </p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4">
-                  <Mail size={20} className="text-brass flex-shrink-0 mt-1" />
-                  <div>
-                    <h4 className="font-medium text-foreground mb-1">Email</h4>
-                    <p className="text-sm text-muted-foreground">
-                      General Inquiries:{" "}
-                      <a
-                        href="mailto:info@puregrain.com"
-                        className="text-leather dark:text-tan hover:text-brass transition-colors"
-                      >
-                        info@puregrain.com
-                      </a>
-                      <br />
-                      Sales & Orders:{" "}
-                      <a
-                        href="mailto:trade@puregrain.com"
-                        className="text-leather dark:text-tan hover:text-brass transition-colors"
-                      >
-                        sales@puregrain.com
-                      </a>
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4">
-                  <Phone size={20} className="text-brass flex-shrink-0 mt-1" />
-                  <div>
-                    <h4 className="font-medium text-foreground mb-1">Phone</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Main:{" "}
-                      <a
-                        href="tel:+921234567890"
-                        className="text-leather dark:text-tan hover:text-brass transition-colors"
-                      >
-                        +92 308 4578957
-                      </a>
-                      <br />
-                      International:{" "}
-                      <a
-                        href="tel:+12025550123"
-                        className="text-leather dark:text-tan hover:text-brass transition-colors"
-                      >
-                        +1 (202) 555-0123
-                      </a>
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4">
-                  <Clock size={20} className="text-brass flex-shrink-0 mt-1" />
-                  <div>
-                    <h4 className="font-medium text-foreground mb-1">Business Hours</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Monday - Friday: 9:00 AM - 6:00 PM IST
-                      <br />
-                      Saturday: 9:00 AM - 1:00 PM IST
-                      <br />
-                      Sunday: Closed
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4">
-                  <Instagram size={20} className="text-brass flex-shrink-0 mt-1" />
-                  <div>
-                    <h4 className="font-medium text-foreground mb-1">Instagram</h4>
                     <a
-                      href="http://instagram.com/puregrainexports/"
+                      href={SITE_MAP_LINK_URL}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-leather dark:text-tan hover:text-brass transition-colors break-all"
+                      className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-brass-ink transition-colors hover:text-brass"
                     >
-                      instagram.com/puregrainexports
+                      Open in Maps
+                      <ExternalLink size={13} />
                     </a>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <Mail size={20} className="mt-1 flex-shrink-0 text-brass-ink" />
+                  <div>
+                    <h4 className="mb-1 font-medium text-foreground">Email</h4>
+                    <a
+                      href={`mailto:${SITE.email}`}
+                      className="break-all text-sm text-leather transition-colors hover:text-brass-ink dark:text-tan"
+                    >
+                      {SITE.email}
+                    </a>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <Phone size={20} className="mt-1 flex-shrink-0 text-brass-ink" />
+                  <div>
+                    <h4 className="mb-1 font-medium text-foreground">Phone</h4>
+                    <a
+                      href={`tel:${SITE.phoneHref}`}
+                      className="text-sm text-leather transition-colors hover:text-brass-ink dark:text-tan"
+                    >
+                      {SITE.phoneDisplay}
+                    </a>
+                    <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <MessageCircle size={12} className="text-brass-ink" />
+                      {SITE.whatsappNote}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <Clock size={20} className="mt-1 flex-shrink-0 text-brass-ink" />
+                  <div>
+                    <h4 className="mb-1 font-medium text-foreground">
+                      Business Hours{" "}
+                      <span className="font-normal text-muted-foreground">
+                        ({SITE.timezone.abbr}, {SITE.timezone.utcOffset})
+                      </span>
+                    </h4>
+                    <dl className="space-y-0.5 text-sm text-muted-foreground">
+                      {SITE.hours.map((h) => (
+                        <div key={h.days} className="flex justify-between gap-4">
+                          <dt>{h.days}</dt>
+                          <dd className="text-foreground/80">{h.time}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <Instagram size={20} className="mt-1 flex-shrink-0 text-brass-ink" />
+                  <div>
+                    <h4 className="mb-1 font-medium text-foreground">Social</h4>
+                    <div className="flex flex-col gap-1 text-sm">
+                      <a
+                        href={SITE.social.instagram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-leather transition-colors hover:text-brass-ink dark:text-tan"
+                      >
+                        Instagram
+                      </a>
+                      <a
+                        href={SITE.social.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-leather transition-colors hover:text-brass-ink dark:text-tan"
+                      >
+                        LinkedIn
+                      </a>
+                      <a
+                        href={SITE.social.facebook}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-leather transition-colors hover:text-brass-ink dark:text-tan"
+                      >
+                        Facebook
+                      </a>
+                    </div>
                   </div>
                 </div>
               </motion.div>
@@ -419,6 +465,78 @@ export default function ContactPage() {
                 </p>
               </motion.div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Where we are — real embedded map of the head office plus the sourcing
+          footprint. The map is the genuine article (Google Maps embed of the
+          actual address), which is more useful to a buyer than a stock photo. */}
+      <section className="section-padding bg-bone">
+        <div className="container-wide">
+          <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
+            <div>
+              <Reveal>
+                <p className="text-eyebrow">Where We Are</p>
+              </Reveal>
+              <Reveal delay={0.08}>
+                <h2 className="heading-section mt-4 text-foreground">
+                  Lahore head office, nationwide sourcing
+                </h2>
+              </Reveal>
+              <Reveal delay={0.16}>
+                <div className="divider-brass mt-6" />
+              </Reveal>
+              <Reveal delay={0.22}>
+                <p className="mt-6 text-base leading-relaxed text-muted-foreground">
+                  Commercial and export operations run from Lahore. The material itself comes from
+                  Pakistan&apos;s established leather clusters, which is why we can hold consistent
+                  quality across large orders rather than depending on a single tannery.
+                </p>
+              </Reveal>
+
+              <Stagger className="mt-8 space-y-3">
+                {SITE.sourcingRegions.map((region) => (
+                  <StaggerItem key={region.city}>
+                    <div className="flex items-start gap-4 border border-border bg-background p-4 transition-colors duration-300 hover:border-brass/50">
+                      <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center border border-brass/35 text-brass-ink">
+                        <Ship size={16} strokeWidth={1.6} />
+                      </span>
+                      <div>
+                        <h3 className="font-serif text-lg font-medium text-foreground">
+                          {region.city}
+                        </h3>
+                        <p className="mt-0.5 text-sm text-muted-foreground">{region.note}</p>
+                      </div>
+                    </div>
+                  </StaggerItem>
+                ))}
+              </Stagger>
+            </div>
+
+            <Reveal y={0} delay={0.1} className="lg:pt-2">
+              <div className="overflow-hidden border border-border bg-card shadow-card">
+                <iframe
+                  src={SITE_MAP_EMBED_URL}
+                  title={`Map showing ${SITE.name} at ${SITE_ADDRESS_ONE_LINE}`}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                  className="h-[320px] w-full border-0 md:h-[420px] lg:h-[480px]"
+                />
+                <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border p-4">
+                  <p className="text-sm text-muted-foreground">{SITE_ADDRESS_ONE_LINE}</p>
+                  <Link
+                    href={SITE_MAP_LINK_URL}
+                    target="_blank"
+                    className="inline-flex items-center gap-1.5 whitespace-nowrap text-sm font-semibold text-brass-ink transition-colors hover:text-brass"
+                  >
+                    Directions
+                    <ExternalLink size={13} />
+                  </Link>
+                </div>
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>

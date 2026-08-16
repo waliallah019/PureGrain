@@ -19,22 +19,25 @@ interface WhatsAppButtonProps {
   /** Toggle the subtle pulsing ring animation */
   showPulse?: boolean;
   /**
-   * Distance from the bottom of the viewport in pixels.
-   * Set this so the button clears the Free Samples sticker:
-   *   bottomOffset = stickerBottom + stickerHeight + 16px gap
-   * The Free Samples sticker is currently:
-   *   - mobile: bottom 16px, height 84px  -> 16 + 84 + 16 = 116
-   *   - desktop: bottom 24px, height 112px -> 24 + 112 + 16 = 152
-   * The default below uses the desktop value; mobile is overridden via a media style below.
+   * Distance from the bottom of the viewport in pixels, at >= 768px.
+   *
+   * This button owns the bottom-RIGHT corner on its own; the Free Samples
+   * sticker sits in the bottom-left. It previously had to clear the sticker
+   * (`stickerBottom + stickerHeight + gap`) because both shared the right
+   * corner — hence the old 132/104 defaults. Now it just sits in the corner
+   * like any other FAB.
    */
   bottomOffset?: number;
+  /** Same, below 768px. */
+  mobileBottomOffset?: number;
 }
 
 export default function WhatsAppButton({
   phoneNumber,
   prefillMessage = "",
   showPulse = true,
-  bottomOffset = 152,
+  bottomOffset = 24,
+  mobileBottomOffset = 16,
 }: WhatsAppButtonProps) {
   const pathname = usePathname();
   const isHomePage = pathname === "/";
@@ -73,8 +76,7 @@ export default function WhatsAppButton({
   }`;
 
   // Mobile gets a smaller offset because the sticker is shorter on mobile.
-  // 116px clears: bottom 16 + sticker height 84 + 16 gap.
-  const mobileOffset = Math.min(bottomOffset, 116);
+  const mobileOffset = mobileBottomOffset;
 
   // When the sample tray bar is showing, stack the button just above it
   // instead of letting the bar cover it.
