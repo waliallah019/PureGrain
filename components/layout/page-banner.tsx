@@ -49,7 +49,7 @@ export function PageBanner({
     return (
       <section
         className={cn(
-          "relative overflow-hidden border-b bg-gradient-to-r from-amber-50/50 via-background to-amber-50/50 dark:from-amber-950/10 dark:via-background dark:to-amber-950/10",
+          "relative overflow-hidden border-b bg-gradient-to-r from-bone via-background to-bone",
           className
         )}
       >
@@ -65,7 +65,7 @@ export function PageBanner({
                   {badge && (
                     <Badge
                       variant="secondary"
-                      className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100 px-3 py-1 text-xs flex items-center gap-1.5 shrink-0"
+                      className="border border-brass/30 bg-brass/15 text-brass-ink px-3 py-1 text-xs flex items-center gap-1.5 shrink-0"
                     >
                       <Sparkles className="w-3 h-3" />
                       {badge}
@@ -79,7 +79,7 @@ export function PageBanner({
                       if (shouldHighlight) {
                         return (
                           <span key={i}>
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-700 to-amber-900 dark:from-amber-400 dark:to-amber-600">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-leather to-primary dark:from-tan dark:to-brass">
                               {word}
                             </span>
                             {!isLastWord && " "}
@@ -110,14 +110,14 @@ export function PageBanner({
                         className={cn(
                           "flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all duration-300 cursor-pointer",
                           isActive
-                            ? "bg-amber-100 dark:bg-amber-900/30 shadow-sm scale-105"
+                            ? "bg-brass/15 shadow-sm scale-105"
                             : "bg-transparent opacity-60 hover:opacity-100"
                         )}
                         onClick={() => setCurrentStat(index)}
                       >
                         <StatIcon className={cn(
                           "w-4 h-4 transition-colors",
-                          isActive ? "text-amber-700 dark:text-amber-400" : "text-muted-foreground"
+                          isActive ? "text-brass-ink" : "text-muted-foreground"
                         )} />
                         <div className="flex flex-col">
                           <span className={cn(
@@ -141,8 +141,8 @@ export function PageBanner({
                     className={cn(
                       "shrink-0 hover:scale-105 transition-all micro-bounce",
                       cta.variant === "outline"
-                        ? "border-amber-800 text-amber-800 hover:bg-amber-50 dark:border-amber-400 dark:text-amber-400 dark:hover:bg-amber-950/20"
-                        : "bg-amber-800 hover:bg-amber-900 dark:bg-amber-700 dark:hover:bg-amber-800 shadow-leather"
+                        ? "border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                        : "bg-brass text-brass-foreground hover:bg-brass/90 shadow-leather"
                     )}
                     asChild
                   >
@@ -158,7 +158,7 @@ export function PageBanner({
         </div>
 
         {/* Bottom accent line */}
-        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-amber-300/50 to-transparent dark:via-amber-700/30" />
+        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-brass/50 to-transparent" />
       </section>
     )
   }
@@ -169,14 +169,14 @@ export function PageBanner({
       className={cn(
         "relative overflow-hidden border-b",
         gradient
-          ? "bg-gradient-to-br from-amber-50 via-background to-amber-50/50 dark:from-amber-950/20 dark:via-background dark:to-amber-950/10"
+          ? "bg-gradient-to-br from-bone via-background to-bone"
           : "bg-background",
         className
       )}
     >
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-amber-200/20 dark:bg-amber-800/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-amber-200/20 dark:bg-amber-800/10 rounded-full blur-3xl" />
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-brass/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-brass/10 rounded-full blur-3xl" />
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -185,7 +185,7 @@ export function PageBanner({
             {badge && (
               <Badge
                 variant="secondary"
-                className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100 px-4 py-2 text-sm inline-flex items-center gap-2 animate-fade-in"
+                className="border border-brass/30 bg-brass/15 text-brass-ink px-4 py-2 text-sm inline-flex items-center gap-2 animate-fade-in"
               >
                 <Sparkles className="w-3 h-3" />
                 {badge}
@@ -199,7 +199,7 @@ export function PageBanner({
                 if (shouldHighlight) {
                   return (
                     <span key={i}>
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-700 to-amber-900 dark:from-amber-400 dark:to-amber-600">
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-leather to-primary dark:from-tan dark:to-brass">
                         {word}
                       </span>
                       {!isLastWord && " "}
@@ -222,8 +222,8 @@ export function PageBanner({
                   className={cn(
                     "text-lg px-8 py-6 hover:scale-105 transition-all",
                     cta.variant === "outline"
-                      ? "border-amber-800 text-amber-800 hover:bg-amber-50 dark:border-amber-400 dark:text-amber-400 dark:hover:bg-amber-950/20"
-                      : "bg-amber-800 hover:bg-amber-900 dark:bg-amber-700 dark:hover:bg-amber-800"
+                      ? "border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                      : "bg-brass text-brass-foreground hover:bg-brass/90"
                   )}
                   asChild
                 >

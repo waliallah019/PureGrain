@@ -129,7 +129,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
           <section className="mb-10 border border-border bg-bone/35 dark:bg-muted/20">
             <div className="grid lg:grid-cols-[1fr_0.95fr] gap-6 lg:gap-8 p-5 md:p-7 lg:p-8 items-start">
               <div>
-                <p className="text-label text-brass mb-2">Pure Grain Insight</p>
+                <p className="text-eyebrow mb-2">Pure Grain Insight</p>
                 <h1 className="heading-display text-foreground mb-4">{post.title}</h1>
 
                 <div className="flex flex-wrap items-center gap-5 text-sm text-muted-foreground mb-4">
@@ -170,7 +170,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
           <div className="grid lg:grid-cols-[minmax(0,1fr)_300px] gap-8 xl:gap-10">
             <div>
               <div
-                className="prose prose-neutral max-w-none dark:prose-invert prose-headings:font-serif prose-a:text-brass prose-h2:scroll-mt-28 prose-h3:scroll-mt-28"
+                className="prose prose-neutral max-w-none dark:prose-invert prose-headings:font-serif prose-a:text-brass-ink prose-h2:scroll-mt-28 prose-h3:scroll-mt-28"
                 dangerouslySetInnerHTML={{ __html: enhancedContent }}
               />
             </div>
@@ -185,7 +185,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
                         <li key={item.id} className={item.level === 3 ? "pl-4" : ""}>
                           <a
                             href={`#${item.id}`}
-                            className="text-muted-foreground hover:text-brass transition-colors line-clamp-2"
+                            className="text-muted-foreground hover:text-brass-ink transition-colors line-clamp-2"
                           >
                             {item.text}
                           </a>

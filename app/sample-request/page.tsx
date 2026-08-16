@@ -801,7 +801,7 @@ function SampleRequestForm() {
         <div className="grid lg:grid-cols-5 gap-12 lg:gap-20">
           <div className="lg:col-span-3">
             <div className="mb-8">
-              <p className="text-label text-brass mb-4">Sample Request</p>
+              <p className="text-eyebrow mb-4">Sample Request</p>
               <div className="flex flex-wrap items-center gap-3 mb-4">
                 <h2 className="heading-subsection text-foreground">Request Samples</h2>
                 <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100 px-3 py-1">
@@ -906,7 +906,7 @@ function SampleRequestForm() {
             ) : (
               <div className="w-full max-w-3xl rounded-2xl border border-border bg-card/70 backdrop-blur-sm p-5 md:p-8 shadow-sm">
                 <div className="mb-6 pb-6 border-b border-border">
-                  <p className="text-label text-brass mb-3">Step 2 of 2</p>
+                  <p className="text-eyebrow mb-3">Step 2 of 2</p>
                   <h3 className="text-xl md:text-2xl font-semibold text-foreground flex items-center">
                     <CreditCard className="w-5 h-5 mr-2 text-amber-600" /> Complete Payment
                   </h3>

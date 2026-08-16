@@ -12,11 +12,18 @@ interface CurrencySwitcherProps {
   className?: string;
   /** When true, the select expands to fill its container (mobile menu). */
   fullWidth?: boolean;
+  /**
+   * Set while the header is transparent over the homepage hero. The control
+   * then paints itself against dark photography instead of the page
+   * background, which is the one case the theme tokens cannot infer.
+   */
+  onDark?: boolean;
 }
 
 export default function CurrencySwitcher({
   className,
   fullWidth = false,
+  onDark = false,
 }: CurrencySwitcherProps) {
   const { currency, setCurrency, isLoading } = useCurrency();
   const selectId = useId();
@@ -25,8 +32,8 @@ export default function CurrencySwitcher({
     <label
       htmlFor={selectId}
       className={`pg-currency-switcher inline-flex items-center gap-2 ${
-        fullWidth ? "w-full" : ""
-      } ${className ?? ""}`}
+        onDark ? "is-on-dark" : ""
+      } ${fullWidth ? "w-full" : ""} ${className ?? ""}`}
     >
       <i
         className="fa-solid fa-globe pg-currency-switcher__icon"
@@ -48,21 +55,25 @@ export default function CurrencySwitcher({
         ))}
       </select>
 
+      {/* All colours come from the theme tokens. This block previously
+          hardcoded #2c1810 / #c49a6c / #f5ecd9 with a duplicate `.dark`
+          override, and referenced --font-inter, a variable that no longer
+          exists — the font stack is --font-sans now. */}
       <style jsx>{`
         .pg-currency-switcher {
-          font-family: var(--font-inter), "Jost", sans-serif;
-          color: #2c1810;
+          font-family: var(--font-sans), "Jost", sans-serif;
+          color: hsl(var(--foreground));
         }
         .pg-currency-switcher__icon {
-          color: #c49a6c;
+          color: hsl(var(--brass));
           font-size: 14px;
         }
         .pg-currency-switcher__select {
           appearance: none;
           -webkit-appearance: none;
           background-color: transparent;
-          border: 1px solid rgba(196, 154, 108, 0.45);
-          border-radius: 6px;
+          border: 1px solid hsl(var(--brass) / 0.45);
+          border-radius: var(--radius);
           padding: 6px 28px 6px 10px;
           font-size: 13px;
           font-weight: 500;
@@ -75,25 +86,27 @@ export default function CurrencySwitcher({
           transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
         .pg-currency-switcher__select:hover,
-        .pg-currency-switcher__select:focus {
-          border-color: #c49a6c;
+        .pg-currency-switcher__select:focus-visible {
+          border-color: hsl(var(--brass));
           outline: none;
-          box-shadow: 0 0 0 2px rgba(196, 154, 108, 0.25);
+          box-shadow: 0 0 0 2px hsl(var(--brass) / 0.28);
         }
         .pg-currency-switcher__select:disabled {
           opacity: 0.6;
           cursor: not-allowed;
         }
-        :global(.dark) .pg-currency-switcher {
-          color: #f5ecd9;
+        /* The native dropdown list is painted by the OS, so it needs explicit
+           surface colours or it inherits the page's transparent background. */
+        .pg-currency-switcher__select option {
+          background-color: hsl(var(--popover));
+          color: hsl(var(--popover-foreground));
         }
-        :global(.dark) .pg-currency-switcher__select {
-          color: #f5ecd9;
-          border-color: rgba(196, 154, 108, 0.5);
+        /* Transparent header over hero photography. */
+        .pg-currency-switcher.is-on-dark {
+          color: hsl(var(--leather-foreground));
         }
-        :global(.dark) .pg-currency-switcher__select option {
-          background-color: #2c1810;
-          color: #f5ecd9;
+        .pg-currency-switcher.is-on-dark .pg-currency-switcher__select {
+          border-color: hsl(var(--leather-foreground) / 0.4);
         }
       `}</style>
     </label>

@@ -1,44 +1,40 @@
 // app/quality/page.tsx
-import "../return-policy/policy.css";
-import "./overrides.css";
-import PolicyContent from "./PolicyContent";
-import PageEffects from "./PageEffects";
-import fs from "fs";
-import path from "path";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/header"
+import { Footer } from "@/components/layout/footer"
+import QualityContent from "./QualityContent"
+
+/*
+ * This page used to read `app/quality/policy-body.html` (480 lines) off disk and
+ * inject it via dangerouslySetInnerHTML, styled by the return-policy stylesheet
+ * plus 895 lines of local overrides.css. It also pulled Cormorant Garamond, Jost
+ * and Font Awesome from CDNs in <head> — re-downloading the two brand faces that
+ * app/layout.tsx already self-hosts via next/font, and loading an entire icon
+ * font for a handful of decorative glyphs.
+ *
+ * That stack is why the page drifted: its own colour variables never mapped to
+ * the theme tokens, so section grounds, card surfaces and dark mode all diverged
+ * from the rest of the site.
+ *
+ * Content now lives in QualityContent.tsx on the shared design system.
+ * policy-body.html / PolicyContent.tsx / PageEffects.tsx / overrides.css are no
+ * longer referenced.
+ */
 
 export const metadata = {
   title: "Quality & Process | Pure Grain Exports",
   description:
-    "Discover the rigorous quality standards, inspection processes, and manufacturing practices behind every Pure Grain Exports leather hide.",
+    "The quality standards, six-stage inspection process, laboratory testing and certifications behind every Pure Grain Exports leather hide.",
   robots: "index, follow",
-};
+}
 
 export default function QualityPage() {
-  const html = fs.readFileSync(
-    path.join(process.cwd(), "app/quality/policy-body.html"),
-    "utf8"
-  );
   return (
-    <>
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Jost:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet"
-      />
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-        crossOrigin="anonymous"
-        referrerPolicy="no-referrer"
-      />
+    <div className="min-h-screen bg-background">
       <Header />
-      <main className="policyPage">
-        <PolicyContent html={html} />
+      <main>
+        <QualityContent />
       </main>
-      <PageEffects />
       <Footer />
-    </>
-  );
+    </div>
+  )
 }

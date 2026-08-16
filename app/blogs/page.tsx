@@ -63,7 +63,7 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
 
       <section className="pt-32 pb-14 bg-bone dark:bg-background">
         <div className="container-wide">
-          <p className="text-label text-brass mb-3">Knowledge Center</p>
+          <p className="text-eyebrow mb-3">Knowledge Center</p>
           <h1 className="heading-display text-foreground mb-4">Pure Grain Blogs</h1>
           <p className="text-body text-muted-foreground max-w-3xl">
             Stay updated with leather sourcing insights, manufacturing guidance, and practical trends for wholesale buyers.
@@ -96,14 +96,14 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
 
                   <div className="p-6 md:p-8 lg:p-10 flex flex-col justify-center">
                     <h2 className="text-3xl md:text-4xl font-semibold text-foreground leading-tight mb-4 md:mb-5">
-                      <Link href={`/blogs/${featuredPost.slug}`} className="hover:text-brass transition-colors">
+                      <Link href={`/blogs/${featuredPost.slug}`} className="hover:text-brass-ink transition-colors">
                         {featuredPost.title}
                       </Link>
                     </h2>
 
                     <p className="text-sm md:text-base text-muted-foreground mb-4 md:mb-5 line-clamp-3">{featuredPost.excerpt}</p>
 
-                    <p className="text-sm font-semibold text-brass mb-2">By {featuredPost.authorName}</p>
+                    <p className="text-sm font-semibold text-brass-ink mb-2">By {featuredPost.authorName}</p>
                     <div className="flex items-center gap-4 text-xs text-muted-foreground mb-6">
                       <span className="inline-flex items-center gap-1">
                         <CalendarDays className="h-3.5 w-3.5" />
@@ -146,7 +146,7 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
 
                       <div className="p-5">
                         <h3 className="text-2xl font-semibold text-foreground mb-2 line-clamp-2">{post.title}</h3>
-                        <p className="text-sm font-semibold text-brass mb-2">By {post.authorName}</p>
+                        <p className="text-sm font-semibold text-brass-ink mb-2">By {post.authorName}</p>
                         <div className="flex items-center gap-4 text-xs text-muted-foreground mb-3">
                           <span className="inline-flex items-center gap-1">
                             <CalendarDays className="h-3.5 w-3.5" />

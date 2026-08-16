@@ -180,7 +180,7 @@ export default function ProductDetailContent({
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
             >
-              <p className="text-label text-brass mb-4">{product.productType}</p>
+              <p className="text-eyebrow mb-4">{product.productType}</p>
               <h1 className="heading-section text-foreground mb-6">
                 {product.name}
               </h1>
@@ -219,7 +219,7 @@ export default function ProductDetailContent({
                 <ul className="space-y-2">
                   {featureItems.map((feature) => (
                     <li key={feature} className="flex items-center gap-3 text-sm">
-                      <Check size={16} className="text-brass flex-shrink-0" />
+                      <Check size={16} className="text-brass-ink flex-shrink-0" />
                       <span className="text-muted-foreground">{feature}</span>
                     </li>
                   ))}
@@ -347,7 +347,7 @@ export default function ProductDetailContent({
 
                     <div className="mt-3 flex flex-wrap gap-1.5">
                       {p.isFeatured && (
-                        <span className="text-[10px] uppercase tracking-wide px-2 py-0.5 border border-brass text-brass">
+                        <span className="text-[10px] uppercase tracking-wide px-2 py-0.5 border border-brass text-brass-ink">
                           Featured
                         </span>
                       )}
@@ -363,7 +363,7 @@ export default function ProductDetailContent({
                       )}
                     </div>
 
-                    <span className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-leather dark:text-tan group-hover:text-brass transition-colors">
+                    <span className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-leather dark:text-tan group-hover:text-brass-ink transition-colors">
                       View Details <ArrowRight size={14} />
                     </span>
                   </div>

@@ -11,7 +11,34 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { useLenis } from "@/lib/utils/lenis"
 import CurrencySwitcher from "@/components/CurrencySwitcher"
 
-const MOBILE_MAX_TYPES = 6
+/** Kept in sync with MAX_TYPES_PER_COLUMN in `components/premium-dropdown.tsx`
+    so the mobile drawer lists the same taxonomy slice as the desktop menu. */
+const MOBILE_MAX_TYPES = 5
+
+/**
+ * Header surface behaviour is driven by what sits directly beneath it. These
+ * were previously three separate hardcoded pathname comparisons that had to be
+ * edited every time a page gained a dark hero — and pages that were missed
+ * (contact, privacy, about) rendered dark nav links on a dark hero.
+ *
+ * OVERLAY: full-bleed photographic hero runs under a transparent header, so the
+ * bar paints nothing and switches to light ink + the light-ink logo.
+ */
+const OVERLAY_HERO_ROUTES = ["/", "/about"]
+
+/**
+ * SOLID: the page opens with a dark hero *band* that starts below the header
+ * (the shared PolicyHero). The bar keeps its own opaque surface so the nav
+ * never sits on the dark band.
+ */
+const SOLID_HEADER_ROUTES = [
+  "/contact",
+  "/privacy",
+  "/terms",
+  "/quality",
+  "/return-policy",
+  "/payments-and-trade-terms",
+]
 
 export function Header() {
   const pathname = usePathname()
@@ -78,7 +105,7 @@ export function Header() {
                     .map((item: { name?: string }) => item?.name)
                     .filter((name: unknown): name is string => typeof name === "string" && name.length > 0),
                 ),
-              )
+              ).sort((a, b) => a.localeCompare(b))
             : []
           setFinishedProductTypes(types)
         }
@@ -92,7 +119,7 @@ export function Header() {
                     .map((item: { name?: string }) => item?.name)
                     .filter((name: unknown): name is string => typeof name === "string" && name.length > 0),
                 ),
-              )
+              ).sort((a, b) => a.localeCompare(b))
             : []
           setRawLeatherTypes(types)
         }
@@ -174,18 +201,15 @@ export function Header() {
 
   const isCollectionActive =
     pathname?.startsWith("/catalog") || pathname?.startsWith("/custom-manufacturing")
-  const isPaymentsTradeTermsPage = pathname === "/payments-and-trade-terms"
-  const isReturnPolicyPage = pathname === "/return-policy"
-  const isTermsPage = pathname === "/terms"
-  const isTopOverlayPage = (pathname === "/" || isPaymentsTradeTermsPage || isReturnPolicyPage) && !isScrolled
+
+  const hasSolidHeader = SOLID_HEADER_ROUTES.includes(pathname ?? "")
+  const isTopOverlayPage = OVERLAY_HERO_ROUTES.includes(pathname ?? "") && !isScrolled
 
   // Determine nav link classes based on scroll and overlay page state.
-  // When on payments/return pages and scrolled, use light/dark-aware colors
-  // so links are dark on a white background and light on the leather/dark background.
   const getNavLinkClass = (isActive: boolean) => {
-    // For payments and return pages, always ensure contrast: dark text in light mode,
-    // light text in dark mode, regardless of scroll position.
-    if (isPaymentsTradeTermsPage || isReturnPolicyPage || isTermsPage) {
+    // Solid-header pages: the bar has its own opaque surface, so the links are
+    // always dark-on-white in light mode and light-on-brown in dark mode.
+    if (hasSolidHeader) {
       return isActive
         ? "text-foreground dark:text-[hsl(40_20%_92%)] hover:text-foreground dark:hover:text-[hsl(40_20%_92%)]"
         : "text-muted-foreground dark:text-[hsl(30_10%_60%)] hover:text-foreground dark:hover:text-[hsl(40_20%_92%)]"
@@ -195,10 +219,13 @@ export function Header() {
       return isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
     }
 
+    // Over hero photography. The inactive tone used to be hsl(30 10% 60%),
+    // which only reached ~3:1 against the leather image; leather-foreground at
+    // 80% clears AA while still reading as secondary next to the active link.
     if (isTopOverlayPage) {
       return isActive
-        ? "text-[hsl(40_20%_92%)] hover:text-[hsl(40_20%_92%)] dark:text-foreground dark:hover:text-foreground"
-        : "text-[hsl(30_10%_60%)] hover:text-[hsl(40_20%_92%)] dark:text-muted-foreground dark:hover:text-foreground"
+        ? "text-leather-foreground hover:text-leather-foreground"
+        : "text-leather-foreground/80 hover:text-leather-foreground"
     }
 
     return isActive
@@ -209,9 +236,9 @@ export function Header() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out ${
-        // For payments, return, and terms pages, always show white in light mode and brown in dark mode
-        // to preserve the leather/brown header in dark theme and white in light theme.
-        (isPaymentsTradeTermsPage || isReturnPolicyPage || isTermsPage)
+        // Solid-header pages stay white in light mode and leather-brown in dark
+        // mode, so the bar never sits on top of the dark hero band below it.
+        hasSolidHeader
           ? "bg-white dark:bg-[hsl(17_47%_12%)] border-b border-[rgba(212,184,150,0.28)] shadow-sm"
           : isScrolled || isMobileMenuOpen
           ? "bg-background/95 backdrop-blur-sm border-b border-border shadow-sm"
@@ -221,20 +248,30 @@ export function Header() {
       <div className="container-wide">
         <div className="flex items-center h-20">
           {/* Logo */}
+          {/* Logo choice follows the SURFACE, not just the theme. While the
+              header is transparent over the hero photography the surface is
+              dark regardless of theme, so the light-ink logo has to win —
+              otherwise the dark-ink logo sits on a dark hero and disappears. */}
           <Link href="/" className="flex items-center gap-2 min-w-0 lg:min-w-[180px]">
               <Image
                 src="/new_logo.png"
-                alt="Pure Grain Logo Light"
+                alt="Pure Grain"
                 width={180}
                 height={50}
-                className="object-contain hover:opacity-90 transition-opacity block dark:hidden"
+                priority
+                className={`object-contain hover:opacity-90 transition-opacity dark:hidden ${
+                  isTopOverlayPage ? "hidden" : "block"
+                }`}
               />
               <Image
                 src="/temp_logo.png"
-                alt="Pure Grain Logo Dark"
+                alt="Pure Grain"
                 width={180}
                 height={50}
-                className="object-contain hover:opacity-90 transition-opacity hidden dark:block"
+                priority
+                className={`object-contain hover:opacity-90 transition-opacity dark:block ${
+                  isTopOverlayPage ? "block" : "hidden"
+                }`}
               />
           </Link>
 
@@ -269,13 +306,18 @@ export function Header() {
           {/* Right Side */}
           <div className="ml-auto flex items-center gap-3 justify-end lg:min-w-[180px]">
             <div className="hidden lg:block">
-              <CurrencySwitcher />
+              <CurrencySwitcher onDark={isTopOverlayPage} />
             </div>
-            <ThemeToggle className={isTopOverlayPage ? "text-white hover:text-white/90" : undefined} />
+            <ThemeToggle
+              className={isTopOverlayPage ? "text-leather-foreground hover:text-leather-foreground/85" : undefined}
+            />
             <button
               onClick={() => setIsMobileMenuOpen((open) => !open)}
-              className="lg:hidden p-2 text-foreground"
+              className={`lg:hidden p-2 ${
+                isTopOverlayPage && !isMobileMenuOpen ? "text-leather-foreground" : "text-foreground"
+              }`}
               aria-label="Toggle menu"
+              aria-expanded={isMobileMenuOpen}
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -358,12 +400,6 @@ export function Header() {
                       </button>
                       {isFinishedOpen && (
                         <div className="pb-3 space-y-1">
-                          <Link
-                            href="/catalog/finished-products"
-                            className="block py-2 pl-3 text-sm text-muted-foreground hover:text-foreground"
-                          >
-                            All Finished Products
-                          </Link>
                           {finishedProductTypes.slice(0, MOBILE_MAX_TYPES).map((type) => (
                             <Link
                               key={type}
@@ -373,6 +409,16 @@ export function Header() {
                               {type}
                             </Link>
                           ))}
+                          {/* Mirrors the desktop dropdown: a capped slice of the
+                              real taxonomy followed by an always-present escape
+                              hatch, which also covers the still-loading state. */}
+                          <Link
+                            href="/catalog/finished-products"
+                            className="inline-flex items-center gap-1.5 py-2 pl-3 text-sm font-medium text-primary hover:underline"
+                          >
+                            View all
+                            <span aria-hidden="true">→</span>
+                          </Link>
                         </div>
                       )}
                     </div>
@@ -388,12 +434,6 @@ export function Header() {
                       </button>
                       {isHidesOpen && (
                         <div className="pb-3 space-y-1">
-                          <Link
-                            href="/catalog/raw-leather"
-                            className="block py-2 pl-3 text-sm text-muted-foreground hover:text-foreground"
-                          >
-                            All Leather Hides
-                          </Link>
                           {rawLeatherTypes.slice(0, MOBILE_MAX_TYPES).map((type) => (
                             <Link
                               key={type}
@@ -403,6 +443,13 @@ export function Header() {
                               {type}
                             </Link>
                           ))}
+                          <Link
+                            href="/catalog/raw-leather"
+                            className="inline-flex items-center gap-1.5 py-2 pl-3 text-sm font-medium text-primary hover:underline"
+                          >
+                            View all
+                            <span aria-hidden="true">→</span>
+                          </Link>
                         </div>
                       )}
                     </div>

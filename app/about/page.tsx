@@ -1,44 +1,36 @@
 // app/about/page.tsx
-import "../return-policy/policy.css";
-import "./overrides.css";
-import PolicyContent from "./PolicyContent";
-import PageEffects from "./PageEffects";
-import fs from "fs";
-import path from "path";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/header"
+import { Footer } from "@/components/layout/footer"
+import AboutContent from "./AboutContent"
+
+/*
+ * This page used to read `app/about/policy-body.html` off disk with fs.readFileSync
+ * and inject it via dangerouslySetInnerHTML, styled by the return-policy stylesheet
+ * plus a local overrides.css. That meant the About page shared none of the site's
+ * design system, and it pulled Cormorant Garamond, Jost AND Font Awesome from CDNs
+ * in <head> — re-downloading the two brand faces that app/layout.tsx already
+ * self-hosts via next/font.
+ *
+ * The content now lives in AboutContent.tsx as real components using the same
+ * primitives as the landing page. policy-body.html / PolicyContent.tsx /
+ * PageEffects.tsx / overrides.css are no longer referenced.
+ */
 
 export const metadata = {
   title: "About Us | Pure Grain Exports",
   description:
-    "Learn about Pure Grain Exports — a Sialkot-based premium leather hide exporter serving wholesale buyers across Europe, North America, and Asia.",
+    "Pure Grain Exports is a Lahore-headquartered premium leather exporter, sourcing through Pakistan's Sialkot, Kasur and Karachi leather clusters and serving wholesale buyers across Europe, North America, Asia and the Middle East.",
   robots: "index, follow",
-};
+}
 
 export default function AboutPage() {
-  const html = fs.readFileSync(
-    path.join(process.cwd(), "app/about/policy-body.html"),
-    "utf8"
-  );
   return (
-    <>
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Jost:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet"
-      />
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-        crossOrigin="anonymous"
-        referrerPolicy="no-referrer"
-      />
+    <div className="min-h-screen bg-background">
       <Header />
-      <main className="policyPage">
-        <PolicyContent html={html} />
+      <main>
+        <AboutContent />
       </main>
-      <PageEffects />
       <Footer />
-    </>
-  );
+    </div>
+  )
 }

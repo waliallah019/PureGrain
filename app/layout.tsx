@@ -10,8 +10,24 @@ import WhatsAppButton from "@/components/WhatsAppButton"
 import SampleTrayBar from "@/components/sample-request/SampleTrayBar"
 import { CurrencyProvider } from "@/lib/currency/CurrencyContext"
 
-const inter = Jost({ subsets: ["latin"], variable: "--font-inter" })
-const playfair = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-playfair" })
+// These are self-hosted by next/font. globals.css used to ALSO pull the same two
+// families from the Google Fonts CDN via @import, so every visitor downloaded
+// both faces twice; that import is gone. The CSS variables are consumed by
+// `fontFamily.sans` / `fontFamily.serif` in tailwind.config.ts, which is what
+// makes `font-sans`/`font-serif` (and the base body/heading rules) resolve to
+// the brand faces instead of the system stack.
+const fontSans = Jost({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-sans",
+  display: "swap",
+})
+const fontSerif = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-serif",
+  display: "swap",
+})
 
 export const metadata: Metadata = {
   title: "Pure Grain - Premium B2B Leather Wholesale | Where Grain meets Greatness",
@@ -25,6 +41,7 @@ export const metadata: Metadata = {
   },
 }
 
+// fast-refresh probe
 export default function RootLayout({
   children,
 }: {
@@ -34,7 +51,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <ReactLenis root>
         <body
-          className={`${inter.variable} ${playfair.variable} font-sans`}
+          className={`${fontSans.variable} ${fontSerif.variable} font-sans`}
         >
           <ThemeProvider
             attribute="class"
@@ -46,11 +63,13 @@ export default function RootLayout({
               <ScrollManager />
               {children}
               <FloatingSamplesSticker />
+              {/* Offsets left at their defaults — this sits in the bottom-right
+                  corner and the Free Samples sticker sits in the bottom-left, so
+                  neither needs to clear the other. */}
               <WhatsAppButton
                 phoneNumber={process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || ""}
                 prefillMessage="Hi Pure Grain, I'd like to know more about your leather products."
                 showPulse
-                bottomOffset={24}
               />
               {/* Global sample-tray bar — surfaces the persisted hide tray on
                   every customer page. Self-hides on the checkout flow and

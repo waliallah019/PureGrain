@@ -192,7 +192,7 @@ export default function RawLeatherDetailContent({
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
             >
-              <p className="text-label text-brass mb-4">{rawLeather.leatherType}</p>
+              <p className="text-eyebrow mb-4">{rawLeather.leatherType}</p>
               <h1 className="heading-section text-foreground mb-6">
                 {rawLeather.name}
               </h1>
@@ -231,7 +231,7 @@ export default function RawLeatherDetailContent({
                 <ul className="space-y-2">
                   {featureItems.map((feature) => (
                     <li key={feature} className="flex items-center gap-3 text-sm">
-                      <Check size={16} className="text-brass flex-shrink-0" />
+                      <Check size={16} className="text-brass-ink flex-shrink-0" />
                       <span className="text-muted-foreground">{feature}</span>
                     </li>
                   ))}
@@ -322,7 +322,12 @@ export default function RawLeatherDetailContent({
                     href={`/catalog/raw-leather/${rl._id}`}
                     className="group block card-industrial"
                   >
-                    <div className="w-full h-[180px] sm:h-[200px] md:h-[220px] overflow-hidden flex-shrink-0">
+                    {/* On mobile the grid drops to one column, so the card spans
+                        the full width — a fixed 180px height letterboxed the
+                        hide into a thin strip. An aspect ratio scales the image
+                        with the card instead. Fixed heights are kept from `sm:`
+                        up, where the multi-column widths already suit them. */}
+                    <div className="w-full aspect-[4/3] sm:aspect-auto sm:h-[200px] md:h-[220px] overflow-hidden flex-shrink-0">
                       <img
                         src={rl.images?.[0] || "/placeholder-image.jpg"}
                         alt={rl.name}
@@ -332,14 +337,14 @@ export default function RawLeatherDetailContent({
                     <div className="p-6">
                       <div className="flex items-start justify-between gap-4 mb-3">
                         <div>
-                          <p className="text-xs text-brass mb-2">{rl.leatherType}</p>
+                          <p className="text-xs text-brass-ink mb-2">{rl.leatherType}</p>
                           <h3 className="font-serif text-xl font-medium text-foreground group-hover:text-leather dark:group-hover:text-tan transition-colors">
                             {rl.name}
                           </h3>
                         </div>
                         <div className="flex flex-col items-end gap-2">
                           {rl.isFeatured && (
-                            <span className="text-[11px] uppercase tracking-wide px-2 py-1 border border-brass text-brass min-w-[92px] text-center">
+                            <span className="text-[11px] uppercase tracking-wide px-2 py-1 border border-brass text-brass-ink min-w-[92px] text-center">
                               Featured
                             </span>
                           )}
@@ -386,7 +391,7 @@ export default function RawLeatherDetailContent({
                           </span>
                         ))}
                       </div>
-                      <span className="inline-flex items-center gap-2 text-sm font-medium text-leather dark:text-tan group-hover:text-brass transition-colors">
+                      <span className="inline-flex items-center gap-2 text-sm font-medium text-leather dark:text-tan group-hover:text-brass-ink transition-colors">
                         View Details <ArrowRight size={14} />
                       </span>
                     </div>

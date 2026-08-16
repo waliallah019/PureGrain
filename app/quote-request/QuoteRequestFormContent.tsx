@@ -367,7 +367,7 @@ export function QuoteRequestFormContent() {
           <div className="grid lg:grid-cols-5 gap-12 lg:gap-20">
             <div className="lg:col-span-3">
               <div className="mb-8">
-                <p className="text-label text-brass mb-4">Quote Request</p>
+                <p className="text-eyebrow mb-4">Quote Request</p>
                 <h2 className="heading-subsection text-foreground mb-4">Request Details</h2>
                 <div className="divider-brass mb-6" />
                 <p className="text-muted-foreground max-w-2xl">

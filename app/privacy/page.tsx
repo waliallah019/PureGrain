@@ -2,44 +2,27 @@
 "use client"
 
 import { motion } from "framer-motion"
+import { Lock, ShieldCheck, FileText } from "lucide-react"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
+import { PolicyHero } from "@/components/layout/policy-hero"
 
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
 
-      {/* Hero */}
-      <section className="pt-32 pb-20 bg-bone dark:bg-background">
-        <div className="container-wide">
-          <div className="max-w-3xl">
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-label text-brass mb-4"
-            >
-              Legal
-            </motion.p>
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="heading-display text-foreground mb-6"
-            >
-              Privacy Policy
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-sm text-muted-foreground"
-            >
-              Last updated: January 1, 2026
-            </motion.p>
-          </div>
-        </div>
-      </section>
+      <PolicyHero
+        eyebrow="Legal"
+        title="Privacy Policy"
+        subtitle="How Pure Grain Exports collects, uses and protects the information you share with us when you enquire, request samples, or place a wholesale order."
+        updated="Last Updated: January 1, 2026"
+        trust={[
+          { icon: <Lock size={14} />, label: "Your Data Stays Confidential" },
+          { icon: <ShieldCheck size={14} />, label: "Never Sold to Third Parties" },
+          { icon: <FileText size={14} />, label: "Clear, Plain-English Terms" },
+        ]}
+      />
 
       {/* Content */}
       <section className="section-padding">
@@ -111,7 +94,7 @@ export default function PrivacyPage() {
               <h2 className="heading-section text-foreground mb-4">5. Your Rights</h2>
               <p>
                 You have the right to access, correct, or delete your personal information at any time. To exercise these rights, please contact us at{" "}
-                <a href="mailto:info@puregrainexports.com" className="text-brass underline">
+                <a href="mailto:info@puregrainexports.com" className="text-brass-ink underline">
                   info@puregrainexports.com
                 </a>.
               </p>
@@ -128,7 +111,7 @@ export default function PrivacyPage() {
               <p className="mb-2">If you have any questions about this Privacy Policy, please contact us at:</p>
               <p className="mb-1">
                 <span className="text-foreground">Email:</span>{" "}
-                <a href="mailto:info@puregrainexports.com" className="text-brass underline">
+                <a href="mailto:info@puregrainexports.com" className="text-brass-ink underline">
                   info@puregrainexports.com
                 </a>
               </p>
