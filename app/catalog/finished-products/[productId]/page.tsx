@@ -6,6 +6,7 @@ import { ArrowLeft, Package, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
+import { pageMetadata } from "@/lib/seo";
 import { Button } from "@/components/ui/button";
 import { Metadata } from "next";
 
@@ -139,21 +140,25 @@ export async function generateMetadata({
     return {
       title: "Product Not Found",
       description: "The requested product could not be found.",
+      robots: { index: false, follow: true },
     };
   }
 
-  return {
-    title: `${product.name} - Premium Leather ${product.productType}`,
-    description:
-      product.description.length > 160
-        ? product.description.substring(0, 157) + "..."
-        : product.description,
-    openGraph: {
-      title: product.name,
-      description: product.description,
-      images: product.images.length > 0 ? [product.images[0]] : [],
-    },
-  };
+  // Routed through pageMetadata so these pages get the canonical, hreflang and
+  // Twitter card the hand-rolled object above was missing.
+  return pageMetadata({
+    title: `${product.name} — Wholesale Leather ${product.productType}`,
+    description: (
+      product.description?.trim() ||
+      `${product.name} — wholesale leather ${product.productType} from Pure Grain Exports. MOQ ${product.moq}, made to specification with full export documentation.`
+    ).slice(0, 300),
+    path: `/catalog/finished-products/${productId}`,
+    image: product.images?.[0] || undefined,
+    imageAlt: product.name,
+    keywords: [product.productType, product.materialUsed, "wholesale leather goods"].filter(
+      (k): k is string => Boolean(k)
+    ),
+  });
 }
 
 export default async function ProductDetailPage({

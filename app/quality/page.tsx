@@ -1,6 +1,8 @@
 // app/quality/page.tsx
+import type { Metadata } from "next"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
+import { pageMetadata } from "@/lib/seo"
 import QualityContent from "./QualityContent"
 
 /*
@@ -20,12 +22,20 @@ import QualityContent from "./QualityContent"
  * longer referenced.
  */
 
-export const metadata = {
-  title: "Quality & Process | Pure Grain Exports",
+export const metadata: Metadata = pageMetadata({
+  title: "Leather Quality Standards & QC Process",
   description:
-    "The quality standards, six-stage inspection process, laboratory testing and certifications behind every Pure Grain Exports leather hide.",
-  robots: "index, follow",
-}
+    "ISO 9001, ISO 14001, LWG and REACH certified. Six-stage quality control with in-house lab testing of every batch — thickness, tensile strength, colour fastness and chemical compliance.",
+  path: "/quality",
+  image: "/local/hide-inspection.jpg",
+  imageAlt: "Tannery interior with processing drums and hides in production",
+  keywords: [
+    "leather quality control",
+    "LWG certified leather supplier",
+    "REACH compliant leather",
+    "ISO 9001 leather manufacturer",
+  ],
+})
 
 export default function QualityPage() {
   return (

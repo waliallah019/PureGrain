@@ -7,6 +7,7 @@ import { AdminHeader } from "@/components/admin/header"
 import { Toaster } from 'react-hot-toast';
 import { AdminSidebar } from "@/components/admin/sidebar"
 
+
 function AdminGuard({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth()
   const router = useRouter()

@@ -1,6 +1,8 @@
 // app/about/page.tsx
+import type { Metadata } from "next"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
+import { pageMetadata } from "@/lib/seo"
 import AboutContent from "./AboutContent"
 
 /*
@@ -16,12 +18,20 @@ import AboutContent from "./AboutContent"
  * PageEffects.tsx / overrides.css are no longer referenced.
  */
 
-export const metadata = {
-  title: "About Us | Pure Grain Exports",
+export const metadata: Metadata = pageMetadata({
+  title: "About Us — Leather Exporter in Lahore",
   description:
-    "Pure Grain Exports is a Lahore-headquartered premium leather exporter, sourcing through Pakistan's Sialkot, Kasur and Karachi leather clusters and serving wholesale buyers across Europe, North America, Asia and the Middle East.",
-  robots: "index, follow",
-}
+    "Lahore-headquartered leather exporter sourcing through Pakistan's Sialkot, Kasur and Karachi clusters. Vetted partner tanneries, documented grading, and wholesale supply to 30+ countries.",
+  path: "/about",
+  image: "/local/hide-preparation.jpg",
+  imageAlt: "Inside a working tannery — stacked hides and tanning drums",
+  keywords: [
+    "leather exporter Pakistan",
+    "about leather supplier",
+    "Sialkot leather exporter",
+    "Kasur tannery supplier",
+  ],
+})
 
 export default function AboutPage() {
   return (

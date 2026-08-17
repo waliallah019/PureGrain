@@ -5,15 +5,17 @@ import "./overrides.css";
 import PolicyContent from "./PolicyContent";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { PolicyHero } from "@/components/layout/policy-hero";
 import { Scale, FileSignature, Landmark } from "lucide-react";
 
-export const metadata = {
-  title: "Terms & Conditions | Pure Grain Exports",
+export const metadata: Metadata = pageMetadata({
+  title: "Terms & Conditions",
   description:
-    "Pure Grain Exports terms & conditions — the contractual framework governing our B2B leather hide exports, private-label manufacturing, and trade engagements.",
-  robots: "index, follow",
-};
+    "The contractual framework governing Pure Grain Exports' B2B leather hide supply, custom finishing and private-label manufacturing — payment, grading, delivery and dispute terms.",
+  path: "/terms",
+});
 
 const html = fs.readFileSync(
   path.join(process.cwd(), "app/terms/policy-body.html"),

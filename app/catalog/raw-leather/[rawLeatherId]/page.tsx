@@ -4,6 +4,8 @@ import { Footer } from "@/components/layout/footer";
 import RawLeatherDetailContent from "@/components/raw-leather-details/RawLeatherDetailContent"; // Client Component for interactive content
 import { headers } from "next/headers";
 import { notFound } from "next/navigation"; // For 404 handling
+import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 
 interface RawLeatherDetailPageProps {
   params: Promise<{
@@ -55,6 +57,49 @@ async function getRawLeather(rawLeatherId: string): Promise<IRawLeather | null> 
     console.error(`Error fetching raw leather ${rawLeatherId}:`, error);
     return null;
   }
+}
+
+/**
+ * Per-hide title, description, canonical and Open Graph.
+ *
+ * These pages previously had no metadata at all, so every hide in the catalogue
+ * inherited the root layout's title and description — hundreds of URLs sharing
+ * one title, which is the duplicate-title problem the audit flagged on /contact
+ * and /catalog, at much larger scale. The finished-products detail route already
+ * had `generateMetadata`; this brings raw leather in line.
+ */
+export async function generateMetadata({
+  params,
+}: RawLeatherDetailPageProps): Promise<Metadata> {
+  const { rawLeatherId } = await params;
+  const hide = await getRawLeather(rawLeatherId);
+
+  if (!hide) {
+    return {
+      title: "Leather Hide Not Found",
+      description: "The requested leather hide could not be found.",
+      robots: { index: false, follow: true },
+    };
+  }
+
+  const specs = [hide.leatherType, hide.finish, hide.thickness].filter(Boolean).join(", ");
+  const description =
+    hide.description?.trim() ||
+    `${hide.name} — ${specs}. Wholesale ${hide.animal ?? ""} leather hide from Pure Grain Exports, MOQ ${hide.minOrderQuantity} sq ft, with samples and full export documentation.`.replace(
+      /\s+/g,
+      " "
+    );
+
+  return pageMetadata({
+    title: `${hide.name} — ${hide.leatherType} Leather Hide`,
+    description: description.slice(0, 300),
+    path: `/catalog/raw-leather/${rawLeatherId}`,
+    image: hide.images?.[0] || undefined,
+    imageAlt: hide.name,
+    keywords: [hide.leatherType, hide.animal, hide.finish, "leather hide wholesale"].filter(
+      (k): k is string => Boolean(k)
+    ),
+  });
 }
 
 // Function to get related raw leather

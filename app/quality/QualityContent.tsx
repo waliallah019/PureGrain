@@ -480,7 +480,7 @@ function ProcessStages() {
   const progress = useSpring(scrollYProgress, { stiffness: 90, damping: 28, mass: 0.4 })
 
   return (
-    <section id="process" className="section-padding scroll-mt-24 bg-bone">
+    <section id="process" className="section-padding scroll-mt-24 bg-bone relative">
       <div className="container-wide">
         <SectionHeading
           eyebrow="How We Ensure Quality"

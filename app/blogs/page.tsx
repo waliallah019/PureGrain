@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/footer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CalendarDays, Clock3, ArrowRight } from "lucide-react";
+import { pageMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -14,15 +15,12 @@ interface BlogsPageProps {
   searchParams: Promise<{ page?: string }>;
 }
 
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://www.puregrainexports.com").replace(/\/$/, "");
-
-export const metadata: Metadata = {
-  title: "Blogs | Pure Grain",
-  description: "Insights, sourcing tips, and leather industry updates from Pure Grain.",
-  alternates: {
-    canonical: `${SITE_URL}/blogs`,
-  },
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Leather Sourcing Guides & Insights",
+  description:
+    "Sourcing guidance, grading explainers and leather industry updates from Pure Grain Exports — written for manufacturers and wholesale buyers.",
+  path: "/blogs",
+});
 
 function formatDate(value?: Date) {
   if (!value) return "";
