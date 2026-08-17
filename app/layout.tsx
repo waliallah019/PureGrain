@@ -9,6 +9,7 @@ import { ScrollManager } from "@/components/layout/scroll-to-top-on-route-change
 import WhatsAppButton from "@/components/WhatsAppButton"
 import SampleTrayBar from "@/components/sample-request/SampleTrayBar"
 import { CurrencyProvider } from "@/lib/currency/CurrencyContext"
+import { DEFAULT_DESCRIPTION, DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/seo"
 
 // These are self-hosted by next/font. globals.css used to ALSO pull the same two
 // families from the Google Fonts CDN via @import, so every visitor downloaded
@@ -29,15 +30,65 @@ const fontSerif = Cormorant_Garamond({
   display: "swap",
 })
 
+/*
+ * `metadataBase` is what makes every relative `alternates.canonical` and
+ * `openGraph.images` entry resolve to an absolute URL. Without it Next emits
+ * relative OG URLs, which most social crawlers reject — and canonical tags
+ * cannot be emitted relatively at all.
+ *
+ * The title template gives every page "<Page> | Pure Grain Exports" while
+ * `default` covers the homepage. The old homepage title was 74 characters and
+ * truncated in SERPs; `default` below is 49.
+ */
 export const metadata: Metadata = {
-  title: "Pure Grain - Premium B2B Leather Wholesale | Where Grain meets Greatness",
-  description:
-    "Premium B2B leather wholesale platform. Source quality leather hides and finished leather products, for international wholesale and retail distribution.",
-  keywords:
-    "leather wholesale, B2B leather, leather hides, finished leather products, international leather supplier",
-  generator: 'v0.dev',
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Pure Grain Exports — Premium B2B Leather Wholesale",
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: DEFAULT_DESCRIPTION,
+  keywords: [
+    "leather hides wholesale",
+    "B2B leather supplier",
+    "leather exporter Pakistan",
+    "full grain leather wholesale",
+    "finished leather goods wholesale",
+    "bulk leather supplier",
+  ],
+  applicationName: SITE_NAME,
+  alternates: {
+    canonical: "/",
+    languages: { en: "/", "x-default": "/" },
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+  },
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    locale: "en_US",
+    url: SITE_URL,
+    title: "Pure Grain Exports — Premium B2B Leather Wholesale",
+    description: DEFAULT_DESCRIPTION,
+    images: [
+      {
+        url: DEFAULT_OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: "Full-grain leather hide supplied by Pure Grain Exports",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Pure Grain Exports — Premium B2B Leather Wholesale",
+    description: DEFAULT_DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE],
+  },
   icons: {
-    icon: '/favicon-modified.png',
+    icon: "/favicon-modified.png",
   },
 }
 

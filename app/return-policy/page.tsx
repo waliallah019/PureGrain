@@ -3,15 +3,17 @@ import path from "node:path";
 import type { Metadata } from "next";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { pageMetadata } from "@/lib/seo";
 import PolicyContent from "./PolicyContent";
 import "./policy.css";
 import "./overrides.css";
 
-export const metadata: Metadata = {
-  title: "Return & Dispute Policy | Pure Grain Exports",
+export const metadata: Metadata = pageMetadata({
+  title: "Return & Dispute Policy",
   description:
-    "Pure Grain Exports return & dispute policy — how quality claims, refunds, and resolutions work for sample hides and wholesale leather orders.",
-};
+    "How quality claims, refunds and resolutions work for sample hides and wholesale leather orders — including what counts as a natural leather characteristic rather than a defect.",
+  path: "/return-policy",
+});
 
 // Read the original body markup at build time. The styles in policy.css are
 // already scoped under `.policyPage`, so they cannot leak to the rest of the site.

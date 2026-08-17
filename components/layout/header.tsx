@@ -255,21 +255,25 @@ export function Header() {
           <Link href="/" className="flex items-center gap-2 min-w-0 lg:min-w-[180px]">
               <Image
                 src="/new_logo.png"
+                /* 1159x279 on disk (4.15:1). The previous 180x50 declared a
+                   3.6:1 ratio that did not match the file, which is what Next's
+                   "width or height modified" warning was reporting. */
                 alt="Pure Grain"
-                width={180}
-                height={50}
+                width={186}
+                height={45}
                 priority
-                className={`object-contain hover:opacity-90 transition-opacity dark:hidden ${
+                                className={`object-contain hover:opacity-90 transition-opacity dark:hidden ${
                   isTopOverlayPage ? "hidden" : "block"
                 }`}
               />
               <Image
                 src="/temp_logo.png"
+                /* 1024x246 on disk (4.16:1). */
                 alt="Pure Grain"
-                width={180}
-                height={50}
+                width={187}
+                height={45}
                 priority
-                className={`object-contain hover:opacity-90 transition-opacity dark:block ${
+                                className={`object-contain hover:opacity-90 transition-opacity dark:block ${
                   isTopOverlayPage ? "block" : "hidden"
                 }`}
               />

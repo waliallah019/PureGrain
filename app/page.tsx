@@ -891,7 +891,7 @@ function Process({ reduce }: { reduce: boolean }) {
   const progress = useSpring(scrollYProgress, { stiffness: 90, damping: 28, mass: 0.4 })
 
   return (
-    <section className="section-padding">
+    <section className="section-padding relative">
       <div className="container-wide">
         <SectionHeading
           eyebrow="How It Works"

@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, CalendarDays, Clock3 } from "lucide-react";
 import { BackToTopButton } from "@/components/blog/BackToTopButton";
+import { pageMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -88,18 +89,28 @@ export async function generateMetadata({ params }: BlogDetailPageProps): Promise
 
   if (!post) {
     return {
-      title: "Blog Not Found | Pure Grain",
+      title: "Blog Not Found",
       description: "The requested blog post could not be found.",
+      robots: { index: false, follow: true },
     };
   }
 
-  return {
-    title: post.seoTitle || `${post.title} | Pure Grain Blogs`,
+  // `type: "article"` emits article:published_time / modified_time / author,
+  // which is what lets Google and social crawlers treat these as dated editorial
+  // rather than generic pages. The previous object had a canonical but no Open
+  // Graph or Twitter card at all.
+  return pageMetadata({
+    title: post.seoTitle || post.title,
     description: post.seoDescription || post.excerpt,
-    alternates: {
-      canonical: `${SITE_URL}/blogs/${post.slug}`,
-    },
-  };
+    path: `/blogs/${post.slug}`,
+    image: post.coverImage || undefined,
+    imageAlt: post.title,
+    type: "article",
+    publishedTime: (post.publishedAt || post.createdAt)?.toISOString?.(),
+    modifiedTime: (post.updatedAt || post.publishedAt || post.createdAt)?.toISOString?.(),
+    authors: [post.authorName || "Pure Grain Exports"],
+    keywords: Array.isArray(post.tags) ? post.tags : undefined,
+  });
 }
 
 export default async function BlogDetailPage({ params }: BlogDetailPageProps) {

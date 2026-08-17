@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react"
@@ -108,15 +109,28 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
               transition={{ duration: 1, ease: EASE }}
               aria-hidden={!isActive}
             >
-              <img
+              {/*
+                next/image, not a bare <img>. These are the largest assets on the
+                homepage (310KB, 312KB and 225KB JPEGs) and the first one is the
+                LCP element — served unoptimised at full size to every device
+                before this. With the optimizer enabled they now go out as
+                responsive AVIF/WebP.
+
+                Every slide carries its real alt text. This used to be
+                `isActive ? item.imageAlt : ""`, which left the two inactive hero
+                images with empty alt in the DOM — the "2 hero images missing alt
+                text" finding in the SEO audit.
+              */}
+              <Image
                 src={item.image}
-                alt={isActive ? item.imageAlt : ""}
-                className={`h-full w-full object-cover ${
+                alt={item.imageAlt}
+                fill
+                sizes="100vw"
+                quality={80}
+                priority={i === 0}
+                className={`object-cover ${
                   isActive && !reduce ? "animate-kenburns" : "scale-[1.06]"
                 }`}
-                loading={i === 0 ? "eager" : "lazy"}
-                fetchPriority={i === 0 ? "high" : "auto"}
-                decoding="async"
               />
             </motion.div>
           )

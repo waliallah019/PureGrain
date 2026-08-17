@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { useRef } from "react"
 import { motion, useReducedMotion, useScroll, useSpring } from "framer-motion"
@@ -285,12 +286,14 @@ function AboutHero() {
         Kasur/Sialkot plant photography when you have it — no copy changes needed.
       */}
       <div className="absolute inset-0">
-        <img
+        <Image
           src="/local/hide-preparation.jpg"
           alt="Inside a working tannery — stacked hides and tanning drums on the plant floor"
-          className="h-full w-full object-cover object-center"
-          loading="eager"
-          fetchPriority="high"
+          fill
+          sizes="100vw"
+          quality={80}
+          priority
+          className="object-cover object-center"
         />
       </div>
       <div
@@ -677,7 +680,7 @@ function Process() {
   const progress = useSpring(scrollYProgress, { stiffness: 90, damping: 28, mass: 0.4 })
 
   return (
-    <section className="section-padding bg-bone">
+    <section className="section-padding bg-bone relative">
       <div className="container-wide">
         <SectionHeading
           eyebrow="How It Works"
