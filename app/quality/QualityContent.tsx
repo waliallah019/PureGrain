@@ -25,6 +25,7 @@ import {
   Sparkles,
 } from "lucide-react"
 
+import { QUALITY_FAQS as FAQS } from "@/lib/content/faqs"
 import { Reveal, SectionHeading, Stagger, StaggerItem } from "@/components/landing/primitives"
 import { PolicyHero } from "@/components/layout/policy-hero"
 
@@ -239,33 +240,6 @@ const FINISHES = [
     body: "Top-grain surface gently buffed to raise a fine, velvet-like nap. Refined hand-feel with full hide integrity intact.",
     image: "/leather-nubuck.jpg",
     alt: "Nubuck leather with a fine brushed nap",
-  },
-]
-
-const FAQS = [
-  {
-    q: "How do I know the bulk shipment will match the sample I approved?",
-    a: "Every bulk batch is colour-matched and hand-feel-matched against your retained master swatch before it is released. Lab data and photographs are kept on file per batch and provided with the shipment documentation.",
-  },
-  {
-    q: "Is your leather REACH compliant for the European market?",
-    a: "Yes. All chemistry used in our partner tanneries is REACH-compliant, with documented restrictions on AZO dyes, chromium VI, and other regulated substances. Lab certificates are available per batch on request.",
-  },
-  {
-    q: "What grading system do you use, and is it conservative?",
-    a: "We use a documented A / B / C grading system based on grain quality, scar density, and usable area. We grade conservatively — the leather you receive is at or above the grade declared on your documentation.",
-  },
-  {
-    q: "What happens if a batch fails your internal QC?",
-    a: "The batch does not advance. It is either reworked at the tannery, regraded into a lower category, or rejected entirely. We never substitute leather without your written approval.",
-  },
-  {
-    q: "Can I commission a third-party inspection (SGS / Bureau Veritas) before shipment?",
-    a: "Absolutely. We welcome third-party pre-shipment inspections at your cost and will coordinate access, sampling, and documentation directly with the inspection agency.",
-  },
-  {
-    q: "What does “full-grain” and “top-grain” really mean in your terminology?",
-    a: "Full-grain leather retains the entire natural grain surface — nothing sanded away. Top-grain has had a very fine top layer corrected for uniformity but the grain pattern itself is preserved. We never market split, bonded, or heavily corrected leather as either.",
   },
 ]
 

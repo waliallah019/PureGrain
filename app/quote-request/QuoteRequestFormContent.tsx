@@ -365,13 +365,20 @@ export function QuoteRequestFormContent() {
       <section className="section-padding">
         <div className="container-wide">
           <div className="grid lg:grid-cols-5 gap-12 lg:gap-20">
-            <div className="lg:col-span-3">
+            <div className="min-w-0 lg:col-span-3">
               <div className="mb-8">
                 <p className="text-eyebrow mb-4">Quote Request</p>
-                <h2 className="heading-subsection text-foreground mb-4">Request Details</h2>
+                {/* H1, not H2: this page had no H1 at all, so search engines had
+                    no primary topic for it. Wording carries the page's target
+                    term ("wholesale leather quote") rather than the generic
+                    "Request Details". */}
+                <h1 className="heading-subsection text-foreground mb-4">
+                  Request a Wholesale Leather Quote
+                </h1>
                 <div className="divider-brass mb-6" />
                 <p className="text-muted-foreground max-w-2xl">
-                  Share your product requirements and we will respond with a detailed quote within 48 hours.
+                  Share your leather specification, volume and destination market. We respond with a
+                  detailed quote — priced on grade, quantity and logistics — within 48 hours.
                 </p>
               </div>
 

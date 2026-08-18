@@ -9,7 +9,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, CalendarDays, Clock3 } from "lucide-react";
 import { BackToTopButton } from "@/components/blog/BackToTopButton";
+import RelatedCatalogue from "@/components/blog/RelatedCatalogue";
 import { pageMetadata } from "@/lib/seo";
+import { JsonLd, jsonLdGraph, blogPostingSchema, breadcrumbSchema } from "@/lib/schema";
 
 export const dynamic = "force-dynamic";
 
@@ -126,6 +128,32 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
 
   return (
     <div id="blog-top" className="min-h-screen bg-background">
+      {/* BlogPosting + BreadcrumbList. `author` falls back to the Organization
+          when a post has no named author — the audit flagged "Pure Grain Team"
+          as a weak E-E-A-T signal, and attributing to the org is more honest
+          than inventing a Person. */}
+      <JsonLd
+        data={jsonLdGraph(
+          blogPostingSchema({
+            title: post.title,
+            description: post.seoDescription || post.excerpt,
+            slug: post.slug,
+            image: post.coverImage || undefined,
+            author:
+              post.authorName && post.authorName !== "Pure Grain Team"
+                ? post.authorName
+                : undefined,
+            published: post.publishedAt || post.createdAt,
+            modified: post.updatedAt || post.publishedAt || post.createdAt,
+            tags: post.tags,
+          }),
+          breadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "Blogs", path: "/blogs" },
+            { name: post.title, path: `/blogs/${post.slug}` },
+          ])
+        )}
+      />
       <Header />
 
       <article className="pt-32 pb-20">
@@ -208,6 +236,12 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
               </aside>
             ) : null}
           </div>
+        </div>
+        <div className="container-wide">
+          {/* Onward links into the catalogue. Blog posts previously had zero
+              internal links, making them crawl dead-ends that passed no equity
+              to the commercial pages. */}
+          <RelatedCatalogue tags={post.tags} />
         </div>
       </article>
 

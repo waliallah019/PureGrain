@@ -22,5 +22,10 @@ export const metadata: Metadata = pageMetadata({
 })
 
 export default function Layout({ children }: { children: ReactNode }) {
+  /*
+   * No BreadcrumbList here: this layout also wraps the product detail route,
+   * which emits its own deeper trail. Two BreadcrumbLists on one URL is a
+   * conflicting signal, so the listing page emits its own instead.
+   */
   return <>{children}</>
 }
