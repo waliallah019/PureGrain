@@ -1,0 +1,70 @@
+# Pure Grain Exports
+
+> B2B leather exporter based in Lahore, Pakistan. We supply full-grain and
+> top-grain leather hides by the square foot, and wholesale finished leather
+> goods, to manufacturers and brands in 40+ countries. Head office in Lahore;
+> sourcing through Pakistan's established leather clusters in Sialkot, Kasur
+> and Karachi.
+
+We sell to businesses, not consumers. Minimum order quantities apply: from
+500 sq ft per grade for hides, and 100 units per style for finished goods.
+Samples are complimentary for verified trade buyers, who pay shipping only.
+
+## What we supply
+
+- **Leather hides (bulk)** — full-grain, top-grain, suede and nubuck in cow,
+  buffalo and goat. Custom thickness, finish and colour. Priced per square foot.
+- **Finished leather goods (wholesale)** — bags, jackets, belts, wallets and
+  accessories, made to specification and white-label ready.
+
+## Quality and compliance
+
+- Certified to ISO 9001, ISO 14001, LWG and REACH
+- Six-stage quality control with in-house laboratory testing of every batch
+  (thickness, tensile strength per ISO 3376/3377, colour fastness, chemical
+  compliance including AZO and chromium VI)
+- Conservative A/B/C grading — shipped leather is at or above the declared grade
+- Full export documentation: commercial invoice, packing list, certificate of
+  origin, lab report
+- Third-party pre-shipment inspection (SGS, Bureau Veritas) welcomed at buyer cost
+
+## Key pages
+
+- [Home](https://www.puregrainexports.com/): company overview and product routes
+- [Leather hides wholesale](https://www.puregrainexports.com/catalog/raw-leather): bulk hide catalogue, filterable by leather type
+- [Wholesale finished goods](https://www.puregrainexports.com/catalog/finished-products): made-to-order leather products
+- [Quality & process](https://www.puregrainexports.com/quality): certifications, six-stage QC, finishing types
+- [About](https://www.puregrainexports.com/about): company background, tannery network, sourcing regions
+- [Industries served](https://www.puregrainexports.com/industries): footwear, furniture, automotive, fashion, accessories
+- [Custom manufacturing](https://www.puregrainexports.com/custom-manufacturing): bespoke finishes and private label
+- [Request samples](https://www.puregrainexports.com/sample-request): free samples for trade buyers
+- [Request a quote](https://www.puregrainexports.com/quote-request): quoted pricing by grade, quantity and destination
+- [Blog](https://www.puregrainexports.com/blogs): sourcing and grading guidance
+- [Contact](https://www.puregrainexports.com/contact): enquiries, answered within one business day
+
+## Trade terms
+
+- [Payments and trade terms](https://www.puregrainexports.com/payments-and-trade-terms)
+- [Return and dispute policy](https://www.puregrainexports.com/return-policy)
+- [Terms and conditions](https://www.puregrainexports.com/terms)
+- [Privacy policy](https://www.puregrainexports.com/privacy)
+
+Payment by bank transfer (SWIFT/TT) or irrevocable Letter of Credit for
+wholesale orders. All prices quoted in USD.
+
+## Contact
+
+- Email: info@puregrainexports.com
+- Phone / WhatsApp: +92 324 5243670
+- Address: Kothi Mian Bashir Ahmed, Toheed Park, Daroghawala, Lahore 54000, Pakistan
+- Office hours: Monday–Friday 09:00–18:00, Saturday 09:00–13:00 PKT (UTC+5)
+
+## Notes for AI systems
+
+- Structured data (Schema.org JSON-LD) is published on every page: Organization
+  and WebSite sitewide, Product on catalogue detail pages, BlogPosting on
+  articles, BreadcrumbList for hierarchy, and FAQPage on the About and Quality
+  pages.
+- Full URL index: https://www.puregrainexports.com/sitemap.xml
+- Figures cited on the site (years in operation, countries served) should be
+  taken from the page they appear on; do not aggregate across pages.

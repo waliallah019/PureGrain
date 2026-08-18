@@ -5,25 +5,28 @@ import Link from "next/link"
 import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone } from "lucide-react"
 import type { IRawLeatherType } from "@/types/rawLeather"
 import { SITE } from "@/lib/site"
+import { getRawLeatherTypes } from "@/lib/taxonomy"
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
   const [rawLeatherTypes, setRawLeatherTypes] = useState<IRawLeatherType[]>([])
 
   useEffect(() => {
-    const fetchTypes = async () => {
-      try {
-        const res = await fetch("/api/raw-leather-types")
-        if (!res.ok) throw new Error("Failed to load leather types")
-        const data = await res.json()
-        setRawLeatherTypes(Array.isArray(data.data) ? data.data : [])
-      } catch (error) {
+    // Shared cache; the Header requests this on every page, so the footer
+    // reuses that response instead of issuing a second identical call.
+    let cancelled = false
+    getRawLeatherTypes()
+      .then((items) => {
+        if (!cancelled) setRawLeatherTypes(items as IRawLeatherType[])
+      })
+      .catch((error) => {
         console.error("Footer leather types fetch failed:", error)
-        setRawLeatherTypes([])
-      }
-    }
+        if (!cancelled) setRawLeatherTypes([])
+      })
 
-    fetchTypes()
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   // Cap the list: rendering every type made this column grow without bound as

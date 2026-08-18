@@ -4,6 +4,7 @@ import * as React from "react"
 import { ChevronDown } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
+import { getProductTypes, getRawLeatherTypes, toNames } from "@/lib/taxonomy"
 
 type PremiumDropdownProps = {
   className?: string
@@ -11,24 +12,6 @@ type PremiumDropdownProps = {
 
 /** Keeps the panel a predictable height regardless of how many types exist. */
 const MAX_TYPES_PER_COLUMN = 5
-
-async function fetchTypeNames(endpoint: string): Promise<string[]> {
-  try {
-    const res = await fetch(endpoint)
-    if (!res.ok) return []
-    const json = await res.json()
-    if (!Array.isArray(json.data)) return []
-    return Array.from(
-      new Set<string>(
-        json.data
-          .map((item: { name?: string }) => item?.name)
-          .filter((n: unknown): n is string => typeof n === "string" && n.length > 0)
-      )
-    ).sort((a, b) => a.localeCompare(b))
-  } catch {
-    return []
-  }
-}
 
 export function PremiumDropdown({ className }: PremiumDropdownProps) {
   const [isOpen, setIsOpen] = React.useState(false)
@@ -42,14 +25,18 @@ export function PremiumDropdown({ className }: PremiumDropdownProps) {
   // taxonomy endpoints the catalogue pages use.
   React.useEffect(() => {
     let cancelled = false
-    Promise.all([
-      fetchTypeNames("/api/raw-leather-types"),
-      fetchTypeNames("/api/product-types"),
-    ]).then(([hides, products]) => {
-      if (cancelled) return
-      setHideTypes(hides)
-      setProductTypes(products)
-    })
+    // Shared cache — the Header has almost certainly already started these two
+    // requests by the time this menu mounts, so both resolve from the in-flight
+    // promise rather than issuing their own.
+    Promise.all([getRawLeatherTypes(), getProductTypes()])
+      .then(([hides, products]) => {
+        if (cancelled) return
+        setHideTypes(toNames(hides))
+        setProductTypes(toNames(products))
+      })
+      .catch(() => {
+        // Menu still renders with its "View all" links.
+      })
     return () => {
       cancelled = true
     }

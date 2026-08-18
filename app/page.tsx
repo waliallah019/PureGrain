@@ -37,6 +37,7 @@ import {
 } from "@/components/landing/primitives"
 import type { IRawLeather, IRawLeatherType } from "@/types/rawLeather"
 import type { IProduct } from "@/types/product"
+import { getRawLeatherTypes } from "@/lib/taxonomy"
 
 /* -------------------------------------------------------------------------- */
 /* Static content                                                             */
@@ -257,19 +258,21 @@ export default function PureGrainLanding() {
     const fetchLandingData = async () => {
       setIsCatalogLoading(true)
       try {
-        const [typesRes, rawLeatherRes, featuredRawRes, featuredProductsRes] = await Promise.all([
-          fetch("/api/raw-leather-types"),
+        // The taxonomy comes from the shared cache (lib/taxonomy) — the Header
+        // has already requested it, so this reuses that in-flight promise
+        // instead of making a fourth identical call.
+        const [types, rawLeatherRes, featuredRawRes, featuredProductsRes] = await Promise.all([
+          getRawLeatherTypes(),
           fetch("/api/raw-leather?limit=100&sortBy=createdAt&order=desc"),
           fetch("/api/raw-leather?isFeatured=true&limit=4&sortBy=createdAt&order=desc"),
           fetch("/api/finished-products?isFeatured=true&limit=4&sortBy=createdAt&order=desc"),
         ])
 
-        if (!typesRes.ok || !rawLeatherRes.ok || !featuredRawRes.ok || !featuredProductsRes.ok) {
+        if (!rawLeatherRes.ok || !featuredRawRes.ok || !featuredProductsRes.ok) {
           throw new Error("Failed to load homepage data")
         }
 
-        const [typesData, rawLeatherData, featuredRawData, featuredProductsData] = await Promise.all([
-          typesRes.json(),
+        const [rawLeatherData, featuredRawData, featuredProductsData] = await Promise.all([
           rawLeatherRes.json(),
           featuredRawRes.json(),
           featuredProductsRes.json(),
@@ -277,7 +280,7 @@ export default function PureGrainLanding() {
 
         if (!isActive) return
 
-        setRawLeatherTypes(Array.isArray(typesData.data) ? typesData.data : [])
+        setRawLeatherTypes(types as IRawLeatherType[])
         setRawLeatherSamplePool(Array.isArray(rawLeatherData.data) ? rawLeatherData.data : [])
         setFeaturedRawLeather(Array.isArray(featuredRawData.data) ? featuredRawData.data : [])
         setFeaturedProducts(Array.isArray(featuredProductsData.data) ? featuredProductsData.data : [])
