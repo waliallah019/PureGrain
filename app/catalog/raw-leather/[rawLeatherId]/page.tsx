@@ -6,6 +6,7 @@ import { headers } from "next/headers";
 import { notFound } from "next/navigation"; // For 404 handling
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
+import { JsonLd, jsonLdGraph, breadcrumbSchema, productSchema } from "@/lib/schema";
 
 interface RawLeatherDetailPageProps {
   params: Promise<{
@@ -138,8 +139,43 @@ export default async function RawLeatherDetailPage({ params }: RawLeatherDetailP
 
   const relatedRawLeather = await getRelatedRawLeather(rawLeather.leatherType, rawLeather._id);
 
+  const productPath = `/catalog/raw-leather/${rawLeather._id}`;
+
   return (
     <div className="min-h-screen bg-background">
+      {/* Product + BreadcrumbList. Every value comes from the hide record —
+          fields the record does not carry are omitted by productSchema rather
+          than guessed. */}
+      <JsonLd
+        data={jsonLdGraph(
+          productSchema({
+            name: rawLeather.name,
+            description: rawLeather.description,
+            images: rawLeather.images,
+            sku: rawLeather._id,
+            path: productPath,
+            category: rawLeather.leatherType,
+            price: rawLeather.pricePerSqFt,
+            currency: rawLeather.currency,
+            priceUnit: rawLeather.priceUnit || "sq ft",
+            specs: [
+              { name: "Leather type", value: rawLeather.leatherType },
+              { name: "Animal", value: rawLeather.animal },
+              { name: "Finish", value: rawLeather.finish },
+              { name: "Thickness", value: rawLeather.thickness },
+              { name: "Hide size", value: rawLeather.size },
+              { name: "Minimum order quantity", value: rawLeather.minOrderQuantity ? `${rawLeather.minOrderQuantity} sq ft` : undefined },
+              { name: "Colours", value: rawLeather.colors?.join(", ") },
+            ],
+          }),
+          breadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "Catalogue", path: "/catalog" },
+            { name: "Leather Hides", path: "/catalog/raw-leather" },
+            { name: rawLeather.name, path: productPath },
+          ])
+        )}
+      />
       <Header />
 
       <RawLeatherDetailContent rawLeather={rawLeather} relatedRawLeather={relatedRawLeather} />

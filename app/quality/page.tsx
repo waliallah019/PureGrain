@@ -3,6 +3,8 @@ import type { Metadata } from "next"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { pageMetadata } from "@/lib/seo"
+import { JsonLd, jsonLdGraph, breadcrumbSchema, faqPageSchema } from "@/lib/schema"
+import { QUALITY_FAQS } from "@/lib/content/faqs"
 import QualityContent from "./QualityContent"
 
 /*
@@ -40,6 +42,18 @@ export const metadata: Metadata = pageMetadata({
 export default function QualityPage() {
   return (
     <div className="min-h-screen bg-background">
+      {/* FAQPage is built from the SAME array the accordion renders
+          (lib/content/faqs.ts). Google requires marked-up Q&A to match the
+          visible page; sharing the source makes drift impossible. */}
+      <JsonLd
+        data={jsonLdGraph(
+          faqPageSchema(QUALITY_FAQS),
+          breadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "Quality & Process", path: "/quality" },
+          ])
+        )}
+      />
       <Header />
       <main>
         <QualityContent />

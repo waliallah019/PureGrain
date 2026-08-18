@@ -30,6 +30,7 @@ import {
 import { IProduct, IProductType } from "@/types/product"
 import PriceDisplay from "@/components/PriceDisplay"
 import "../catalog.css"
+import { JsonLd, jsonLdGraph, breadcrumbSchema } from "@/lib/schema"
 
 const FALLBACK_IMAGE = "/placeholder-image.jpg"
 
@@ -231,15 +232,27 @@ export default function FinishedProductsPage() {
 
   return (
     <div className="catalogPage min-h-screen">
+      {/* Breadcrumb for the Finished Products listing. Emitted from the page, not the layout:
+          that layout also wraps the product detail route, and two
+          BreadcrumbLists on one URL is a conflicting signal. */}
+      <JsonLd
+        data={jsonLdGraph(
+          breadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "Catalogue", path: "/catalog" },
+            { name: "Finished Products", path: "/catalog/finished-products" },
+          ])
+        )}
+      />
       <Header />
       <main>
         <section className="catalogHero leather-texture" aria-labelledby="finishedHeroTitle">
           <div className="catalogContainer">
             <div className="catalogHero__frame">
               <span className="catalogEyebrow">Our Collection</span>
-              <h1 id="finishedHeroTitle">Finished Leather Products</h1>
+              <h1 id="finishedHeroTitle">Wholesale Finished Leather Goods</h1>
               <p className="catalogHero__sub">
-                Premium leather goods crafted for performance, durability, and refined aesthetics — curated for wholesale buyers, distributors, and private label partners.
+                Wholesale leather goods made to order — bags, jackets, belts and accessories built for performance and durability. White-label ready for distributors and private-label partners.
               </p>
               <div className="catalogHero__trust" role="list">
                 <span role="listitem"><ShieldCheck className="h-4 w-4" /> Wholesale-ready inventory</span>

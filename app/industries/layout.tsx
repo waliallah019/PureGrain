@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 import type { Metadata } from "next"
 import { pageMetadata } from "@/lib/seo"
+import { JsonLd, jsonLdGraph, breadcrumbSchema } from "@/lib/schema"
 
 /*
  * `/industries` renders as a client component, and a client component cannot export
@@ -21,5 +22,13 @@ export const metadata: Metadata = pageMetadata({
 })
 
 export default function Layout({ children }: { children: ReactNode }) {
-  return <>{children}</>
+  return (
+    <>
+      {/* Emitted here rather than in page.tsx because the page is a client
+          component. BreadcrumbList gives Google the site hierarchy and drives
+          the breadcrumb trail shown in place of the raw URL in results. */}
+      <JsonLd data={jsonLdGraph(breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Industries", path: "/industries" }]))} />
+      {children}
+    </>
+  )
 }

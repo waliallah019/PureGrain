@@ -62,9 +62,9 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
       <section className="pt-32 pb-14 bg-bone dark:bg-background">
         <div className="container-wide">
           <p className="text-eyebrow mb-3">Knowledge Center</p>
-          <h1 className="heading-display text-foreground mb-4">Pure Grain Blogs</h1>
+          <h1 className="heading-display text-foreground mb-4">Leather Sourcing Guides &amp; Industry Insights</h1>
           <p className="text-body text-muted-foreground max-w-3xl">
-            Stay updated with leather sourcing insights, manufacturing guidance, and practical trends for wholesale buyers.
+            Practical guidance on grading, tanning and leather sourcing — written for manufacturers and wholesale buyers who need to specify with confidence.
           </p>
         </div>
       </section>

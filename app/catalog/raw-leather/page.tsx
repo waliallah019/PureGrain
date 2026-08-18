@@ -31,6 +31,7 @@ import { IRawLeather, IRawLeatherType } from "@/types/rawLeather"
 import AddToSampleTrayButton from "@/components/sample-request/AddToSampleTrayButton"
 import PriceDisplay from "@/components/PriceDisplay"
 import "../catalog.css"
+import { JsonLd, jsonLdGraph, breadcrumbSchema } from "@/lib/schema"
 
 const FALLBACK_IMAGE = "/placeholder-image.jpg"
 
@@ -245,15 +246,27 @@ export default function RawLeatherPage() {
 
   return (
     <div className="catalogPage min-h-screen">
+      {/* Breadcrumb for the Leather Hides listing. Emitted from the page, not the layout:
+          that layout also wraps the product detail route, and two
+          BreadcrumbLists on one URL is a conflicting signal. */}
+      <JsonLd
+        data={jsonLdGraph(
+          breadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "Catalogue", path: "/catalog" },
+            { name: "Leather Hides", path: "/catalog/raw-leather" },
+          ])
+        )}
+      />
       <Header />
       <main>
         <section className="catalogHero leather-texture" aria-labelledby="rawLeatherHeroTitle">
           <div className="catalogContainer">
             <div className="catalogHero__frame">
               <span className="catalogEyebrow">Our Collection</span>
-              <h1 id="rawLeatherHeroTitle">Premium Leather Hides</h1>
+              <h1 id="rawLeatherHeroTitle">Leather Hides Wholesale</h1>
               <p className="catalogHero__sub">
-                Explore our comprehensive range of premium leather hides — from traditional full grain to specialty finishes — prepared for production, sampling, and export-led sourcing.
+                Buy leather hides wholesale by the square foot — full grain, top grain, suede and nubuck in cow, buffalo and goat. Graded, lab-tested and prepared for production, sampling and export-led sourcing.
               </p>
               <div className="catalogHero__trust" role="list">
                 <span role="listitem"><ShieldCheck className="h-4 w-4" /> Premium grade selection</span>

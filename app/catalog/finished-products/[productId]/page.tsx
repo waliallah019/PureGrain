@@ -7,6 +7,7 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { pageMetadata } from "@/lib/seo";
+import { JsonLd, jsonLdGraph, breadcrumbSchema, productSchema } from "@/lib/schema";
 import { Button } from "@/components/ui/button";
 import { Metadata } from "next";
 
@@ -174,8 +175,40 @@ export default async function ProductDetailPage({
 
     const relatedProducts = await getRelatedProducts(product.productType, product._id, 4);
 
+    const productPath = `/catalog/finished-products/${product._id}`;
+
     return (
       <div className="min-h-screen bg-background">
+        {/* Product + BreadcrumbList, built from the product record. */}
+        <JsonLd
+          data={jsonLdGraph(
+            productSchema({
+              name: product.name,
+              description: product.description,
+              images: product.images,
+              sku: product._id,
+              path: productPath,
+              category: product.productType,
+              price: product.pricePerUnit,
+              currency: product.currency,
+              priceUnit: product.priceUnit,
+              availability: product.availability,
+              specs: [
+                { name: "Product type", value: product.productType },
+                { name: "Material", value: product.materialUsed },
+                { name: "Dimensions", value: product.dimensions },
+                { name: "Minimum order quantity", value: product.moq },
+                { name: "Colour variants", value: product.colorVariants?.join(", ") },
+              ],
+            }),
+            breadcrumbSchema([
+              { name: "Home", path: "/" },
+              { name: "Catalogue", path: "/catalog" },
+              { name: "Finished Products", path: "/catalog/finished-products" },
+              { name: product.name, path: productPath },
+            ])
+          )}
+        />
         <Header />
 
         <ProductDetailContent

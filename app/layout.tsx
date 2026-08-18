@@ -10,6 +10,7 @@ import WhatsAppButton from "@/components/WhatsAppButton"
 import SampleTrayBar from "@/components/sample-request/SampleTrayBar"
 import { CurrencyProvider } from "@/lib/currency/CurrencyContext"
 import { DEFAULT_DESCRIPTION, DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/seo"
+import { JsonLd, jsonLdGraph, organizationSchema, websiteSchema } from "@/lib/schema"
 
 // These are self-hosted by next/font. globals.css used to ALSO pull the same two
 // families from the Google Fonts CDN via @import, so every visitor downloaded
@@ -104,6 +105,12 @@ export default function RootLayout({
         <body
           className={`${fontSans.variable} ${fontSerif.variable} font-sans`}
         >
+          {/* Sitewide entity graph. Organization + WebSite render on every
+              page and are referenced by @id from the per-page Product,
+              BlogPosting and Breadcrumb entities, so search engines resolve one
+              connected graph rather than isolated fragments. */}
+          <JsonLd data={jsonLdGraph(organizationSchema(), websiteSchema())} />
+
           <ThemeProvider
             attribute="class"
             defaultTheme="light"

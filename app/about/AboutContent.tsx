@@ -20,6 +20,7 @@ import {
   Sparkles,
 } from "lucide-react"
 
+import { ABOUT_FAQS as FAQS } from "@/lib/content/faqs"
 import { Reveal, SectionHeading, Stagger, StaggerItem } from "@/components/landing/primitives"
 import { SITE } from "@/lib/site"
 
@@ -219,33 +220,6 @@ const EXPORT_REGIONS = [
   { region: "Asia Pacific", countries: "China, Japan, India, Australia" },
   { region: "Middle East", countries: "UAE, Saudi Arabia" },
   { region: "Africa", countries: "South Africa, Nigeria, Kenya" },
-]
-
-const FAQS = [
-  {
-    q: "What is your minimum order quantity (MOQ)?",
-    a: "Our MOQ varies by product type. For leather hides in bulk, MOQ starts from 500 sq ft per grade. For finished leather goods, MOQ is 100 units per style. Sample orders have no minimum.",
-  },
-  {
-    q: "How do I request a sample?",
-    a: "Use the sample request page. We charge only for international shipping — the leather sample itself is complimentary for verified trade buyers.",
-  },
-  {
-    q: "What leather types do you supply?",
-    a: "We supply full-grain, top-grain, and suede finishes across cow, buffalo, and goat hides. Custom thickness, tanning method, and finish specifications are available for wholesale orders.",
-  },
-  {
-    q: "What payment methods do you accept?",
-    a: "We accept bank transfer (SWIFT/TT) and irrevocable Letter of Credit (LC) for large wholesale purchases. Sample payments can be settled separately.",
-  },
-  {
-    q: "What is your typical lead time?",
-    a: "Sample dispatch is within 3–5 business days. Wholesale orders typically require 3–6 weeks from order confirmation depending on quantity, grade, and current production schedule.",
-  },
-  {
-    q: "Do you provide export documentation?",
-    a: "Yes. We provide a full export documentation package including commercial invoice, packing list, certificate of origin, and any certificates required by your country's import regulations.",
-  },
 ]
 
 /* -------------------------------------------------------------------------- */

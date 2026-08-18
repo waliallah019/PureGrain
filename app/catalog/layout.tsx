@@ -31,5 +31,11 @@ export const metadata: Metadata = {
 }
 
 export default function Layout({ children }: { children: ReactNode }) {
+  /*
+   * Deliberately emits NO BreadcrumbList. This layout wraps every nested
+   * catalogue route, so a trail here appeared *in addition to* the more specific
+   * one from raw-leather / finished-products / product detail pages — two
+   * competing BreadcrumbLists on the same URL. The /catalog page emits its own.
+   */
   return <>{children}</>
 }

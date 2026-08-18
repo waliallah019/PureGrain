@@ -214,3 +214,162 @@ wrong though (180×50 = 3.6:1 vs the real 4.15:1), which is now corrected.
 - Pre-existing, unrelated: `Module not found: Can't resolve 'fs'` from
   `lib/utils/invoicePdfGenerator.ts` imported by the admin reports page (a client
   component importing a Node-only module). Non-blocking; worth fixing separately.
+
+---
+
+# ✅ Implementation Log — Schema / Structured Data (2026-08-18)
+
+Audit score for this category was **2/100** — "The site has zero structured
+data. No JSON-LD exists on any page."
+
+All of it now emits from `lib/schema.tsx`.
+
+## What ships
+
+| Entity | Where | Source of truth |
+|---|---|---|
+| `Organization` | every page | `lib/site.ts` (real address, phone, email, socials) |
+| `WebSite` + `SearchAction` | every page | points at the catalogue's real `?q=` search |
+| `Product` | 506 product detail pages | the product/hide record |
+| `BlogPosting` | every blog post | the Blog document |
+| `BreadcrumbList` | catalogue, product, blog, about, quality, contact, industries, custom-manufacturing, sample/quote request | route hierarchy |
+| `FAQPage` | About, Quality | `lib/content/faqs.ts` |
+
+Entities are emitted as **one `@graph` per page** and linked by `@id`, so the
+Organization is the `seller` on every Offer and the `publisher` of every post —
+one connected graph rather than isolated fragments.
+
+## Decisions worth knowing
+
+**FAQ copy was extracted to `lib/content/faqs.ts`.** It previously lived inside
+the two `"use client"` page components. Google requires FAQPage markup to match
+the visible answers; duplicating the copy for the schema would have guaranteed
+drift. The accordion and the JSON-LD now read the same array.
+
+**Offers are omitted when there is no price**, rather than emitting `price: 0`.
+Google requires a price on an Offer — a zero would be invalid markup, not a
+graceful fallback.
+
+**Blog `author` falls back to the Organization** when `authorName` is the
+default "Pure Grain Team". Inventing a `Person` for E-E-A-T would be fabricating
+a credential; attributing to the company is accurate.
+
+**Breadcrumbs are emitted from pages, not from the shared layouts.** First
+attempt put them in `app/catalog/layout.tsx` and the two listing layouts — but a
+layout wraps its nested routes, so product detail pages emitted *two* competing
+BreadcrumbLists. Caught by a duplicate-entity check; now every route emits
+exactly one.
+
+## Deliberately NOT implemented: Review / AggregateRating
+
+The action plan lists this as item #25. **It should not be added**, and the
+homepage testimonials should not be marked up:
+
+- Google's structured-data policy disallows **self-serving reviews** — reviews
+  about your own business, collected and displayed by you, are not eligible for
+  Organization rich results.
+- Marking them up anyway is a common trigger for a *manual action* for spammy
+  structured data, which would hurt far more than the stars would help.
+- The testimonials are also unverifiable (no review platform behind them).
+
+If star ratings are wanted, the route is a third-party review platform
+(Google Business Profile, Trustpilot) and marking up **their** aggregate, not
+ours. Flagging so #25 is closed as a decision rather than left as an open task.
+
+## Verification
+
+- 11 public routes + 2 product detail routes + blog post: **every JSON-LD block
+  parses**, has `@context`, and passes required-field checks (Product has name,
+  Offers have price, breadcrumb positions are sequential 1..n, FAQPage has
+  questions)
+- **Zero duplicate entities** on any route
+- Spot-checked live output: `Dragonfly Margalla Suede` → Product with
+  `sku`, `category: Suede`, `offers 6.02 USD / InStock`, 7 spec properties, real
+  Cloudinary images; blog post → BlogPosting with real `datePublished` and
+  `@id`-linked publisher
+- `tsc --noEmit` clean · `pnpm build` **exit 0**
+
+## Remaining SEO backlog
+
+Content and performance only — the technical and schema layers are done:
+blog expansion to 1,200+ words (#19–22), homepage API call dedupe (#16),
+bundle analysis / `next/dynamic` (#18), geo-IP currency default (#24).
+
+---
+
+# ✅ Implementation Log — On-Page SEO (2026-08-18)
+
+Audit score for this category was **32/100**. Two of its four gaps were already
+closed in the technical pass (duplicate titles on /contact and /catalog; the
+74-char homepage title). This covers the rest.
+
+## Fixed
+
+**Two pages had no H1 at all.** `/sample-request` and `/quote-request` opened
+with an `<h2>`, so neither had a declared primary topic. `/quote-request` also
+imported `PageBanner` (which renders an H1) without ever using it. Both now have
+an H1 — a semantic change only; the visual size is unchanged.
+
+Audited result — **12/12 pages now have exactly one H1**, with a sensible
+H2/H3 tree beneath it.
+
+**Keyword targeting mapped to pages** (action item #27). H1 and opening
+paragraph now carry the same target term as the page's title/description, so the
+on-page copy agrees with the metadata instead of drifting from it:
+
+| Page | Was | Now |
+|---|---|---|
+| `/catalog/raw-leather` | "Premium Leather Hides" | **Leather Hides Wholesale** |
+| `/catalog/finished-products` | "Finished Leather Products" | **Wholesale Finished Leather Goods** |
+| `/blogs` | "Pure Grain Blogs" (brand only) | **Leather Sourcing Guides & Industry Insights** |
+| `/sample-request` | *(no H1)* | **Request Free Leather Samples** |
+| `/quote-request` | *(no H1)* | **Request a Wholesale Leather Quote** |
+
+**Blog → catalogue internal linking** (action item #21). Posts had **zero**
+internal links and were crawl dead-ends passing no equity to the commercial
+pages. New `components/blog/RelatedCatalogue.tsx` renders on every post:
+**0 → 4 onward links each** (`/catalog/raw-leather`,
+`/catalog/finished-products`, `/sample-request`, `/quality`) with descriptive
+anchor text.
+
+Relevance is data-driven: the post's own tags are matched against the live
+`RawLeatherType` / `ProductType` taxonomies. Blog tags today are descriptive
+phrases ("full grain leather") rather than type names ("Nubuck"), so the
+tag-matched row correctly renders nothing for current posts and the two
+catalogue hubs still show. Unit-tested the matcher so the path is not dead
+code — tags `veg tan` → Veg Tan, `nubuck care` → Nubuck, `wallet` → Wallet.
+
+**Why a component, not rewritten post copy.** Item #21 describes editing the
+posts themselves. That is copywriting in the client's editorial voice, and
+inventing sentences purely to hang links on would be putting words in their
+mouth. The component achieves the same SEO outcome from real data. In-body
+contextual links remain a genuine copy task.
+
+**Leftover palette drift:** the shipping Badge on `/sample-request` was still
+raw Tailwind `amber-100/amber-800` — missed in the earlier consistency sweep
+because it was inside a `<Badge>`. Now on brass tokens, dark-mode aware.
+
+## Bug I introduced and fixed
+
+Promoting the `/sample-request` heading, I used `heading-section` (text-3xl)
+where the page was designed at `heading-subsection` (text-2xl). At 375px the
+heading measured **333px against a 327px grid track**, overflowing the page
+horizontally. Caught by the responsive sweep, traced to the exact element.
+
+Fixed by restoring the intended size (the H1 change should have been semantic
+only) and adding `min-w-0` to both grid columns — a grid item defaults to
+`min-width: auto`, which is what let content push it past its track.
+
+## Not done — and why
+
+**Blog posts are 99–157 words** (the audit estimated 150–250; measured, they are
+thinner still). That is Content item #19, ~8h of copywriting, and it is the
+single biggest remaining constraint on these posts ranking. No amount of
+on-page markup compensates for a 120-word article. Not something to fake.
+
+## Verification
+
+- **12/12 pages: exactly one H1**, keyword-aligned on all five target pages
+- **4/4 blog posts: ≥3 onward internal links** (was 0)
+- No horizontal overflow at 375 / 768 / 1920 on every changed page
+- `tsc --noEmit` **exit 0** · `pnpm build` **exit 0**

@@ -799,12 +799,18 @@ function SampleRequestForm() {
     <section className="section-padding">
       <div className="container-wide">
         <div className="grid lg:grid-cols-5 gap-12 lg:gap-20">
-          <div className="lg:col-span-3">
+          <div className="min-w-0 lg:col-span-3">
             <div className="mb-8">
               <p className="text-eyebrow mb-4">Sample Request</p>
               <div className="flex flex-wrap items-center gap-3 mb-4">
-                <h2 className="heading-subsection text-foreground">Request Samples</h2>
-                <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100 px-3 py-1">
+                {/* H1, not H2 — this page previously had no H1. */}
+                <h1 className="heading-subsection text-foreground">
+                  Request Free Leather Samples
+                </h1>
+                {/* Was bg-amber-100/text-amber-800 — raw Tailwind amber left over
+                    from before the palette consolidation. Brass tokens match the
+                    rest of the site and respond to dark mode. */}
+                <Badge className="border border-brass/30 bg-brass/15 px-3 py-1 text-brass-ink">
                   Shipping: ${currentShippingFee.toFixed(2)}
                 </Badge>
               </div>

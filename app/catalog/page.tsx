@@ -54,6 +54,7 @@ import { IProduct } from "@/types/product"
 import { IRawLeather } from "@/types/rawLeather"
 import PriceDisplay from "@/components/PriceDisplay"
 import "./catalog.css"
+import { JsonLd, jsonLdGraph, breadcrumbSchema } from "@/lib/schema"
 
 const FALLBACK_IMAGE = "/placeholder-image.jpg"
 const INQUIRY_NOTES_MAX = 300
@@ -270,6 +271,20 @@ export default function CatalogPage() {
 
   return (
     <div className="catalogPage min-h-screen">
+      {/* Breadcrumb for /catalog itself. Lives here rather than in
+          app/catalog/layout.tsx because that layout also wraps the nested
+          catalogue routes, which emit their own deeper trails — two
+          BreadcrumbLists on one URL is a conflicting signal. This component is
+          "use client" but Next still server-renders it, so the script is in the
+          initial HTML. */}
+      <JsonLd
+        data={jsonLdGraph(
+          breadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "Catalogue", path: "/catalog" },
+          ])
+        )}
+      />
       <Header />
       <main>
         {/* ================================================================
