@@ -373,3 +373,125 @@ on-page markup compensates for a 120-word article. Not something to fake.
 - **4/4 blog posts: ≥3 onward internal links** (was 0)
 - No horizontal overflow at 375 / 768 / 1920 on every changed page
 - `tsc --noEmit` **exit 0** · `pnpm build` **exit 0**
+
+---
+
+# ✅ Implementation Log — Remaining dev items + hero rework (2026-08-19)
+
+## #5 llms.txt — done
+
+`/public/llms.txt`, served 200 as `text/plain`. Company overview, what we sell,
+certifications, key-page index, trade terms and contact. Includes a note telling
+AI systems to take figures from the page they appear on rather than aggregating
+across pages — a hedge against the unresolved 25+/10+ years contradiction.
+
+## #16 Duplicate API calls — done, measured
+
+New `lib/taxonomy.ts`: a module-level **promise cache**. The first caller starts
+the request and stores the promise; concurrent callers await that same in-flight
+promise. No new dependency and no provider to wire (SWR/React Query would have
+needed both).
+
+Homepage API requests, measured in-browser:
+
+| Endpoint | Before | After |
+|---|---|---|
+| `raw-leather-types` | **4×** | **1×** |
+| `product-types` | **2×** | **1×** |
+| **Total requests** | **11** | **7** |
+
+Callers routed through the cache: Header, Catalog mega-menu, Footer, homepage,
+and both catalogue listing pages. Failed requests are not cached, so a transient
+error does not poison the value for the session.
+
+## #18 Bundle — partially done, with an honest result
+
+**Found and removed 4 dead shadcn primitives**: `ui/carousel`, `ui/calendar`,
+`ui/drawer`, `ui/command` were imported by **zero files** while pulling in
+`embla-carousel-react`, `react-day-picker`, `vaul` and `cmdk`.
+
+Result — **peer-dependency warnings went 4 → 1** (only
+`multer-storage-cloudinary` wanting cloudinary ^1.21.0 remains). That closes
+most of the peer noise from the earlier deploy failure.
+
+**But First Load JS did not change.** Those primitives were already tree-shaken
+out of the route bundles, so the win is dependency hygiene and install size, not
+delivered bytes. Reporting that plainly rather than claiming a bundle win.
+
+### Not done: removing axios from the 3 heaviest public routes
+
+`/quote-request` (248 kB), `/custom-manufacturing` (240 kB) and
+`/sample-request` (~249 kB) sit ~25–35 kB above every other public route, and
+`axios` is the differentiator — it is imported by exactly those three and by
+nothing else public.
+
+Replacing it with native `fetch` would trim them, **but those are the three
+lead-capture forms**, including FormData file uploads on custom-manufacturing.
+It means rewriting submission and error handling on the paths that capture the
+business's actual enquiries, and verifying it properly means submitting real
+forms into the live database. That trade — ~13 kB gzipped per route against
+silently risking lead capture — is not one to make inside a sweep. It should be
+a focused change with deliberate form testing.
+
+## #24 Geo-IP currency — closed, audit claim does not reproduce
+
+The audit states "Currency defaults to PKR for all visitors." Verified:
+
+- `/api/detect-currency` returns `{"currency":"USD","country":"US"}`
+- the code fallback in `CurrencyContext` is `"USD"`
+- `NEXT_PUBLIC_BASE_CURRENCY=USD`
+
+Geo-IP detection already works. Closing this rather than spending 3h on it —
+worth one confirmation from a non-US IP.
+
+## Reported performance regression — investigated, did not reproduce
+
+Two claims were raised. Neither holds against the codebase or measurement:
+
+**"New API call `review?type=HIDE` taking 6.7s."** There is no `/api/review`
+route anywhere in the project, and the homepage makes **zero** requests matching
+`review` (measured). The only `HIDE`-shaped thing is `/sample-request/review`, a
+**page** in the sample checkout flow that reads a `"HIDE" | "FINISHED_PRODUCT"`
+mode from the tray — pre-existing, and not called from the homepage.
+
+**"Hero first slide has no `priority` prop."** It does —
+`priority={i === 0}` in `HeroSlider.tsx`. Confirmed working: Next emits
+`<link rel="preload" as="image">` for `hero-leather-warm.jpg` in `<head>` with
+the full responsive srcset.
+
+Measured homepage: **7 API requests, 0 slow resources (>1500ms), load ~3.1–4.1s
+in dev.** The 4.4 → 9.7s regression does not reproduce here. If it is real in
+production it is coming from something outside this codebase.
+
+## Hero rework
+
+Removed as requested:
+- play/pause and prev/next **icon buttons** — on mobile they sat on the artwork
+  and added nothing swipe does not
+- the standing proof row (*25+ Years · 40+ Countries · ISO 9001 · Free Samples*)
+  — the trust strip directly beneath the hero states the same four facts, so it
+  was repeating itself inside one screen height
+
+Replaced with **information rather than chrome**: a slide counter showing
+position and the active slide's own label (`02 / 03 — ARTISAN CRAFTSMANSHIP`)
+over a hairline rule that fills across the autoplay window.
+
+Copy redistributed — the section is now a flex column with the copy centred in a
+`flex-1` row and the indicator on its own bottom row, and height reduced from
+`100svh` to `86/92svh` so the composition reads deliberate rather than sparse
+now that two blocks were removed.
+
+**Accessibility note:** the three counter segments are still real `<button>`s,
+and arrow-key navigation was added on the carousel region. Removing *every*
+control would leave an auto-rotating carousel keyboard-inoperable and fails WCAG
+2.2.2 (Pause, Stop, Hide). Autoplay also still pauses on hover/focus-within and
+is disabled entirely under `prefers-reduced-motion`. Verified: 3 buttons, 1 SVG
+(the CTA arrow) — no icon controls remain.
+
+## Verification
+
+- `llms.txt` 200, `text/plain`, 3.7 kB
+- Homepage: **7 API calls**, no duplicates, **0 console errors**
+- No horizontal overflow: 5 pages × 3 widths (375/768/1440)
+- Hero under reduced-motion: content visible, keyboard-operable
+- `tsc --noEmit` **exit 0** · `pnpm build` **exit 0**

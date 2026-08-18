@@ -10,6 +10,7 @@ import { PremiumDropdown } from "@/components/premium-dropdown"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { useLenis } from "@/lib/utils/lenis"
 import CurrencySwitcher from "@/components/CurrencySwitcher"
+import { getProductTypes, getRawLeatherTypes, toNames } from "@/lib/taxonomy"
 
 /** Kept in sync with MAX_TYPES_PER_COLUMN in `components/premium-dropdown.tsx`
     so the mobile drawer lists the same taxonomy slice as the desktop menu. */
@@ -89,46 +90,20 @@ export function Header() {
   }, [pathname])
 
   useEffect(() => {
-    const fetchMobileMenuTypes = async () => {
-      try {
-        const [finishedRes, rawRes] = await Promise.all([
-          fetch("/api/product-types"),
-          fetch("/api/raw-leather-types"),
-        ])
+    // Routed through lib/taxonomy so the Header, the Catalog mega-menu, the
+    // Footer and the page body share one request each instead of four.
+    let cancelled = false
+    Promise.all([getProductTypes(), getRawLeatherTypes()])
+      .then(([finished, raw]) => {
+        if (cancelled) return
+        setFinishedProductTypes(toNames(finished))
+        setRawLeatherTypes(toNames(raw))
+      })
+      .catch((error) => console.error("Failed to load mobile menu categories", error))
 
-        if (finishedRes.ok) {
-          const finishedData = await finishedRes.json()
-          const types: string[] = Array.isArray(finishedData.data)
-            ? Array.from(
-                new Set<string>(
-                  finishedData.data
-                    .map((item: { name?: string }) => item?.name)
-                    .filter((name: unknown): name is string => typeof name === "string" && name.length > 0),
-                ),
-              ).sort((a, b) => a.localeCompare(b))
-            : []
-          setFinishedProductTypes(types)
-        }
-
-        if (rawRes.ok) {
-          const rawData = await rawRes.json()
-          const types: string[] = Array.isArray(rawData.data)
-            ? Array.from(
-                new Set<string>(
-                  rawData.data
-                    .map((item: { name?: string }) => item?.name)
-                    .filter((name: unknown): name is string => typeof name === "string" && name.length > 0),
-                ),
-              ).sort((a, b) => a.localeCompare(b))
-            : []
-          setRawLeatherTypes(types)
-        }
-      } catch (error) {
-        console.error("Failed to load mobile menu categories", error)
-      }
+    return () => {
+      cancelled = true
     }
-
-    fetchMobileMenuTypes()
   }, [])
 
   useEffect(() => {

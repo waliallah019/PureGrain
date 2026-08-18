@@ -31,6 +31,7 @@ import { IProduct, IProductType } from "@/types/product"
 import PriceDisplay from "@/components/PriceDisplay"
 import "../catalog.css"
 import { JsonLd, jsonLdGraph, breadcrumbSchema } from "@/lib/schema"
+import { getProductTypes } from "@/lib/taxonomy"
 
 const FALLBACK_IMAGE = "/placeholder-image.jpg"
 
@@ -119,12 +120,11 @@ export default function FinishedProductsPage() {
   useEffect(() => {
     const fetchTypes = async () => {
       try {
-        const res = await fetch("/api/product-types")
-        if (!res.ok) throw new Error("Failed to load product types")
-
-        const data = await res.json()
-        const dynamicTypes = Array.isArray(data.data)
-          ? data.data.map((type: IProductType) => ({
+        const items = await getProductTypes()
+        const dynamicTypes = Array.isArray(items)
+          ? items
+              .filter((type): type is { _id?: string; name: string } => Boolean(type?.name))
+              .map((type) => ({
               id: type.name,
               label: type.name,
             }))
