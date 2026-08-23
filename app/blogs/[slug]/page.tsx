@@ -11,7 +11,9 @@ import { ArrowLeft, CalendarDays, Clock3 } from "lucide-react";
 import { BackToTopButton } from "@/components/blog/BackToTopButton";
 import RelatedCatalogue from "@/components/blog/RelatedCatalogue";
 import { pageMetadata } from "@/lib/seo";
-import { JsonLd, jsonLdGraph, blogPostingSchema, breadcrumbSchema } from "@/lib/schema";
+import { JsonLd, jsonLdGraph, blogPostingSchema, breadcrumbSchema, faqPageSchema } from "@/lib/schema";
+import { getCatalogueStats, EMPTY_CATALOGUE_STATS } from "@/lib/catalogue-stats";
+import { renderArticleTokens, usesCatalogueTokens, extractFaqs } from "@/lib/article-tokens";
 
 export const dynamic = "force-dynamic";
 
@@ -124,7 +126,29 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
     notFound();
   }
 
-  const { enhancedContent, toc } = extractTocAndEnhanceContent(post.content);
+  // Catalogue tokens ({{pg:price-from:Wallet}} and friends) are resolved before
+  // heading extraction so the table of contents is built from final markup, and
+  // so a token can never reach the browser unresolved. Posts that use no tokens
+  // skip the catalogue query entirely.
+  let content = post.content;
+  if (usesCatalogueTokens(content)) {
+    let stats = EMPTY_CATALOGUE_STATS;
+    try {
+      stats = await getCatalogueStats();
+    } catch (error) {
+      // Catalogue unreachable: tokens fall back to neutral wording rather than
+      // failing the whole article.
+      console.error("blog: catalogue stats unavailable", error);
+    }
+    content = renderArticleTokens(content, stats);
+  }
+
+  const { enhancedContent, toc } = extractTocAndEnhanceContent(content);
+
+  // Articles that carry a `.pg-faq` block get FAQPage structured data for free,
+  // read back out of the rendered markup so the questions never have to be
+  // maintained twice.
+  const faqs = extractFaqs(enhancedContent);
 
   return (
     <div id="blog-top" className="min-h-screen bg-background">
@@ -151,7 +175,8 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
             { name: "Home", path: "/" },
             { name: "Blogs", path: "/blogs" },
             { name: post.title, path: `/blogs/${post.slug}` },
-          ])
+          ]),
+          faqs.length ? faqPageSchema(faqs) : undefined
         )}
       />
       <Header />
@@ -195,11 +220,20 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
               </div>
 
               {post.coverImage ? (
-                <div className="overflow-hidden border border-border bg-muted">
+                /* Fixed pixel heights (h-[220px] → h-[320px]) forced every cover
+                   into a ~1.6:1 letterbox. Every cover in this library is 1:1,
+                   so that discarded roughly a third of the image and read as a
+                   zoomed-in crop. `aspect-square` matches the source exactly —
+                   nothing is cropped — and `max-w` keeps it from becoming a
+                   giant block on wide screens while it sits beside the title. */
+                <div className="mx-auto w-full max-w-[320px] overflow-hidden border border-border bg-muted sm:max-w-[380px] lg:mx-0 lg:max-w-none">
                   <img
                     src={post.coverImage}
                     alt={post.title}
-                    className="w-full h-[220px] sm:h-[280px] md:h-[320px] object-cover"
+                    width={1024}
+                    height={1024}
+                    fetchPriority="high"
+                    className="aspect-square w-full object-cover"
                   />
                 </div>
               ) : null}
@@ -207,9 +241,18 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
           </section>
 
           <div className="grid lg:grid-cols-[minmax(0,1fr)_300px] gap-8 xl:gap-10">
-            <div>
+            {/* `min-w-0` is load-bearing. A grid item defaults to
+                `min-width: auto`, so it refuses to shrink below its content's
+                min-content width — and the spec tables in article bodies carry
+                `min-width: 34rem`. Without this the column was forced to 546px
+                inside a 390px viewport, giving the whole page 180px of
+                horizontal scroll on mobile and defeating the `overflow-x: auto`
+                on .pg-table-wrap. The `lg:` columns already use `minmax(0,...)`
+                for the same reason; this covers the single-column case below
+                that breakpoint. */}
+            <div className="min-w-0">
               <div
-                className="prose prose-neutral max-w-none dark:prose-invert prose-headings:font-serif prose-a:text-brass-ink prose-h2:scroll-mt-28 prose-h3:scroll-mt-28"
+                className="article-body"
                 dangerouslySetInnerHTML={{ __html: enhancedContent }}
               />
             </div>

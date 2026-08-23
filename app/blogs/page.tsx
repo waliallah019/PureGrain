@@ -80,15 +80,24 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
             <>
               <article className="group border border-border bg-background overflow-hidden mb-8 lg:mb-10 transition-all duration-300 hover:shadow-xl">
                 <div className="grid lg:grid-cols-[1.05fr_1fr]">
+                  {/* Covers in this library are all 1:1. `aspect-[16/10]` cut
+                      38% out of them, and `lg:aspect-auto` + `h-full` stretched
+                      the image to whatever height the text column happened to
+                      be — an arbitrary, content-dependent crop. A 4:3 frame on
+                      large screens keeps the featured card banner-shaped while
+                      losing far less of the subject. */}
                   <Link href={`/blogs/${featuredPost.slug}`} className="block overflow-hidden bg-muted">
                     {featuredPost.coverImage ? (
                       <img
                         src={featuredPost.coverImage}
                         alt={featuredPost.title}
-                        className="h-full w-full object-cover aspect-[16/10] lg:aspect-auto lg:min-h-[360px] transition-transform duration-500 group-hover:scale-105"
+                        width={1024}
+                        height={1024}
+                        fetchPriority="high"
+                        className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105 sm:aspect-[3/2] lg:aspect-[4/3]"
                       />
                     ) : (
-                      <div className="h-full w-full min-h-[260px] bg-gradient-to-br from-leather/10 to-brass/20" />
+                      <div className="aspect-[4/3] w-full bg-gradient-to-br from-leather/10 to-brass/20 sm:aspect-[3/2] lg:aspect-[4/3]" />
                     )}
                   </Link>
 
@@ -130,16 +139,24 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
                       key={String(post._id)}
                       className="group border border-border bg-background overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
                     >
+                      {/* Was `aspect-[16/9]`, which threw away 44% of a square
+                          cover — the process-diagram cover lost its whole top
+                          and bottom row, and product shots were cut mid-object.
+                          4:3 keeps the card compact while showing far more of
+                          the subject. */}
                       {post.coverImage ? (
-                        <div className="aspect-[16/9] overflow-hidden bg-muted">
+                        <div className="aspect-[4/3] overflow-hidden bg-muted">
                           <img
                             src={post.coverImage}
                             alt={post.title}
+                            width={1024}
+                            height={1024}
+                            loading="lazy"
                             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                           />
                         </div>
                       ) : (
-                        <div className="aspect-[16/9] bg-gradient-to-br from-leather/10 to-brass/20" />
+                        <div className="aspect-[4/3] bg-gradient-to-br from-leather/10 to-brass/20" />
                       )}
 
                       <div className="p-5">

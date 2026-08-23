@@ -1,0 +1,166 @@
+{
+  "_comment": "Source of truth for the Phase 3 SEO article set. Each entry maps to <slug>.html in this directory. Re-run scripts/seedBlogArticles.mjs after editing to push changes to MongoDB. Prices/MOQs are NOT written here or in the HTML - articles use {{pg:...}} tokens resolved from the live catalogue at render time (see lib/article-tokens.ts).",
+  "articles": [
+    {
+      "slug": "private-label-leather-goods-manufacturer-pakistan",
+      "title": "Private-Label Leather Goods Manufacturer in Pakistan — OEM Services for US, UK & EU Brands",
+      "seoTitle": "Private-Label Leather Goods Manufacturer in Pakistan | OEM",
+      "seoDescription": "Pakistan-based private-label leather manufacturer. Wallets, bags, belts and jackets under your own brand. Low MOQs, ISO 9001 and LWG certified.",
+      "excerpt": "What we manufacture under private label, what it costs, what the minimums are, and how an order moves from your tech pack to a shipment ready for your warehouse or an Amazon fulfilment centre.",
+      "coverImage": "https://www.puregrainexports.com/collection.png",
+      "tags": [
+        "private label leather goods",
+        "OEM leather manufacturer",
+        "leather wallet",
+        "leather belt",
+        "leather jackets",
+        "Pakistan leather export"
+      ]
+    },
+    {
+      "slug": "bulk-finished-leather-hides-pakistan",
+      "title": "Bulk Finished Leather Hides from Pakistan — Cowhide, Buffalo & Goat for Manufacturers",
+      "seoTitle": "Bulk Leather Hides from Pakistan | Wholesale Cowhide & Buffalo",
+      "seoDescription": "Wholesale finished leather hides from Pakistan — cowhide, buffalo and goat across nine finishes. Chrome, veg-tan and crust. REACH compliant.",
+      "excerpt": "The leather types we stock, how tanning method changes what the material can do, how bulk pricing and minimums actually work, and what documentation ships with an export order.",
+      "coverImage": "https://www.puregrainexports.com/premium-raw-leather-hide-texture.jpg",
+      "tags": [
+        "wholesale leather hides",
+        "cowhide leather",
+        "buffalo leather",
+        "veg tan",
+        "aniline",
+        "leather tanning",
+        "Pakistan leather supplier"
+      ]
+    },
+    {
+      "slug": "leather-manufacturers-pakistan-export-guide",
+      "title": "Top Leather Manufacturers in Pakistan for Export — A Complete Guide (2026)",
+      "seoTitle": "Leather Manufacturers in Pakistan for Export | 2026 Guide",
+      "seoDescription": "How Pakistan's leather industry is structured, which cities make what, how to evaluate a supplier, and what exporting actually involves.",
+      "excerpt": "Pakistan's leather clusters, the difference between a tannery and a full-service OEM, how to evaluate a supplier, and what export documentation from Karachi actually involves.",
+      "coverImage": "https://www.puregrainexports.com/luxury-leather-craftsmanship-workshop-artisan.jpg",
+      "tags": [
+        "Pakistan leather industry",
+        "leather manufacturers Pakistan",
+        "Sialkot leather",
+        "Kasur tannery",
+        "leather export",
+        "wholesale leather"
+      ]
+    },
+    {
+      "slug": "pakistan-vs-china-leather-sourcing",
+      "title": "Pakistan vs. China for Leather Sourcing: Cost, Quality & Lead Time Comparison (2026)",
+      "seoTitle": "Pakistan vs China Leather Sourcing: 2026 Cost & Quality Guide",
+      "seoDescription": "A supplier's honest comparison of Pakistan and China for leather sourcing — cost, raw material, lead times, compliance and duty. Including when China wins.",
+      "excerpt": "Unit cost, raw material quality, lead times, compliance, tariffs and communication compared side by side — including a straight answer on when China is still the better choice.",
+      "coverImage": "https://www.puregrainexports.com/leather-fullgrain.jpg",
+      "tags": [
+        "leather sourcing",
+        "Pakistan vs China",
+        "leather manufacturing",
+        "wholesale leather",
+        "leather import",
+        "supply chain"
+      ]
+    },
+    {
+      "slug": "custom-leather-wallet-manufacturer",
+      "title": "Custom Leather Wallet Manufacturer — Private-Label Wallets with Low MOQ",
+      "seoTitle": "Custom Leather Wallet Manufacturer | Private Label, Low MOQ",
+      "seoDescription": "Private-label leather wallet manufacturing from Pakistan. Bifold, trifold, cardholder and money clip. Live pricing and MOQs, embossing, custom packaging.",
+      "excerpt": "Wallet styles we produce, leather and hardware options, how pricing moves with quantity, and what embossing, debossing and retail packaging actually add to a unit cost.",
+      "coverImage": "https://www.puregrainexports.com/luxury-leather-wallet-finished-product.jpg",
+      "tags": [
+        "custom leather wallet",
+        "wallet manufacturer",
+        "private label wallets",
+        "leather wallet",
+        "full grain leather",
+        "low MOQ"
+      ]
+    },
+    {
+      "slug": "source-private-label-leather-goods-amazon-fba",
+      "title": "How to Source Private-Label Leather Goods for Amazon FBA — A Supplier's Perspective",
+      "seoTitle": "Sourcing Private-Label Leather Goods for Amazon FBA | Guide",
+      "seoDescription": "A manufacturer's guide to sourcing leather goods for Amazon FBA — real costs and margins, FNSKU prep, packaging rules, and first-order mistakes.",
+      "excerpt": "What FBA sellers should know before contacting a manufacturer: the real process, prep and labelling requirements, honest margin maths, and the mistakes we watch sellers repeat.",
+      "coverImage": "https://www.puregrainexports.com/leather-accessories-collection-display.jpg",
+      "tags": [
+        "Amazon FBA",
+        "private label leather",
+        "leather wallet",
+        "product sourcing",
+        "FBA prep",
+        "leather goods supplier"
+      ]
+    },
+    {
+      "slug": "custom-leather-bag-manufacturer",
+      "title": "Custom Leather Bag Manufacturer — Backpacks, Duffels & Bags for Brands",
+      "seoTitle": "Custom Leather Bag Manufacturer | OEM Backpacks & Duffels",
+      "seoDescription": "OEM leather bag manufacturing from Pakistan — backpacks, weekender duffels and purses. Leather and hardware options, tech packs, sampling and live MOQs.",
+      "excerpt": "Bag types we produce, how leather weight and hardware drive cost, what a usable tech pack contains, and realistic production capacity and lead times.",
+      "coverImage": "https://res.cloudinary.com/da1coaysi/image/upload/v1786390870/pure-grain-exports/finished-products/dual-tone-genuine-leather-weekender-duffel-bag/01-02_13-1.jpg",
+      "tags": [
+        "custom leather bag",
+        "leather backpack",
+        "duffle bag",
+        "bag manufacturer",
+        "OEM bags",
+        "full grain leather"
+      ]
+    },
+    {
+      "slug": "private-label-leather-jacket-manufacturer",
+      "title": "Private-Label Leather Jacket Manufacturer — Fashion Outerwear & CE Motorcycle Gear",
+      "seoTitle": "Private-Label Leather Jacket Manufacturer | Low MOQ, Sialkot",
+      "seoDescription": "Leather jacket manufacturing from Sialkot, Pakistan — biker, bomber and touring styles plus CE-rated motorcycle apparel. Size grading, live MOQs.",
+      "excerpt": "Jacket styles, leather and lining options, size grading, and why Sialkot's motorcycle apparel base makes it different from a general garment factory.",
+      "coverImage": "https://res.cloudinary.com/da1coaysi/image/upload/v1786390935/pure-grain-exports/finished-products/urban-biker-leather-jacket/01-02_11-1-1.jpg",
+      "tags": [
+        "leather jacket manufacturer",
+        "private label jackets",
+        "biker jackets",
+        "motorcycle suit",
+        "Sialkot leather",
+        "leather jackets"
+      ]
+    },
+    {
+      "slug": "oem-leather-belt-manufacturer",
+      "title": "OEM Leather Belt Manufacturer — Custom Buckles, Embossing & Packaging",
+      "seoTitle": "OEM Leather Belt Manufacturer | Custom Buckles & Embossing",
+      "seoDescription": "Custom leather belt manufacturing from Pakistan. Dress and casual widths, buckle sourcing, embossing and debossing, retail packaging, live pricing and MOQs.",
+      "excerpt": "Belt styles and widths, how buckle sourcing works and what it costs, branding options, and why belt MOQs are among the lowest in our catalogue.",
+      "coverImage": "https://res.cloudinary.com/da1coaysi/image/upload/v1770902390/finished-products/1770902390109-530191908.jpg",
+      "tags": [
+        "custom leather belt",
+        "belt manufacturer",
+        "OEM belts",
+        "leather belt",
+        "veg tan",
+        "private label"
+      ]
+    },
+    {
+      "slug": "how-to-verify-leather-supplier",
+      "title": "How to Verify a Leather Supplier Before Placing Your First Order",
+      "seoTitle": "How to Verify a Leather Supplier | Buyer's Checklist",
+      "seoDescription": "A five-step checklist for verifying a leather supplier — registration and export licences, sample evaluation, certifications, factory audits and trial orders.",
+      "excerpt": "A five-step verification checklist, the red flags that should stop a deal, and what a trustworthy supplier profile actually looks like when you inspect it properly.",
+      "coverImage": "https://www.puregrainexports.com/leather-artisan-crafting-premium-leather-in-worksh.jpg",
+      "tags": [
+        "verify leather supplier",
+        "supplier due diligence",
+        "leather quality",
+        "sourcing checklist",
+        "leather buyers guide",
+        "wholesale leather"
+      ]
+    }
+  ]
+}
