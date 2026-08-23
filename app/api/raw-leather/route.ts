@@ -10,6 +10,7 @@ import { validateRequest } from "@/lib/middleware/validateRequest";
 import logger from "@/lib/config/logger";
 import cloudinary from "@/lib/config/cloudinary";
 import { requireAdmin } from '@/lib/auth/session';
+import { invalidateCatalogueStats } from "@/lib/catalogue-stats";
 
 export const dynamic = 'force-dynamic';
 export const config = {
@@ -159,6 +160,10 @@ export async function POST(req: NextRequest) {
       ...rawLeatherData,
       images: imageUrls,
     });
+
+    // Article copy quotes live catalogue prices/MOQs; drop the cached
+    // snapshot so published posts reflect this change immediately.
+    invalidateCatalogueStats();
 
     return NextResponse.json(
       {

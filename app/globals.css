@@ -719,3 +719,543 @@
   cursor: pointer !important;
   margin-top: 8px !important;
 }
+
+/* ==========================================================================
+   ARTICLE BODY — typography for editorial content stored in MongoDB
+   ==========================================================================
+
+   Why this exists as hand-written CSS rather than @tailwindcss/typography:
+
+   1. Blog HTML lives in the database, not in a file. Tailwind only generates
+      utilities it can find by scanning the `content` globs in
+      tailwind.config.ts, so ANY utility class written inside article HTML
+      compiles to nothing. Class names used by article content therefore have
+      to be real CSS rules declared here, where Tailwind can see them.
+   2. `@tailwind base` (Preflight) resets headings to `font-size: inherit` and
+      strips margins from p/ul/ol and markers from lists. Without a stylesheet
+      that puts them back, a 3,000-word post renders as one undifferentiated
+      block of text. The detail page previously asked for
+      `prose ... dark:prose-invert`, but @tailwindcss/typography was never
+      installed or registered as a plugin, so none of those classes emitted a
+      single rule — verified against the deployed CSS bundles.
+
+   Everything below is scoped under `.article-body` so it cannot leak into the
+   app shell, and is built from the same tokens as the rest of the site
+   (brass / bone / border / Cormorant serif) so posts read as part of the site
+   rather than as a bolted-on blog theme.
+   ========================================================================== */
+
+.article-body {
+  @apply text-foreground;
+  font-size: 1.0625rem;
+  line-height: 1.75;
+}
+
+@media (min-width: 768px) {
+  .article-body {
+    font-size: 1.125rem;
+    line-height: 1.78;
+  }
+}
+
+/* --- Headings ------------------------------------------------------------ */
+
+.article-body h2 {
+  font-family: var(--font-serif), "Cormorant Garamond", Georgia, serif;
+  @apply text-3xl md:text-4xl font-semibold leading-tight tracking-tight text-foreground;
+  @apply mt-14 mb-5 pb-3 border-b border-border scroll-mt-28;
+}
+
+.article-body h2:first-child {
+  @apply mt-0;
+}
+
+.article-body h3 {
+  font-family: var(--font-serif), "Cormorant Garamond", Georgia, serif;
+  @apply text-2xl md:text-[1.75rem] font-medium leading-snug text-foreground;
+  @apply mt-10 mb-3 scroll-mt-28;
+}
+
+.article-body h4 {
+  @apply text-base font-semibold uppercase tracking-[0.12em] text-brass-ink;
+  @apply mt-8 mb-2;
+}
+
+/* --- Body copy ----------------------------------------------------------- */
+
+.article-body p {
+  @apply my-5;
+}
+
+.article-body strong {
+  @apply font-semibold text-foreground;
+}
+
+.article-body em {
+  @apply italic;
+}
+
+.article-body a {
+  @apply font-medium text-brass-ink underline decoration-brass/40 underline-offset-[3px];
+  @apply transition-colors duration-200;
+}
+
+.article-body a:hover {
+  @apply decoration-brass;
+}
+
+.article-body a:focus-visible {
+  @apply outline-none ring-2 ring-brass ring-offset-2 ring-offset-background;
+}
+
+/* Opening paragraph. Set larger so the article has a clear entry point. */
+.article-body .pg-lead {
+  @apply text-lg md:text-xl leading-relaxed text-muted-foreground;
+  @apply mt-0 mb-8;
+}
+
+/* --- Lists --------------------------------------------------------------- */
+
+.article-body ul,
+.article-body ol {
+  @apply my-5 pl-6;
+}
+
+.article-body li + li {
+  @apply mt-2;
+}
+
+.article-body ul {
+  list-style: none;
+}
+
+.article-body ul > li {
+  @apply relative;
+}
+
+/* Square brass marker rather than a round bullet — matches the site's
+   `rounded-none` industrial language. */
+.article-body ul > li::before {
+  content: "";
+  @apply absolute w-1.5 h-1.5 bg-brass;
+  left: -1.1rem;
+  top: 0.7em;
+}
+
+.article-body ol {
+  list-style: decimal;
+}
+
+.article-body ol > li::marker {
+  @apply font-semibold text-brass-ink;
+}
+
+.article-body li > ul,
+.article-body li > ol {
+  @apply my-2;
+}
+
+.article-body li p {
+  @apply my-2;
+}
+
+/* --- Rules & quotes ------------------------------------------------------ */
+
+.article-body hr {
+  @apply my-12 border-0 border-t border-border;
+}
+
+.article-body blockquote {
+  @apply my-8 border-l-2 border-brass bg-bone/50 py-4 pl-6 pr-5;
+  font-style: normal;
+}
+
+.dark .article-body blockquote {
+  @apply bg-muted/20;
+}
+
+.article-body blockquote p {
+  font-family: var(--font-serif), "Cormorant Garamond", Georgia, serif;
+  @apply my-0 text-xl md:text-2xl leading-snug text-foreground;
+}
+
+.article-body blockquote cite {
+  @apply mt-3 block text-sm text-muted-foreground;
+  font-style: normal;
+}
+
+/* --- Tables -------------------------------------------------------------- */
+
+/* Wide spec tables scroll inside their own container so the page body never
+   scrolls horizontally on mobile. */
+.article-body .pg-table-wrap {
+  @apply my-8 overflow-x-auto border border-border;
+  -webkit-overflow-scrolling: touch;
+}
+
+.article-body table {
+  @apply w-full border-collapse text-left;
+  font-size: 0.9375rem;
+  min-width: 34rem;
+}
+
+.article-body thead {
+  @apply bg-bone;
+}
+
+.dark .article-body thead {
+  @apply bg-muted/30;
+}
+
+.article-body th {
+  @apply px-4 py-3 font-semibold text-foreground align-bottom;
+  @apply border-b border-border whitespace-nowrap;
+  @apply text-xs uppercase tracking-[0.12em];
+}
+
+.article-body td {
+  @apply px-4 py-3 align-top border-b border-border text-muted-foreground;
+}
+
+.article-body tbody tr:last-child td {
+  @apply border-b-0;
+}
+
+.article-body td strong {
+  @apply text-foreground;
+}
+
+/* Numeric columns read better right-aligned and tabular. */
+.article-body .pg-num {
+  @apply text-right whitespace-nowrap text-foreground;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Figures ------------------------------------------------------------- */
+
+.article-body figure {
+  @apply my-9;
+}
+
+/* Editorial images are bounded by HEIGHT, not width.
+   Every cover and in-article asset in this library is 1:1, so a plain
+   `width: 100%` rendered an 800x800 photo at 804x804 — taller than the
+   viewport, upscaled past its natural size (so slightly soft), and completely
+   dominating the column. Capping the height and letting the width follow keeps
+   any aspect ratio in proportion, never upscales, and never crops. */
+.article-body img {
+  @apply block border border-border;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  margin-inline: auto;
+  /* Belt and braces: if a future image ever hits a height constraint, contain
+     rather than stretch. Default `fill` would distort it. */
+  object-fit: contain;
+}
+
+/* Capped by WIDTH rather than height, deliberately.
+   `width: auto` + `max-height` also bounds the image, but it stops the browser
+   deriving the box from the width/height attributes, so a `loading="lazy"`
+   image measured 2x2 until it loaded and then snapped to full size — a
+   guaranteed layout shift. Keeping `width: 100%` with `height: auto` lets the
+   attribute-derived aspect ratio reserve the correct space before the bytes
+   arrive, and `max-width` supplies the ceiling. */
+@media (min-width: 768px) {
+  .article-body img {
+    max-width: 22rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .article-body img {
+    max-width: 26rem;
+  }
+}
+
+/* Caption tracks the image rather than the full column, so it reads as a
+   caption for that image instead of a stray line of body text. */
+.article-body figcaption {
+  @apply mt-3 text-sm text-muted-foreground text-center;
+}
+
+/* --- Code ---------------------------------------------------------------- */
+
+.article-body code {
+  @apply px-1.5 py-0.5 bg-bone text-brass-ink border border-border;
+  font-size: 0.875em;
+}
+
+.dark .article-body code {
+  @apply bg-muted/40;
+}
+
+.article-body pre {
+  @apply my-6 p-5 overflow-x-auto bg-leather text-primary-foreground border border-border;
+}
+
+.article-body pre code {
+  @apply p-0 bg-transparent border-0;
+  color: inherit;
+}
+
+/* ==========================================================================
+   ARTICLE COMPONENTS — branded blocks used inside article HTML
+   ========================================================================== */
+
+/* --- Key takeaways (top-of-article summary) ------------------------------ */
+
+.article-body .pg-takeaways {
+  @apply my-8 border border-border bg-bone/60 p-6 md:p-7;
+}
+
+.dark .article-body .pg-takeaways {
+  @apply bg-muted/20;
+}
+
+.article-body .pg-takeaways > p:first-child {
+  @apply mt-0 mb-4 text-xs uppercase tracking-[0.2em] font-semibold text-brass-ink;
+}
+
+.article-body .pg-takeaways ul {
+  @apply my-0;
+}
+
+/* --- Callouts ------------------------------------------------------------ */
+
+.article-body .pg-callout {
+  @apply my-8 border-l-2 border-brass bg-bone/45 p-5 md:p-6;
+}
+
+.dark .article-body .pg-callout {
+  @apply bg-muted/20;
+}
+
+.article-body .pg-callout > p:first-child {
+  @apply mt-0;
+}
+
+.article-body .pg-callout > p:last-child,
+.article-body .pg-callout > ul:last-child {
+  @apply mb-0;
+}
+
+.article-body .pg-callout-title {
+  @apply block mb-2 text-xs uppercase tracking-[0.2em] font-semibold text-brass-ink;
+}
+
+.article-body .pg-callout--warn {
+  border-left-color: hsl(var(--warning));
+  background-color: hsl(var(--warning) / 0.06);
+}
+
+.article-body .pg-callout--warn .pg-callout-title {
+  color: hsl(var(--warning));
+}
+
+/* --- Numbered process steps ---------------------------------------------- */
+
+.article-body .pg-steps {
+  @apply my-8 p-0;
+  list-style: none;
+  counter-reset: pg-step;
+}
+
+.article-body .pg-steps > li {
+  @apply relative border-b border-border py-5 pl-14;
+  counter-increment: pg-step;
+  margin-top: 0;
+}
+
+.article-body .pg-steps > li::before {
+  content: counter(pg-step, decimal-leading-zero);
+  @apply absolute left-0 top-5 flex h-9 w-9 items-center justify-center;
+  @apply border border-brass/40 text-sm font-semibold text-brass-ink;
+  font-variant-numeric: tabular-nums;
+  background: none;
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.article-body .pg-steps > li:last-child {
+  @apply border-b-0;
+}
+
+.article-body .pg-steps strong {
+  @apply block mb-1 text-base;
+}
+
+.article-body .pg-steps p {
+  @apply my-0 text-muted-foreground;
+}
+
+/* --- Checklist ----------------------------------------------------------- */
+
+.article-body .pg-checklist {
+  @apply my-6 pl-0;
+  list-style: none;
+}
+
+.article-body .pg-checklist > li {
+  @apply relative pl-8;
+}
+
+.article-body .pg-checklist > li::before {
+  content: "";
+  @apply absolute left-0 border-b-2 border-r-2 border-brass;
+  top: 0.4em;
+  width: 0.5rem;
+  height: 0.85rem;
+  transform: rotate(45deg);
+  background: none;
+}
+
+/* --- Stat row ------------------------------------------------------------ */
+
+.article-body .pg-stats {
+  @apply my-9 grid gap-px bg-border border border-border;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 640px) {
+  .article-body .pg-stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.article-body .pg-stat {
+  @apply bg-background p-5 text-center;
+}
+
+.article-body .pg-stat b {
+  font-family: var(--font-serif), "Cormorant Garamond", Georgia, serif;
+  @apply block text-3xl font-semibold text-foreground;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+}
+
+.article-body .pg-stat span {
+  @apply mt-2 block text-xs uppercase tracking-[0.14em] text-muted-foreground;
+}
+
+/* --- Comparison cards ---------------------------------------------------- */
+
+.article-body .pg-cards {
+  @apply my-8 grid gap-5;
+}
+
+@media (min-width: 640px) {
+  .article-body .pg-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.article-body .pg-card {
+  @apply border border-border bg-card p-6;
+}
+
+.article-body .pg-card > p:first-child,
+.article-body .pg-card > h4:first-child {
+  @apply mt-0;
+}
+
+.article-body .pg-card > p:last-child,
+.article-body .pg-card > ul:last-child {
+  @apply mb-0;
+}
+
+/* --- FAQ ----------------------------------------------------------------- */
+
+.article-body .pg-faq {
+  @apply my-8 border-t border-border;
+}
+
+.article-body .pg-faq > div {
+  @apply border-b border-border py-5;
+}
+
+.article-body .pg-faq-q {
+  font-family: var(--font-serif), "Cormorant Garamond", Georgia, serif;
+  @apply block text-xl md:text-2xl font-medium text-foreground mb-2 leading-snug;
+}
+
+.article-body .pg-faq p {
+  @apply my-0 text-muted-foreground;
+}
+
+.article-body .pg-faq p + p {
+  @apply mt-3;
+}
+
+/* --- Call to action ------------------------------------------------------ */
+
+.article-body .pg-cta {
+  @apply my-10 border border-border bg-leather p-7 md:p-9;
+}
+
+.article-body .pg-cta p {
+  color: hsl(var(--primary-foreground) / 0.85);
+}
+
+.article-body .pg-cta > p:first-of-type {
+  @apply mt-0;
+}
+
+.article-body .pg-cta > p:last-child {
+  @apply mb-0;
+}
+
+.article-body .pg-cta-title {
+  font-family: var(--font-serif), "Cormorant Garamond", Georgia, serif;
+  @apply block text-2xl md:text-3xl font-semibold text-primary-foreground mb-3 leading-snug;
+}
+
+.article-body .pg-cta a {
+  @apply text-brass;
+  text-decoration-color: hsl(var(--brass) / 0.5);
+}
+
+.article-body .pg-cta-actions {
+  @apply mt-6 flex flex-wrap gap-3;
+}
+
+.article-body .pg-cta-actions a {
+  @apply inline-flex items-center justify-center px-6 py-3;
+  @apply text-xs font-medium uppercase tracking-[0.14em] transition-colors duration-300;
+  text-decoration: none;
+}
+
+.article-body .pg-cta-actions a:first-child {
+  @apply bg-brass text-brass-foreground;
+}
+
+.article-body .pg-cta-actions a:first-child:hover {
+  @apply bg-brass/90;
+}
+
+.article-body .pg-cta-actions a + a {
+  @apply text-primary-foreground;
+  border: 1px solid hsl(var(--primary-foreground) / 0.35);
+}
+
+.article-body .pg-cta-actions a + a:hover {
+  background-color: hsl(var(--primary-foreground) / 0.1);
+}
+
+/* --- Live-data note ------------------------------------------------------ */
+
+/* Sits under catalogue-driven tables to say that the figures are read from the
+   live catalogue rather than typed into the article. */
+.article-body .pg-live-note {
+  @apply flex items-start gap-2 text-sm text-muted-foreground;
+  margin-top: -1rem;
+  margin-bottom: 2rem;
+}
+
+.article-body .pg-live-note::before {
+  content: "";
+  @apply shrink-0 bg-brass;
+  margin-top: 0.5em;
+  width: 0.375rem;
+  height: 0.375rem;
+}

@@ -11,6 +11,7 @@ import logger from "@/lib/config/logger"; // Assuming logger is used for general
 import { parseFormData } from "@/lib/utils/parseFormData";
 import cloudinary from "@/lib/config/cloudinary";
 import { requireAdmin } from '@/lib/auth/session';
+import { invalidateCatalogueStats } from "@/lib/catalogue-stats";
 
 export const dynamic = 'force-dynamic';
 export const config = {
@@ -113,6 +114,10 @@ export async function POST(req: NextRequest) {
       ...productData,
       images: imageUrls,
     });
+
+    // Article copy quotes live catalogue prices/MOQs; drop the cached
+    // snapshot so published posts reflect this change immediately.
+    invalidateCatalogueStats();
 
     return NextResponse.json(
       {

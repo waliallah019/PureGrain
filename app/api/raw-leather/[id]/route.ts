@@ -10,6 +10,7 @@ import { validateRequest } from "@/lib/middleware/validateRequest";
 import logger from "@/lib/config/logger";
 import cloudinary from "@/lib/config/cloudinary";
 import { requireAdmin } from '@/lib/auth/session';
+import { invalidateCatalogueStats } from "@/lib/catalogue-stats";
 
 export const dynamic = 'force-dynamic';
 export const config = {
@@ -171,6 +172,10 @@ export async function PUT(req: NextRequest, { params }: RawLeatherParams) {
       );
     }
 
+    // Article copy quotes live catalogue prices/MOQs; drop the cached
+    // snapshot so published posts reflect this change immediately.
+    invalidateCatalogueStats();
+
     return NextResponse.json({
       success: true,
       message: "Raw leather entry updated successfully.",
@@ -206,6 +211,10 @@ export async function DELETE(req: NextRequest, { params }: RawLeatherParams) {
         { status: 404 }
       );
     }
+
+    // Article copy quotes live catalogue prices/MOQs; drop the cached
+    // snapshot so published posts reflect this change immediately.
+    invalidateCatalogueStats();
 
     return NextResponse.json({
       success: true,

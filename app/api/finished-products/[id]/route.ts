@@ -12,6 +12,7 @@ import logger from "@/lib/config/logger";
 import { parseFormData } from "@/lib/utils/parseFormData";
 import cloudinary from "@/lib/config/cloudinary";
 import { requireAdmin } from '@/lib/auth/session';
+import { invalidateCatalogueStats } from "@/lib/catalogue-stats";
 
 export const dynamic = 'force-dynamic';
 export const config = {
@@ -122,6 +123,10 @@ export async function PUT(req: NextRequest, { params }: ProductParams) {
       );
     }
 
+    // Article copy quotes live catalogue prices/MOQs; drop the cached
+    // snapshot so published posts reflect this change immediately.
+    invalidateCatalogueStats();
+
     return NextResponse.json({
       success: true,
       message: "Finished product updated successfully.",
@@ -153,6 +158,10 @@ export async function DELETE(req: NextRequest, { params }: ProductParams) {
         { status: 404 }
       );
     }
+
+    // Article copy quotes live catalogue prices/MOQs; drop the cached
+    // snapshot so published posts reflect this change immediately.
+    invalidateCatalogueStats();
 
     return NextResponse.json({
       success: true,
