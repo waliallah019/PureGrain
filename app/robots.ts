@@ -20,6 +20,11 @@ import { SITE_URL } from "@/lib/seo"
  *
  * `/api` stays listed: those endpoints are not secret, they are simply worthless
  * to crawl, and keeping them out saves crawl budget.
+ *
+ * No `host:` directive is emitted. It was only ever understood by Yandex, which
+ * deprecated it in 2018 in favour of a plain 301; Google has never supported it
+ * and treats the line as an unknown directive. The canonical host is already
+ * stated by the apex -> www redirect and by the canonical tag on every page.
  */
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -43,6 +48,5 @@ export default function robots(): MetadataRoute.Robots {
       },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,
-    host: SITE_URL,
   }
 }
