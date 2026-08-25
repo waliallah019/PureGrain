@@ -68,7 +68,11 @@ function validate(entry, html) {
     problems.push(`seoDescription ${entry.seoDescription.length} chars (max 160)`)
   if ((entry.excerpt || "").length < 20) problems.push("excerpt shorter than 20 chars")
   if (html.trim().length < 40) problems.push("content shorter than 40 chars")
-  if (!/^https?:\/\//.test(entry.coverImage || "")) problems.push("coverImage is not an absolute URL")
+  // Site-relative for first-party files (so next/image can optimise them without
+  // the site host being added to remotePatterns), absolute for Cloudinary.
+  const cover = entry.coverImage || ""
+  if (!(cover.startsWith("/") || /^https:\/\/res\.cloudinary\.com\//.test(cover)))
+    problems.push("coverImage must be a site-relative path or a Cloudinary URL")
 
   // Unbalanced or malformed tokens never reach the reader as raw braces, but a
   // typo silently degrades to an em dash, so catch it here instead.

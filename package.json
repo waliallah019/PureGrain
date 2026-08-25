@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/content-negotiation.test.mts tests/html-to-markdown.test.mts tests/industries.test.mts",
+    "test:endpoints": "node --test tests/agent-endpoints.test.mts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

@@ -5,6 +5,19 @@ interface BlogFilters {
   search?: string;
   status?: "draft" | "published";
   includeDraft?: boolean;
+  /**
+   * Return only the fields a list view renders, as plain objects.
+   *
+   * The full document carries `content` — the entire article HTML, 11–25KB per
+   * post. On the public listing that is 93% of the payload (162KB of 174KB for
+   * nine posts) for a field the listing never displays, and it roughly halves
+   * the query time to drop it.
+   *
+   * Off by default: the admin panel populates its edit form straight from the
+   * list response (`app/admin-ahmza/blogs/page.tsx`), so it genuinely needs
+   * `content` and must keep getting it.
+   */
+  summary?: boolean;
 }
 
 interface BlogListResult {
@@ -101,12 +114,29 @@ class BlogService {
     const sortDirection = order === "asc" ? 1 : -1;
 
     const skip = (page - 1) * limit;
-    const total = await Blog.countDocuments(query);
-    const blogs = await Blog.find(query)
+
+    // countDocuments and find are independent; running them in parallel removes
+    // one full round trip from every listing render.
+    const listQuery = Blog.find(query)
       .sort({ [normalizedSortBy]: sortDirection, createdAt: -1 })
       .skip(skip)
-      .limit(limit)
-      .exec();
+      .limit(limit);
+
+    if (filters.summary) {
+      listQuery
+        .select(
+          "title slug excerpt coverImage tags status authorName readingTimeMinutes publishedAt createdAt updatedAt"
+        )
+        // Plain objects rather than hydrated Mongoose documents: nothing in a
+        // list view calls a document method, and hydration is the other half of
+        // the cost.
+        .lean();
+    }
+
+    const [total, blogs] = await Promise.all([
+      Blog.countDocuments(query),
+      listQuery.exec(),
+    ]);
 
     return {
       blogs,

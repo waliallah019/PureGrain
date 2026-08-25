@@ -5,6 +5,7 @@ import "./industries.css";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { INDUSTRY_PAGE_LIST } from "@/lib/industries";
 
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -46,8 +47,8 @@ const INDUSTRIES: Industry[] = [
     shortLabel: "Footwear",
     pillIcon: "fa-shoe-prints",
     imageUrl:
-      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1200&q=80",
-    imageAlt: "Premium leather footwear arranged for a commercial product shoot.",
+      "https://res.cloudinary.com/da1coaysi/image/upload/v1786032775/pure-grain-exports/raw-leather/smooth-grain-calf-black/01-image_1.jpg",
+    imageAlt: "Smooth black calfskin hide, a typical footwear upper leather.",
     imagePosition: "center 58%",
     caption: "Footwear Leather",
     label: "Industry 01",
@@ -76,8 +77,8 @@ const INDUSTRIES: Industry[] = [
     shortLabel: "Gloves",
     pillIcon: "fa-hand-paper",
     imageUrl:
-      "https://images.unsplash.com/photo-1587372915701-e8b3e7deefd4?auto=format&fit=crop&w=1200&q=80",
-    imageAlt: "Leather gloves photographed in a clean commercial studio setting.",
+      "https://res.cloudinary.com/da1coaysi/image/upload/v1776538766/raw-leather/1776538766711-677773164.jpg",
+    imageAlt: "Goat nubuck skin showing grain and nap sides, the standard glove leather.",
     caption: "Glove Leather",
     label: "Industry 02",
     name: "Gloves",
@@ -101,31 +102,31 @@ const INDUSTRIES: Industry[] = [
     ],
   },
   {
-    id: "sports-goods",
-    shortLabel: "Sports Goods",
-    pillIcon: "fa-futbol",
+    id: "motorcycle",
+    shortLabel: "Motorcycle & Powersports",
+    pillIcon: "fa-motorcycle",
     imageUrl:
-      "https://images.unsplash.com/photo-1597332677041-8ec7b0b9d55f?auto=format&fit=crop&w=1200&q=80",
-    imageAlt: "Leather boxing gloves representing sports goods manufacturing.",
-    caption: "Sports Leather",
+      "https://res.cloudinary.com/da1coaysi/image/upload/v1786390937/pure-grain-exports/finished-products/men-s-army-green-adventure-touring-motorcycle-suit/01-02_1-5-5.jpg",
+    imageAlt: "Armoured touring motorcycle suit manufactured by Pure Grain Exports.",
+    caption: "Motorcycle Leather",
     label: "Industry 03",
-    name: "Sports Goods",
+    name: "Motorcycle & Powersports",
     pakNote:
-      "Sialkot produces 70% of the world's hand-stitched footballs — our leather is at the core of global sports.",
+      "Sialkot has supplied European motorcycle brands for decades — this is our deepest manufacturing line.",
     body:
-      "Sialkot, Pakistan is globally recognized as the sports goods capital of the world — producing the majority of the world's hand-stitched footballs, boxing gloves, cricket equipment, and sports leather goods. Our hides for sports applications are selected for abrasion resistance, consistent grain, and the ability to withstand high-stress use. We supply leather for footballs, boxing equipment, cricket gloves, and protective sports gear.",
+      "Motorcycle apparel is a technical product, not a fashion one: armour pockets that sit correctly over a joint, abrasion-rated panels, stretch inserts and ventilation. We supply the heavy cowhide these garments require, and we manufacture the finished gear — touring jackets, armoured pants and one- and two-piece suits — under private label for brands in the EU, UK and North America.",
     hides: ["cow", "buffalo"],
     spec: {
-      thickness: "1.0 mm – 2.0 mm",
-      temper: "Firm, high tensile strength",
-      finish: "Natural grain, embossed panels",
-      tanning: "Chrome tanned for durability",
+      thickness: "1.2 mm – 2.2 mm",
+      temper: "Firm, high abrasion resistance",
+      finish: "Smooth, pebble, embossed",
+      tanning: "Chrome tanned",
     },
     products: [
-      "Football Panel Leather",
-      "Boxing Glove Leather",
-      "Cricket Equipment Leather",
-      "Sports Pad Leather",
+      "Touring Jacket Leather",
+      "Racing Suit Leather",
+      "Armoured Pant Leather",
+      "Glove Panel Leather",
     ],
   },
   {
@@ -133,8 +134,8 @@ const INDUSTRIES: Industry[] = [
     shortLabel: "Furniture & Interiors",
     pillIcon: "fa-couch",
     imageUrl:
-      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=80",
-    imageAlt: "Leather sofa and premium interior upholstery in a styled living space.",
+      "/leather-upholstery.jpg",
+    imageAlt: "Soft upholstery leather with a natural aniline finish.",
     caption: "Upholstery Leather",
     label: "Industry 04",
     name: "Furniture & Interiors",
@@ -161,8 +162,8 @@ const INDUSTRIES: Industry[] = [
     shortLabel: "Automotive & Marine",
     pillIcon: "fa-car",
     imageUrl:
-      "https://images.unsplash.com/photo-1552820728-8ac41f1ce891?auto=format&fit=crop&w=1200&q=80",
-    imageAlt: "Luxury automotive leather interior with premium seats and dashboard detail.",
+      "/leather-automotive.jpg",
+    imageAlt: "Black pebble-grain leather of the kind used for automotive trim.",
     caption: "Automotive Leather",
     label: "Industry 05",
     name: "Automotive & Marine",
@@ -191,8 +192,8 @@ const INDUSTRIES: Industry[] = [
     shortLabel: "Bags & Luggage",
     pillIcon: "fa-briefcase",
     imageUrl:
-      "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=1200&q=80",
-    imageAlt: "Premium leather bag displayed in a professional editorial product image.",
+      "https://res.cloudinary.com/da1coaysi/image/upload/v1786390870/pure-grain-exports/finished-products/dual-tone-genuine-leather-weekender-duffel-bag/01-02_13-1.jpg",
+    imageAlt: "Dual-tone leather weekender duffel bag made by Pure Grain Exports.",
     caption: "Bag Leather",
     label: "Industry 06",
     name: "Bags & Luggage",
@@ -247,8 +248,8 @@ const INDUSTRIES: Industry[] = [
     shortLabel: "Fashion & Apparel",
     pillIcon: "fa-tshirt",
     imageUrl:
-      "https://images.unsplash.com/photo-1551028719-00167b16ebc5?auto=format&fit=crop&w=1200&q=80",
-    imageAlt: "Leather jacket styled as premium fashion apparel in a commercial editorial image.",
+      "https://res.cloudinary.com/da1coaysi/image/upload/v1786390935/pure-grain-exports/finished-products/urban-biker-leather-jacket/01-02_11-1-1.jpg",
+    imageAlt: "Urban biker leather jacket manufactured by Pure Grain Exports.",
     caption: "Garment Leather",
     label: "Industry 08",
     name: "Fashion & Apparel",
@@ -272,32 +273,30 @@ const INDUSTRIES: Industry[] = [
     ],
   },
   {
-    id: "saddlery",
-    shortLabel: "Saddlery & Equestrian",
-    pillIcon: "fa-horse",
-    imageUrl:
-      "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?auto=format&fit=crop&w=1200&q=80",
-    imageAlt: "Equestrian leather saddle and horse tack photographed outdoors.",
-    caption: "Saddlery Leather",
+    id: "corporate-gifting",
+    shortLabel: "Corporate Gifting",
+    pillIcon: "fa-gift",
+    imageUrl: "/collection.png",
+    imageAlt: "Flat-lay of branded leather wallets, folios and small accessories.",
+    caption: "Gifting Leather",
     label: "Industry 09",
-    name: "Saddlery & Equestrian",
+    name: "Corporate Gifting & Promotional",
     pakNote:
-      "Pakistan has a centuries-long tradition in saddlery leather — Sialkot's craftsmen supply equestrian markets globally.",
+      "Low minimums and in-house branding — the two things gifting programmes actually need.",
     body:
-      "Heavy, durable leather for saddles, bridles, harnesses, equestrian equipment, and traditional leathercraft. Our saddlery hides are vegetable tanned for stiffness, water resistance, and the ability to mold and shape — essential for traditional saddle construction. Available in natural tan and custom dyed finishes for equestrian equipment manufacturers.",
-    hides: ["cow", "buffalo"],
+      "Corporate gifting runs on short, branded runs rather than long production lines: a few hundred wallets for a conference, folios for a sales team, belts and card holders as client gifts. Our small leather goods carry the lowest minimums we offer, and embossing, debossing, custom edge paint and retail-ready boxing are all done in house, so a programme can be branded end to end without a separate finisher.",
+    hides: ["cow", "goat"],
     spec: {
-      thickness: "3.0 mm – 6.0 mm",
-      temper: "Stiff, moldable",
-      finish: "Natural veg tan, harness finish, wax",
-      tanning: "Vegetable tanned exclusively",
+      thickness: "1.1 mm – 2.2 mm",
+      temper: "Firm, consistent hand",
+      finish: "Smooth, embossed, veg tan, pebble",
+      tanning: "Chrome tanned, vegetable tanned",
     },
     products: [
-      "Saddle Leather",
-      "Bridle Leather",
-      "Harness Leather",
-      "Tooling Leather",
-      "Skirting Leather",
+      "Wallet Leather",
+      "Folio & Notebook Leather",
+      "Card Holder Leather",
+      "Keyring & Tag Leather",
     ],
   },
 ];
@@ -577,8 +576,23 @@ export default function IndustriesPage() {
                       ))}
                     </div>
                   </div>
+                </div>
+              </div>
 
-                  {/* Technical specs */}
+              {/*
+                Specification band.
+
+                The spec table, product chips and actions used to sit at the
+                bottom of the text column, which made that column 710-881px tall
+                against a 423px image and left ~300px of dead space beside every
+                photograph. Moving them below the two-column row caps the intro
+                at roughly the image's own height, so the pair stays balanced
+                whatever the copy length — and gives the detail a full-width
+                strip to breathe in rather than a half-width stack.
+              */}
+              <div className="indDetail reveal">
+                <div className="indDetail__col">
+                  <p className="indDetail__label">Technical Specification</p>
                   <table className="indSpec">
                     <tbody>
                       <tr>
@@ -610,7 +624,9 @@ export default function IndustriesPage() {
                       {ind.note}
                     </p>
                   )}
+                </div>
 
+                <div className="indDetail__col">
                   {/* Popular products */}
                   <div className="indProducts">
                     <p className="indProducts__label">Popular Products</p>
@@ -622,6 +638,30 @@ export default function IndustriesPage() {
                       ))}
                     </div>
                   </div>
+                </div>
+
+                <div className="indDetail__col indDetail__col--act">
+                  <p className="indDetail__label">Next step</p>
+
+                  {/*
+                    Deep link into the dedicated page for this industry.
+                    A real anchor with descriptive text, sitting above the CTA
+                    row so the existing Sample/Quote actions stay primary — this
+                    is the crawl path from hub to detail page, so it must not be
+                    a button or "Learn more".
+                  */}
+                  {(() => {
+                    const detail = INDUSTRY_PAGE_LIST.find((d) => d.hubAnchor === ind.id);
+                    if (!detail) return null;
+                    return (
+                      <p className="indDeepLink">
+                        <Link href={detail.path}>{detail.hubLinkText}</Link>
+                        <span className="indDeepLink__hint">
+                          {" "}— substances, grades and sourcing detail
+                        </span>
+                      </p>
+                    );
+                  })()}
 
                   {/* CTAs */}
                   <div className="indCtaRow">

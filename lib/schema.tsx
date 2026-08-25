@@ -57,6 +57,9 @@ export function organizationSchema() {
       "B2B leather exporter supplying full-grain and top-grain hides and wholesale finished leather goods to manufacturers worldwide.",
     email: SITE.email,
     telephone: SITE.phoneDisplay,
+    // Strengthens the brand entity for knowledge-panel style resolution.
+    // Backed by the homepage stat block ("Continuous operation since 1999").
+    foundingDate: "1999",
     address: {
       "@type": "PostalAddress",
       streetAddress: `${SITE.address.line1}, ${SITE.address.line2}`,

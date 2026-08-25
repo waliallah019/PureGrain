@@ -1,0 +1,178 @@
+import type { Metadata } from "next"
+import Link from "next/link"
+
+/**
+ * The 404 page.
+ *
+ * Next already returned a real HTTP 404 for unknown paths before this file
+ * existed — the gap the agent audit flagged was the *body*: the default page
+ * offers no way to recover, so an agent or a person landing on a dead URL has
+ * nothing to follow.
+ *
+ * DELIBERATELY FREE OF CLIENT COMPONENTS. `components/layout/header.tsx` and
+ * `footer.tsx` are both `"use client"`, and importing a client component from
+ * the root `not-found.tsx` makes Next emit a client-reference manifest that
+ * fails to resolve at runtime — the page then 500s instead of 404ing, which is
+ * strictly worse than no custom 404 at all. It builds cleanly and only fails
+ * when requested, so it is easy to ship by accident.
+ *
+ * The chrome below is therefore rendered inline as plain server markup. It
+ * costs a little visual fidelity against the rest of the site and buys a 404
+ * that always works.
+ *
+ * Agents negotiating `Accept: text/markdown` get the Markdown 404 from
+ * `app/api/agent/markdown/route.ts` instead, carrying the same information.
+ */
+export const metadata: Metadata = {
+  title: "Page Not Found",
+  description:
+    "This URL does not exist on puregrainexports.com. Browse the leather hide and finished goods catalogue, or use the sitemap to find the page you wanted.",
+  robots: { index: false, follow: true },
+}
+
+const RECOVERY_LINKS: Array<{ path: string; title: string; description: string }> = [
+  { path: "/", title: "Home", description: "Company overview and the two ways to work with us." },
+  { path: "/catalog/raw-leather", title: "Leather Hides", description: "Bulk hides sold by the square foot." },
+  { path: "/catalog/finished-products", title: "Finished Goods", description: "Wholesale leather goods made to order." },
+  { path: "/industries", title: "Industries We Supply", description: "Leather matched to what your industry builds." },
+  { path: "/blogs", title: "Sourcing Guides", description: "Grading, tanning and supplier guidance." },
+  { path: "/sample-request", title: "Request Samples", description: "Free swatches for verified trade buyers." },
+  { path: "/quote-request", title: "Request a Quote", description: "Priced against your specification." },
+  { path: "/contact", title: "Contact", description: "Answered within one business day." },
+]
+
+export default function NotFound() {
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Minimal server-rendered header — see the note above on why the real
+          <Header /> cannot be used here. */}
+      <header className="border-b border-border">
+        <div className="container-wide flex items-center justify-between py-5">
+          <Link
+            href="/"
+            className="font-serif text-2xl font-semibold tracking-tight text-foreground"
+          >
+            Pure Grain
+          </Link>
+          <nav aria-label="Primary">
+            <ul className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
+              <li>
+                <Link href="/catalog" className="hover:text-brass-ink transition-colors">
+                  Catalog
+                </Link>
+              </li>
+              <li>
+                <Link href="/industries" className="hover:text-brass-ink transition-colors">
+                  Industries
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="hover:text-brass-ink transition-colors">
+                  Contact
+                </Link>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </header>
+
+      <main className="py-20">
+        <div className="container-wide">
+          <p className="text-eyebrow mb-3">Error 404</p>
+          <h1 className="heading-display text-foreground mb-4">
+            We couldn&apos;t find that page
+          </h1>
+          <p className="text-body max-w-2xl">
+            The URL you requested does not exist on this site. Nothing has moved
+            &mdash; this address has never been in use. Try one of the sections
+            below, or search the full URL index in our{" "}
+            <Link
+              href="/sitemap.xml"
+              className="font-medium text-brass-ink underline underline-offset-2"
+            >
+              sitemap
+            </Link>
+            .
+          </p>
+
+          <div className="divider-brass mt-8" />
+
+          <h2 className="heading-subsection text-foreground mt-10 mb-6">
+            Where to go next
+          </h2>
+
+          <ul className="grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+            {RECOVERY_LINKS.map((page) => (
+              <li key={page.path} className="bg-background">
+                <Link
+                  href={page.path}
+                  className="block h-full p-6 transition-colors duration-300 hover:bg-bone/60"
+                >
+                  <span className="block font-serif text-lg font-medium text-foreground">
+                    {page.title}
+                  </span>
+                  <span className="mt-2 block text-sm text-muted-foreground line-clamp-3">
+                    {page.description}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          {/* Named explicitly because an agent landing here needs to know where
+              the machine-readable indexes live. */}
+          <div className="mt-10 border border-border bg-bone/40 p-6 md:p-8">
+            <p className="text-eyebrow mb-3">Machine-readable indexes</p>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li>
+                <Link
+                  href="/llms.txt"
+                  className="font-medium text-brass-ink underline underline-offset-2"
+                >
+                  /llms.txt
+                </Link>{" "}
+                &mdash; what we supply, when to use us, and the key routes
+              </li>
+              <li>
+                <Link
+                  href="/sitemap.xml"
+                  className="font-medium text-brass-ink underline underline-offset-2"
+                >
+                  /sitemap.xml
+                </Link>{" "}
+                &mdash; every canonical URL on the site
+              </li>
+              <li>
+                <Link
+                  href="/robots.txt"
+                  className="font-medium text-brass-ink underline underline-offset-2"
+                >
+                  /robots.txt
+                </Link>{" "}
+                &mdash; crawl rules
+              </li>
+            </ul>
+            <p className="mt-4 text-sm text-muted-foreground">
+              Every page here also serves Markdown via{" "}
+              <code className="border border-border bg-background px-1.5 py-0.5 text-[0.875em] text-brass-ink">
+                Accept: text/markdown
+              </code>
+              .
+            </p>
+          </div>
+        </div>
+      </main>
+
+      <footer className="border-t border-border py-8">
+        <div className="container-wide text-sm text-muted-foreground">
+          <p>
+            Pure Grain Exports &mdash; B2B leather wholesale, Lahore, Pakistan.{" "}
+            <Link href="/" className="font-medium text-brass-ink underline underline-offset-2">
+              Return home
+            </Link>
+          </p>
+        </div>
+      </footer>
+    </div>
+  )
+}

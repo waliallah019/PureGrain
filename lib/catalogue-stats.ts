@@ -29,12 +29,25 @@ export type ProductTypeStat = {
   currency: string
 }
 
+/** Per-animal detail, used by the industry landing pages to state real specs. */
+export type HideAnimalStat = {
+  animal: string
+  count: number
+  /** Substance range in mm across that animal's stock, 0 when unknown. */
+  thicknessMin: number
+  thicknessMax: number
+  /** Distinct leather types stocked in that animal, title-cased. */
+  types: string[]
+}
+
 export type HideStats = {
   total: number
   byAnimal: Array<{ animal: string; count: number }>
   /** Distinct finish/type names, e.g. "Aniline", "Veg Tan". */
   types: string[]
   moqMin: number
+  /** Richer per-animal breakdown; `byAnimal` is kept for existing callers. */
+  animals: HideAnimalStat[]
 }
 
 export type CatalogueStats = {
@@ -89,7 +102,7 @@ async function loadCatalogueStats(): Promise<CatalogueStats> {
       .select("productType pricePerUnit moq currency")
       .lean(),
     RawLeather.find({ isArchived: { $ne: true } })
-      .select("animal leatherType minOrderQuantity")
+      .select("animal leatherType minOrderQuantity thickness")
       .lean(),
   ])
 
@@ -141,6 +154,10 @@ async function loadCatalogueStats(): Promise<CatalogueStats> {
 
   const animalCounts = new Map<string, number>()
   const hideTypes = new Set<string>()
+  const animalDetail = new Map<
+    string,
+    { count: number; thickness: number[]; types: Set<string> }
+  >()
   let hideMoqMin = Number.POSITIVE_INFINITY
 
   for (const h of hides as Array<Record<string, any>>) {
@@ -149,11 +166,38 @@ async function loadCatalogueStats(): Promise<CatalogueStats> {
 
     const t = String(h.leatherType || "").trim()
     // "suede" and "Suede" both occur; title-case so they collapse to one entry.
-    if (t) hideTypes.add(t.charAt(0).toUpperCase() + t.slice(1))
+    const titled = t ? t.charAt(0).toUpperCase() + t.slice(1) : ""
+    if (titled) hideTypes.add(titled)
+
+    if (animal) {
+      let detail = animalDetail.get(animal)
+      if (!detail) {
+        detail = { count: 0, thickness: [], types: new Set<string>() }
+        animalDetail.set(animal, detail)
+      }
+      detail.count += 1
+      if (titled) detail.types.add(titled)
+      // `thickness` is free text ("1.2-1.4mm", "3", "Not specified"); pull every
+      // number out and discard implausible values rather than trusting the field.
+      for (const raw of String(h.thickness || "").match(/\d+(?:\.\d+)?/g) ?? []) {
+        const mm = Number(raw)
+        if (Number.isFinite(mm) && mm > 0 && mm < 20) detail.thickness.push(mm)
+      }
+    }
 
     const moq = Number(h.minOrderQuantity)
     if (Number.isFinite(moq) && moq > 0) hideMoqMin = Math.min(hideMoqMin, moq)
   }
+
+  const animals: HideAnimalStat[] = [...animalDetail.entries()]
+    .map(([animal, d]) => ({
+      animal,
+      count: d.count,
+      thicknessMin: d.thickness.length ? Math.min(...d.thickness) : 0,
+      thicknessMax: d.thickness.length ? Math.max(...d.thickness) : 0,
+      types: [...d.types].sort(),
+    }))
+    .sort((a, b) => b.count - a.count)
 
   const productMoqs = productStats.map((s) => s.moqMin).filter((n) => n > 0)
 
@@ -168,6 +212,7 @@ async function loadCatalogueStats(): Promise<CatalogueStats> {
         .sort((a, b) => b.count - a.count),
       types: [...hideTypes].sort(),
       moqMin: Number.isFinite(hideMoqMin) ? hideMoqMin : 0,
+      animals,
     },
   }
 }
@@ -188,7 +233,7 @@ export const EMPTY_CATALOGUE_STATS: CatalogueStats = {
   products: [],
   productTotal: 0,
   productMoqMin: 0,
-  hides: { total: 0, byAnimal: [], types: [], moqMin: 0 },
+  hides: { total: 0, byAnimal: [], types: [], moqMin: 0, animals: [] },
 }
 
 /**

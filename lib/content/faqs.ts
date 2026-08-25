@@ -15,7 +15,7 @@ export type Faq = { q: string; a: string }
 export const ABOUT_FAQS: readonly Faq[] = [
   {
     q: "What is your minimum order quantity (MOQ)?",
-    a: "Our MOQ varies by product type. For leather hides in bulk, MOQ starts from 500 sq ft per grade. For finished leather goods, MOQ is 100 units per style. Sample orders have no minimum.",
+    a: "Minimums are set per catalogue line and shown on each listing rather than as one site-wide figure. Finished-goods minimums start at a few pieces on entry lines such as belts and wallets and rise for bags and outerwear; hides are quoted per square foot against your specification. Sample orders have no minimum.",
   },
   {
     q: "How do I request a sample?",
