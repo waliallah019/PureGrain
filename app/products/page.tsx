@@ -929,9 +929,9 @@ export default function ProductsPage() {
               </span>
               <span>
                 <i className="fa-solid fa-envelope" aria-hidden="true" />
-                <a href="mailto:trade@puregrainexports.com">
+                <a href="mailto:sales@puregrainexports.com">
                   {" "}
-                  trade@puregrainexports.com
+                  sales@puregrainexports.com
                 </a>
               </span>
             </div>

@@ -248,7 +248,7 @@ export default function CatalogPage() {
       if (!response.ok || !payload?.success) {
         setInquiryState("error")
         setInquiryMessage(
-          "Something went wrong. Please email us directly at trade@puregrainexports.com",
+          "Something went wrong. Please email us directly at sales@puregrainexports.com",
         )
         return
       }
@@ -259,7 +259,7 @@ export default function CatalogPage() {
     } catch {
       setInquiryState("error")
       setInquiryMessage(
-        "Something went wrong. Please email us directly at trade@puregrainexports.com",
+        "Something went wrong. Please email us directly at sales@puregrainexports.com",
       )
     } finally {
       setInquirySubmitting(false)
@@ -721,7 +721,7 @@ export default function CatalogPage() {
               <div className="catalogInquiry__alt">
                 <p>
                   Prefer email?{" "}
-                  <a href="mailto:trade@puregrainexports.com">trade@puregrainexports.com</a>
+                  <a href="mailto:sales@puregrainexports.com">sales@puregrainexports.com</a>
                 </p>
                 <p>
                   WhatsApp:{" "}
