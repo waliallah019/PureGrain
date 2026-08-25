@@ -5,6 +5,7 @@ import { handleApiError } from "@/lib/utils/errorHandler";
 import { validateRequest } from "@/lib/middleware/validateRequest";
 import { blogIdSchema, updateBlogSchema } from "@/lib/validators/blogValidator";
 import { requireAdmin } from '@/lib/auth/session';
+import { invalidateBlogs } from "@/lib/blog-cache";
 
 export const dynamic = "force-dynamic";
 
@@ -78,6 +79,10 @@ export async function PUT(req: NextRequest, { params }: BlogParams) {
       );
     }
 
+    // Published content is cached (lib/blog-cache.ts); drop it so the
+    // change is live on the next request rather than after the window.
+    invalidateBlogs();
+
     return NextResponse.json({
       success: true,
       message: "Blog post updated successfully.",
@@ -109,6 +114,10 @@ export async function DELETE(req: NextRequest, { params }: BlogParams) {
         { status: 404 }
       );
     }
+
+    // Published content is cached (lib/blog-cache.ts); drop it so the
+    // change is live on the next request rather than after the window.
+    invalidateBlogs();
 
     return NextResponse.json({
       success: true,

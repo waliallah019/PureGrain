@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import connectDB from "@/lib/config/db";
-import blogService from "@/lib/services/blogService";
+import Image from "next/image";
+import { getPublishedPostBySlug } from "@/lib/blog-cache";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Badge } from "@/components/ui/badge";
@@ -29,7 +29,7 @@ interface TocItem {
 
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://www.puregrainexports.com").replace(/\/$/, "");
 
-function formatDate(value?: Date) {
+function formatDate(value?: string | Date) {
   if (!value) return "";
   return new Date(value).toLocaleDateString("en-US", {
     year: "numeric",
@@ -87,9 +87,8 @@ function extractTocAndEnhanceContent(content: string): { enhancedContent: string
 }
 
 export async function generateMetadata({ params }: BlogDetailPageProps): Promise<Metadata> {
-  await connectDB();
   const resolvedParams = await params;
-  const post = await blogService.getBlogBySlug(resolvedParams.slug);
+  const post = await getPublishedPostBySlug(resolvedParams.slug);
 
   if (!post) {
     return {
@@ -110,17 +109,16 @@ export async function generateMetadata({ params }: BlogDetailPageProps): Promise
     image: post.coverImage || undefined,
     imageAlt: post.title,
     type: "article",
-    publishedTime: (post.publishedAt || post.createdAt)?.toISOString?.(),
-    modifiedTime: (post.updatedAt || post.publishedAt || post.createdAt)?.toISOString?.(),
+    publishedTime: post.publishedAt || post.createdAt,
+    modifiedTime: post.updatedAt || post.publishedAt || post.createdAt,
     authors: [post.authorName || "Pure Grain Exports"],
     keywords: Array.isArray(post.tags) ? post.tags : undefined,
   });
 }
 
 export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
-  await connectDB();
   const resolvedParams = await params;
-  const post = await blogService.getBlogBySlug(resolvedParams.slug);
+  const post = await getPublishedPostBySlug(resolvedParams.slug);
 
   if (!post) {
     notFound();
@@ -227,12 +225,13 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
                    nothing is cropped — and `max-w` keeps it from becoming a
                    giant block on wide screens while it sits beside the title. */
                 <div className="mx-auto w-full max-w-[320px] overflow-hidden border border-border bg-muted sm:max-w-[380px] lg:mx-0 lg:max-w-none">
-                  <img
+                  <Image
                     src={post.coverImage}
                     alt={post.title}
                     width={1024}
                     height={1024}
-                    fetchPriority="high"
+                    priority
+                    sizes="(min-width: 1024px) 42vw, (min-width: 640px) 380px, 320px"
                     className="aspect-square w-full object-cover"
                   />
                 </div>

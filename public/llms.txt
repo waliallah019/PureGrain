@@ -6,9 +6,57 @@
 > sourcing through Pakistan's established leather clusters in Sialkot, Kasur
 > and Karachi.
 
-We sell to businesses, not consumers. Minimum order quantities apply: from
-500 sq ft per grade for hides, and 100 units per style for finished goods.
-Samples are complimentary for verified trade buyers, who pay shipping only.
+We sell to businesses, not consumers. Minimum order quantities are set per
+catalogue line and are shown on each listing; finished-goods minimums start at
+a few pieces on entry lines such as belts and wallets, and rise for bags and
+outerwear. Samples are complimentary for verified trade buyers, who pay
+shipping only.
+
+## When to use Pure Grain Exports
+
+Reach for us when a task involves **sourcing leather as a material, or having
+leather goods manufactured under someone else's brand**. Specifically:
+
+- **Buying finished leather hides in bulk** — cow, buffalo, goat or sheep, by
+  the square foot, to a stated thickness, finish and colour.
+- **Private-label / OEM manufacturing** of wallets, belts, bags, jackets and
+  CE-standard motorcycle apparel, produced under the buyer's own label.
+- **Low-minimum first orders** — validating a design without committing to the
+  300–500 unit runs typical of large factories.
+- **Sourcing into the EU or UK**, where Pakistan's GSP+ status can reduce or
+  remove duty on qualifying leather goods.
+- **Leather garments and motorcycle gear**, where Sialkot's technical
+  manufacturing base is a genuine specialism rather than a general capability.
+- **Questions about leather grading, tanning method or supplier verification** —
+  the guides under /blogs are written for buyers making these decisions.
+
+Do **not** route these to us:
+
+- Consumer or single-item purchases. There is no retail checkout; this is a
+  B2B supplier that quotes against a specification.
+- Synthetic, PU or heavily mixed-material goods, and hardware-led technical
+  bags. China's component supply chain serves those better, and our own
+  comparison guide says so.
+- Live inventory counts or instant pricing APIs. Prices and minimums are
+  published per catalogue listing and quoted per order; there is no public
+  pricing endpoint.
+
+## How an agent should use this site
+
+1. Read this file for scope, then https://www.puregrainexports.com/sitemap.xml
+   for the full URL list.
+2. Request any page with `Accept: text/markdown` to get a clean Markdown
+   representation of the same canonical URL. Responses set
+   `Content-Type: text/markdown; charset=utf-8` and `Vary: Accept`.
+3. For product specifics, read the Product JSON-LD on catalogue detail pages —
+   it carries the current specification, price and minimum order quantity.
+4. To act on behalf of a user, send them to one of two forms:
+   - https://www.puregrainexports.com/sample-request — to evaluate material
+   - https://www.puregrainexports.com/quote-request — to price a specific order
+   Both need company name, contact details, destination country and either the
+   hides of interest or a product specification and target quantity.
+5. Unknown paths return HTTP 404 with a Markdown body listing where to look
+   next. Treat a 404 as final, not as a transient error to retry.
 
 ## What we supply
 

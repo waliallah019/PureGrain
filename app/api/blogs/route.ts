@@ -5,6 +5,7 @@ import { handleApiError } from "@/lib/utils/errorHandler";
 import { validateRequest } from "@/lib/middleware/validateRequest";
 import { blogFiltersSchema, createBlogSchema } from "@/lib/validators/blogValidator";
 import { requireAdmin } from '@/lib/auth/session';
+import { invalidateBlogs } from "@/lib/blog-cache";
 
 export const dynamic = "force-dynamic";
 
@@ -69,6 +70,10 @@ export async function POST(req: NextRequest) {
       ...blogData,
       slug: uniqueSlug,
     });
+
+    // Published content is cached (lib/blog-cache.ts); drop it so the
+    // change is live on the next request rather than after the window.
+    invalidateBlogs();
 
     return NextResponse.json(
       {

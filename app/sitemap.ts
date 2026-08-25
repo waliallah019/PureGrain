@@ -4,6 +4,7 @@ import Blog from "@/lib/models/Blog"
 import RawLeather from "@/lib/models/RawLeather"
 import FinishedProduct from "@/lib/models/FinishedProduct"
 import { SITE_URL } from "@/lib/seo"
+import { INDUSTRY_PAGE_LIST } from "@/lib/industries"
 
 /**
  * The SEO audit's third critical finding: "The sitemap lists 20 static pages.
@@ -64,13 +65,16 @@ const STATIC_ROUTES = [
   "/about",
   "/quality",
   "/industries",
+  // Industry landing pages. Sourced from the same registry the hub links
+  // from, so a new page cannot be added without entering the sitemap.
+  ...INDUSTRY_PAGE_LIST.map((i) => i.path),
   "/custom-manufacturing",
   "/blogs",
   "/payments-and-trade-terms",
   "/return-policy",
   "/privacy",
   "/terms",
-] as const
+]
 
 /** Each collection is fetched independently so one failure cannot empty the map. */
 async function safe<T>(label: string, fn: () => Promise<T>, fallback: T): Promise<T> {

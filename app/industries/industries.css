@@ -309,6 +309,10 @@
   min-width: 0;
 }
 .industriesPage .indSection__text { justify-content: center; }
+/* Both columns centre on the shared row height, so whichever of the two is
+   shorter sits with equal space above and below it rather than hanging from
+   the top with all the slack collected underneath. */
+.industriesPage .indSection__visual { justify-content: center; }
 .industriesPage .indSection__grid--reverse .indSection__visual { order: 2; }
 .industriesPage .indSection__grid--reverse .indSection__text { order: 1; }
 @media (max-width: 960px) {
@@ -331,10 +335,21 @@
 .industriesPage .indVisual {
   position: relative;
   isolation: isolate;
-  flex: 1 1 auto;
   width: 100%;
-  min-height: 480px;
-  align-self: stretch;
+  /* A 5:4 frame, tall enough to carry real presence next to the intro copy.
+     Two earlier attempts were both wrong: `align-self: stretch` +
+     `min-height: 480px` grew this box to whatever height the copy happened to
+     be (up to 881px against a 564px width), so `object-fit: cover` squeezed
+     the photograph into a narrow portrait slice; the 4:3 frame that replaced it
+     was stable but far shorter than the text column, leaving ~300px of dead
+     space beside every image.
+
+     The fix is structural rather than a ratio tweak — the spec table, chips and
+     actions now sit in `.indDetail` below the row, so the text column is short
+     enough for the image to match it. 5:4 is close to the height of that
+     trimmed intro and, at 564px wide, renders eight of the nine 1:1 source
+     images with only a shallow top/bottom crop. */
+  aspect-ratio: 5 / 4;
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-tan);
   overflow: hidden;
@@ -346,22 +361,22 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: linear-gradient(180deg, rgba(20, 12, 7, 0.08) 0%, rgba(20, 12, 7, 0.18) 38%, rgba(20, 12, 7, 0.65) 100%),
-    repeating-linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.02) 0 2px,
-      transparent 2px 7px
-    );
+  /* Bottom-only scrim, purely so the caption stays legible.
+     This previously darkened the whole frame (up to 0.65 alpha) and laid a
+     diagonal hatch over it, which crushed already-dark leather photography
+     into an unreadable smear. The gradient now starts at 55% height and the
+     hatch is gone, so the material is actually visible. */
+  background: linear-gradient(
+    180deg,
+    rgba(20, 12, 7, 0) 0%,
+    rgba(20, 12, 7, 0) 62%,
+    rgba(20, 12, 7, 0.28) 100%
+  );
 }
-.industriesPage .indVisual::after {
-  content: "";
-  position: absolute;
-  inset: 14px;
-  z-index: 2;
-  border: 1px solid rgba(212, 184, 150, 0.25);
-  border-radius: var(--radius-md);
-  pointer-events: none;
-}
+/* The decorative inset frame that used to sit here (a 1px tan hairline inset
+   14px from every edge) is deliberately gone. Floating inside the photograph
+   with nothing to anchor it, it read as a stray line across the top of each
+   image rather than as a frame. The container's own 1px border is the frame. */
 .industriesPage .indVisual__image {
   position: absolute;
   inset: 0;
@@ -374,19 +389,29 @@
 }
 @media (max-width: 960px) {
   .industriesPage .indVisual {
-    min-height: 0;
-    aspect-ratio: 4 / 3;
+    /* Slightly taller frame on a single-column layout, where the image has the
+       full width and a 4:3 band would look thin. */
+    aspect-ratio: 3 / 2;
   }
 }
 .industriesPage .indVisual__caption {
   position: absolute;
   z-index: 3;
-  left: 22px;
-  bottom: 18px;
+  left: 18px;
+  bottom: 16px;
+  padding: 6px 12px;
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--text-on-dark-mute);
+  color: var(--text-on-dark);
+  /* The caption carries its own backdrop instead of relying on a scrim over
+     the whole photograph. Some industry images are dark leather and some are
+     product shots on white, so a single overlay could not serve both: light
+     caption text vanished against the white ones. This keeps contrast
+     guaranteed on any image while leaving the photography untouched. */
+  background: rgba(20, 12, 7, 0.62);
+  border-radius: var(--radius-sm);
+  backdrop-filter: blur(2px);
 }
 
 /* ---- Industry text block ---- */
@@ -534,6 +559,31 @@
   line-height: 1.55;
 }
 .industriesPage .indNote i { color: var(--warn-amber); margin-right: 6px; }
+
+/* ---- Deep link to the dedicated industry page ---- */
+/* A text link rather than a button: this is the crawl path from the hub to each
+   industry landing page, so it stays a plain anchor with descriptive text. It
+   uses the page's own palette variables so it matches this page's design. */
+.industriesPage .indDeepLink {
+  margin: 0 0 18px;
+  font-size: 15px;
+  line-height: 1.55;
+}
+.industriesPage .indDeepLink a {
+  font-weight: 600;
+  color: var(--accent-tan);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(160, 114, 74, 0.45);
+  transition: color 0.25s ease, text-decoration-color 0.25s ease;
+}
+.industriesPage .indDeepLink a:hover {
+  color: var(--bg-primary);
+  text-decoration-color: var(--accent-gold);
+}
+.industriesPage .indDeepLink__hint {
+  color: var(--text-on-light-mute);
+}
 
 /* ---- CTA buttons ---- */
 .industriesPage .indCtaRow {
@@ -818,4 +868,67 @@
   background: var(--accent-gold);
   border-color: var(--accent-gold);
   color: #17100b;
+}
+
+/* ====================== INDUSTRY SPECIFICATION BAND ======================= */
+/* The spec table, product chips and actions for each industry, moved out of
+   the text column and laid across the full container width beneath the
+   image + intro row. This is what keeps the two-column row balanced: the
+   intro can no longer grow past the height of its own photograph. */
+.industriesPage .indDetail {
+  margin-top: 44px;
+  padding-top: 36px;
+  border-top: 1px solid var(--border-tan-soft);
+  display: grid;
+  /* The action column is the widest of the three so "Request Samples" and
+     "Get a Quote" sit on one line; at an even 1fr they wrapped and stacked
+     with ragged right edges. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 36px 56px;
+  align-items: start;
+}
+.industriesPage .indDetail__col { min-width: 0; }
+.industriesPage .indDetail__label {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-on-light-mute);
+  margin: 0 0 10px;
+}
+
+/* The actions column sits hard right on wide screens so the primary buttons
+   land at the container edge, where the eye finishes the row. */
+@media (min-width: 1101px) {
+  .industriesPage .indDetail__col--act { justify-self: end; text-align: right; }
+  .industriesPage .indDetail__col--act .indCtaRow { justify-content: flex-end; }
+}
+
+/* These blocks carried bottom margins for stacking inside the old text column.
+   As the last element of a grid cell that margin is just a ragged edge. */
+.industriesPage .indSection__text .indHides { margin-bottom: 0; }
+.industriesPage .indDetail .indSpec:last-child,
+.industriesPage .indDetail .indNote:last-child,
+.industriesPage .indDetail .indProducts { margin-bottom: 0; }
+.industriesPage .indDetail .indNote { margin-top: 16px; }
+
+/* Two columns at tablet width — the actions rejoin the flow on the left so
+   the buttons stay reachable under the thumb rather than pinned to an edge. */
+@media (max-width: 1100px) {
+  .industriesPage .indDetail {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 32px 40px;
+  }
+  .industriesPage .indDetail__col--act { grid-column: 1 / -1; }
+}
+@media (max-width: 700px) {
+  .industriesPage .indDetail {
+    grid-template-columns: 1fr;
+    margin-top: 32px;
+    padding-top: 28px;
+    gap: 26px;
+  }
+  .industriesPage .indDetail__col--act { grid-column: auto; }
+  /* Full-width buttons on a phone: two 50%-ish pills read as a broken row. */
+  .industriesPage .indCtaRow { flex-direction: column; align-items: stretch; }
+  .industriesPage .indBtn { justify-content: center; }
 }

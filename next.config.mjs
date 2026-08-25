@@ -1,5 +1,23 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  /*
+   * llms.txt is a Markdown document (llmstxt.org). Served from public/ it would
+   * inherit `text/plain` from the .txt extension, so declare the real type.
+   * `Vary: Accept` is set for consistency with the negotiated page responses —
+   * this file has one representation, but advertising the header keeps shared
+   * caches keyed the same way across the whole origin.
+   */
+  async headers() {
+    return [
+      {
+        source: "/llms.txt",
+        headers: [
+          { key: "Content-Type", value: "text/markdown; charset=utf-8" },
+          { key: "Vary", value: "Accept, Accept-Encoding" },
+        ],
+      },
+    ]
+  },
   eslint: {
     // ESLint is not yet configured in this project (no .eslintrc). Once a config
     // is added (`next lint` → Strict) and existing findings are resolved, flip

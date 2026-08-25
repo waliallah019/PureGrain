@@ -1,7 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Metadata } from "next";
-import connectDB from "@/lib/config/db";
-import blogService from "@/lib/services/blogService";
+import { getPublishedBlogPage } from "@/lib/blog-cache";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Badge } from "@/components/ui/badge";
@@ -22,7 +22,7 @@ export const metadata: Metadata = pageMetadata({
   path: "/blogs",
 });
 
-function formatDate(value?: Date) {
+function formatDate(value?: string | Date) {
   if (!value) return "";
   return new Date(value).toLocaleDateString("en-US", {
     year: "numeric",
@@ -32,22 +32,13 @@ function formatDate(value?: Date) {
 }
 
 export default async function BlogsPage({ searchParams }: BlogsPageProps) {
-  await connectDB();
-
   const resolvedParams = await searchParams;
   const page = Math.max(1, Number(resolvedParams.page || 1));
   const limit = 9;
 
-  const { blogs, total } = await blogService.getBlogs(
-    {
-      status: "published",
-      includeDraft: false,
-    },
-    page,
-    limit,
-    "publishedAt",
-    "desc"
-  );
+  // Cached and projected: the listing renders titles, excerpts and covers, so
+  // it no longer pulls each post's full article HTML on every request.
+  const { blogs, total } = await getPublishedBlogPage(page, limit);
 
   const totalPages = Math.max(1, Math.ceil(total / limit));
   const hasPreviousPage = page > 1;
@@ -88,12 +79,13 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
                       losing far less of the subject. */}
                   <Link href={`/blogs/${featuredPost.slug}`} className="block overflow-hidden bg-muted">
                     {featuredPost.coverImage ? (
-                      <img
+                      <Image
                         src={featuredPost.coverImage}
                         alt={featuredPost.title}
                         width={1024}
                         height={1024}
-                        fetchPriority="high"
+                        priority
+                        sizes="(min-width: 1024px) 52vw, 100vw"
                         className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105 sm:aspect-[3/2] lg:aspect-[4/3]"
                       />
                     ) : (
@@ -146,12 +138,13 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
                           the subject. */}
                       {post.coverImage ? (
                         <div className="aspect-[4/3] overflow-hidden bg-muted">
-                          <img
+                          <Image
                             src={post.coverImage}
                             alt={post.title}
                             width={1024}
                             height={1024}
                             loading="lazy"
+                            sizes="(min-width: 1280px) 30vw, (min-width: 768px) 45vw, 100vw"
                             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                           />
                         </div>
