@@ -22,7 +22,18 @@ import {
   type MotionValue,
   type Variants,
 } from "framer-motion"
-import { useEffect, useRef, useState, type ReactNode } from "react"
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react"
+
+/**
+ * `useLayoutEffect` on the client, `useEffect` on the server.
+ *
+ * Plain `useLayoutEffect` logs a warning during SSR because there is no layout
+ * pass to run before. We need the client behaviour specifically — it commits
+ * before the browser paints — so switch on the environment rather than give it
+ * up. See `CountUp`, which relies on that timing to reset without a flash.
+ */
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect
 
 /** The one easing curve used across the page. Slow out, quick settle. */
 export const EASE = [0.22, 1, 0.36, 1] as const
@@ -106,6 +117,16 @@ export function StaggerItem({ children, className }: { children: ReactNode; clas
  * Static numbers are just claims; a number that animates as you arrive reads as
  * a measurement, which is the whole point of the trust strip. Non-numeric
  * credentials (e.g. "ISO 9001") should skip this component entirely.
+ *
+ * The initial state is the FINAL value, not 0. `useReducedMotion()` returns
+ * false during SSR, so seeding the state with 0 meant the server-rendered HTML
+ * read "0+ Years Exporting", "0+ Countries Served", "0K+ Sq. Ft. Monthly" —
+ * and that is exactly what any client that does not execute JavaScript sees.
+ * AI crawlers (GPTBot, ClaudeBot, PerplexityBot) do not run JavaScript, so the
+ * homepage was telling them this exporter had zero years of operation in zero
+ * countries. The zeroing now happens in a layout effect, which commits before
+ * the browser paints, so the animation is unchanged for real visitors while the
+ * true figures are what ends up in the HTML.
  */
 export function CountUp({
   value,
@@ -123,10 +144,21 @@ export function CountUp({
   const ref = useRef<HTMLSpanElement>(null)
   const inView = useInView(ref, { once: true, margin: "-60px" })
   const reduce = useReducedMotion()
-  const [display, setDisplay] = useState(reduce ? value : 0)
+  // Seeded with the real figure so it survives into the server-rendered HTML.
+  const [display, setDisplay] = useState(value)
+  const [armed, setArmed] = useState(false)
+
+  // Rewind to 0 on the client, before first paint, so the count-up still has
+  // somewhere to travel from. Skipped entirely under reduced motion, where the
+  // number should simply stand still at its real value.
+  useIsomorphicLayoutEffect(() => {
+    if (reduce) return
+    setDisplay(0)
+    setArmed(true)
+  }, [reduce])
 
   useEffect(() => {
-    if (!inView || reduce) {
+    if (!inView || reduce || !armed) {
       if (reduce) setDisplay(value)
       return
     }
@@ -145,7 +177,7 @@ export function CountUp({
 
     frame = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(frame)
-  }, [inView, reduce, value, duration])
+  }, [inView, reduce, value, duration, armed])
 
   return (
     <span ref={ref} className={className}>

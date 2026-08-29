@@ -310,7 +310,7 @@ const HIDE_LABEL: Record<HideKind, string> = {
 
 const HERO_STATS = [
   { value: "9+", label: "Industries Served" },
-  { value: "30+", label: "Countries Exported To" },
+  { value: "40+", label: "Countries Exported To" },
   { value: "15+", label: "Years Export Experience" },
   { value: "500,000+", label: "Hides Exported Annually" },
 ];
@@ -363,7 +363,7 @@ const WHY_CARDS = [
   },
   {
     icon: "fa-globe",
-    title: "30+ Countries Served",
+    title: "40+ Countries Served",
     body:
       "Reliable export experience across Europe, North America, the Middle East, and Asia — with full trade documentation.",
   },

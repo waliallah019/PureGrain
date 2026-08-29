@@ -61,7 +61,7 @@ const INQUIRY_NOTES_MAX = 300
 
 const trustBar = [
   "500,000+ Hides Exported",
-  "30+ Countries Served",
+  "40+ Countries Served",
   "LC & PayPal Accepted",
   "REACH Documentation Available",
 ] as const
@@ -300,7 +300,7 @@ export default function CatalogPage() {
               </h1>
               <p className="catalogHero__sub">
                 Full-grain cowhide, buffalo hide, goat skin, and finished leather goods —
-                exported to manufacturers in 30+ countries.
+                exported to manufacturers in 40+ countries.
               </p>
 
               <div className="catalogTrustBar" role="list" aria-label="Pure Grain Exports highlights">
