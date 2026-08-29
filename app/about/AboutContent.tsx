@@ -37,7 +37,7 @@ import { SITE } from "@/lib/site"
  */
 const HERO_STATS = [
   { value: "10+", label: "Years of leather industry expertise" },
-  { value: "30+", label: "Countries supplied worldwide" },
+  { value: "40+", label: "Countries supplied worldwide" },
   { value: "500+", label: "Wholesale orders fulfilled" },
   { value: "100%", label: "Export documentation compliance" },
 ]

@@ -38,6 +38,8 @@ import {
 import type { IRawLeather, IRawLeatherType } from "@/types/rawLeather"
 import type { IProduct } from "@/types/product"
 import { getRawLeatherTypes } from "@/lib/taxonomy"
+import { HOME_FAQS } from "@/lib/content/faqs"
+import { JsonLd, faqPageSchema } from "@/lib/schema"
 
 /* -------------------------------------------------------------------------- */
 /* Static content                                                             */
@@ -325,6 +327,9 @@ export default function PureGrainLanding() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Organization + WebSite already come from the root layout; this adds the
+          homepage's own FAQPage, built from the same array the section renders. */}
+      <JsonLd data={faqPageSchema(HOME_FAQS)} />
       <Header />
 
       <HeroSlider slides={HERO_SLIDES} />
@@ -346,6 +351,7 @@ export default function PureGrainLanding() {
       <Process reduce={Boolean(reduce)} />
       <GlobalReach />
       <Testimonials />
+      <HomeFaq />
       <ClosingCta />
 
       <Footer />
@@ -396,6 +402,52 @@ function TrustStrip() {
 }
 
 /**
+ * Homepage FAQ.
+ *
+ * The homepage is the URL that both search engines and AI assistants resolve
+ * the "Pure Grain Exports" entity to, and it was the only major page with no
+ * question-based heading and no FAQPage markup — /about and /quality both had
+ * them. Questions and answers come from `HOME_FAQS` so the rendered copy and
+ * the structured data cannot drift, which is a requirement of the FAQPage spec.
+ *
+ * Native <details> rather than an animated accordion: the answers are then in
+ * the DOM whether or not JavaScript runs, which matters because none of the AI
+ * crawlers execute it.
+ */
+function HomeFaq() {
+  return (
+    <section className="section-padding border-t border-border">
+      <div className="container-wide">
+        <SectionHeading
+          eyebrow="Common Questions"
+          title="What buyers ask before their first order"
+          lede="Short answers to the questions we field most often. For grading, testing and compliance detail, see Quality & Process."
+        />
+        <div className="mt-12 grid gap-x-12 lg:grid-cols-2">
+          {HOME_FAQS.map((faq, index) => (
+            <Reveal key={faq.q} delay={Math.min(index, 3) * 0.06}>
+              <details className="group border-b border-border py-5">
+                <summary className="flex cursor-pointer list-none items-start justify-between gap-4 font-serif text-lg font-medium text-foreground md:text-xl">
+                  <h3 className="font-serif text-lg font-medium md:text-xl">{faq.q}</h3>
+                  <span
+                    aria-hidden="true"
+                    /* Arbitrary value: Tailwind ships no `rotate-135` utility,
+                       so the named class compiled to nothing and the caret
+                       never flipped on open. */
+                    className="mt-1.5 h-2.5 w-2.5 shrink-0 rotate-45 border-b-2 border-r-2 border-brass transition-transform duration-300 group-open:rotate-[225deg]"
+                  />
+                </summary>
+                <p className="mt-3 leading-relaxed text-muted-foreground">{faq.a}</p>
+              </details>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/**
  * Path selection. The single most useful thing this page can do for a new B2B
  * visitor is tell them which half of the business they need.
  */
@@ -406,7 +458,12 @@ function SupplyPaths() {
         <SectionHeading
           eyebrow="What We Supply"
           title="Two ways to work with us"
-          lede="Pure Grain supplies bulk leather to manufacturers and wholesale finished goods to brands and distributors. Start with whichever fits your production."
+          /* Opens with a self-contained definition — who the company is, where,
+             since when — because this is the first prose on the page and the
+             H1 above it ("Premium Leather for Serious Manufacturers") is a
+             positioning line, not something that can be quoted back as a fact
+             about the business. */
+          lede="Pure Grain Exports is a B2B leather supplier and exporter based in Lahore, Pakistan, operating continuously since 1999. We supply bulk leather hides by the square foot to manufacturers, and wholesale finished leather goods to brands and distributors. Start with whichever fits your production."
         />
 
         <div className="mt-14 grid gap-6 lg:grid-cols-2 lg:gap-8">

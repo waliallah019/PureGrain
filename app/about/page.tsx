@@ -23,7 +23,7 @@ import AboutContent from "./AboutContent"
 export const metadata: Metadata = pageMetadata({
   title: "About Us — Leather Exporter in Lahore",
   description:
-    "Lahore-headquartered leather exporter sourcing through Pakistan's Sialkot, Kasur and Karachi clusters. Vetted partner tanneries, documented grading, and wholesale supply to 30+ countries.",
+    "Lahore-headquartered leather exporter sourcing through Pakistan's Sialkot, Kasur and Karachi clusters. Vetted partner tanneries, documented grading, and wholesale supply to 40+ countries.",
   path: "/about",
   image: "/local/hide-preparation.jpg",
   imageAlt: "Inside a working tannery — stacked hides and tanning drums",

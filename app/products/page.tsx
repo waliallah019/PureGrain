@@ -377,7 +377,7 @@ const PRODUCTS: ProductCategory[] = [
 // ---------------------------------------------------------------------------
 const HERO_STATS = [
   { value: "9", label: "Product Categories" },
-  { value: "30+", label: "Countries Shipped" },
+  { value: "40+", label: "Countries Shipped" },
   { value: "15+", label: "Years OEM Experience" },
   { value: "100%", label: "Private-Label Capable" },
 ];

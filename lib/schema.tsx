@@ -60,6 +60,19 @@ export function organizationSchema() {
     // Strengthens the brand entity for knowledge-panel style resolution.
     // Backed by the homepage stat block ("Continuous operation since 1999").
     foundingDate: "1999",
+    /*
+     * Named person behind the entity. AI systems disambiguate organisations far
+     * more confidently when a founder resolves alongside the company, and this
+     * is the one E-E-A-T signal the site can make without inventing anything:
+     * the name and title are already published on /about, so the schema only
+     * restates what a reader can verify on the page.
+     */
+    founder: {
+      "@type": "Person",
+      name: "Ahmad Hassan",
+      jobTitle: "Founder & Director",
+      worksFor: { "@id": ORG_ID },
+    },
     address: {
       "@type": "PostalAddress",
       streetAddress: `${SITE.address.line1}, ${SITE.address.line2}`,
