@@ -12,6 +12,7 @@ import { parseFormData } from "@/lib/utils/parseFormData";
 import cloudinary from "@/lib/config/cloudinary";
 import { requireAdmin } from '@/lib/auth/session';
 import { invalidateCatalogueStats } from "@/lib/catalogue-stats";
+import { invalidateCatalogIndex } from "@/lib/catalog-index";
 
 export const dynamic = 'force-dynamic';
 export const config = {
@@ -118,6 +119,8 @@ export async function POST(req: NextRequest) {
     // Article copy quotes live catalogue prices/MOQs; drop the cached
     // snapshot so published posts reflect this change immediately.
     invalidateCatalogueStats();
+    // The A-Z index on the listing pages is built from the same rows.
+    invalidateCatalogIndex();
 
     return NextResponse.json(
       {
