@@ -145,6 +145,53 @@ export function breadcrumbSchema(crumbs: Crumb[]) {
   }
 }
 
+/**
+ * A catalogue listing page and the items on it.
+ *
+ * `CollectionPage` tells a search engine this URL is a category rather than a
+ * product or an article, and the nested `ItemList` enumerates what it contains
+ * in a fixed order. Both listings previously published neither: their grids are
+ * built client-side, so as far as any parser was concerned the pages held no
+ * items at all.
+ *
+ * Entries are URL references rather than inlined Products. The full Product
+ * entity — offers, price, availability, material properties — is published on
+ * each item's own page, and repeating a partial copy here would give two
+ * different answers for the same `@id`.
+ */
+export function collectionListSchema({
+  name,
+  description,
+  path,
+  items,
+}: {
+  name: string
+  description?: string
+  path: string
+  items: Array<{ name: string; path: string }>
+}) {
+  return clean({
+    "@type": "CollectionPage",
+    "@id": `${abs(path)}#collection`,
+    url: abs(path),
+    name,
+    description,
+    isPartOf: { "@id": WEBSITE_ID },
+    about: { "@id": ORG_ID },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: items.length,
+      itemListOrder: "https://schema.org/ItemListOrderAscending",
+      itemListElement: items.map((item, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: item.name,
+        url: abs(item.path),
+      })),
+    },
+  })
+}
+
 const AVAILABILITY: Record<string, string> = {
   "In Stock": "https://schema.org/InStock",
   "Made to Order": "https://schema.org/MadeToOrder",

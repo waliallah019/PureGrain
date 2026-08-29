@@ -10,14 +10,23 @@ import { JsonLd, jsonLdGraph, breadcrumbSchema } from "@/lib/schema"
  * SEO audit). This passthrough layout supplies the metadata instead.
  */
 export const metadata: Metadata = pageMetadata({
-  title: "Custom Leather Manufacturing",
+  /*
+   * Titled for the cluster it actually competes in. "Custom Leather
+   * Manufacturing" carried neither of the two head terms buyers search — the
+   * SXO analysis grouped "private label leather goods manufacturer" and
+   * "leather OEM manufacturer" as the site's largest keyword gap, and this is
+   * the page that serves them. Kept short deliberately: the root layout appends
+   * " | Pure Grain Exports" (21 characters) to every title.
+   */
+  title: "Private Label & OEM Leather Manufacturer",
   description:
-    "Custom leather manufacturing to your specification — bespoke finishes, colour matching, thickness and private-label production, with samples before you commit to volume.",
+    "Private-label and OEM leather goods manufacturing from Pakistan. Per-line minimums, OEM and ODM routes, samples before bulk, and your brand on every piece.",
   path: "/custom-manufacturing",
   keywords: [
+    "private label leather goods manufacturer",
+    "leather OEM manufacturer",
     "custom leather manufacturing",
     "private label leather production",
-    "bespoke leather finishes",
   ],
 })
 

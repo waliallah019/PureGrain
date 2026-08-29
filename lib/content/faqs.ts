@@ -108,3 +108,43 @@ export const HOME_FAQS: readonly Faq[] = [
     a: "We are based in Lahore, Punjab, Pakistan, and ship worldwide. Every shipment includes a full export documentation package: commercial invoice, packing list, certificate of origin, and any certificates your country's import regulations require. Quality management is ISO 9001 certified and tannery chemistry is REACH-compliant, with lab certificates available per batch on request.",
   },
 ] as const
+
+/**
+ * Private-label / OEM FAQ for /custom-manufacturing.
+ *
+ * The SXO analysis found this cluster ("private label leather goods
+ * manufacturer", "leather OEM manufacturer") to be the site's weakest keyword
+ * fit, and the persona scoring put the private-label founder lowest of five at
+ * 45/100 — chiefly because MOQ, the OEM/ODM distinction and the sample process
+ * were nowhere on the page. These answer exactly those objections.
+ */
+export const PRIVATE_LABEL_FAQS: readonly Faq[] = [
+  {
+    q: "What is the difference between OEM and ODM here?",
+    a: "OEM means you bring the design — a tech pack, patterns, or a physical sample — and we build precisely to it. ODM means you start from one of our existing products and we adapt it for you: your leather, your hardware, your branding, your changes to the block. OEM gives you a product nobody else has and takes about three to four weeks to first sample. ODM reaches a sample in ten to fourteen days because the pattern already exists.",
+  },
+  {
+    q: "What is your minimum order quantity for private-label production?",
+    a: "It is set per product line, not as one figure for the business, and every line's current minimum is listed in the table above straight from our catalogue. Small leather goods such as wallets and belts carry the lowest minimums we offer; bags and outerwear are higher because the cutting and assembly are longer. Below-minimum trial orders are sometimes possible at a higher unit price — ask rather than assume.",
+  },
+  {
+    q: "Do I need a full tech pack to get started?",
+    a: "No. A tech pack makes quoting faster and more accurate, but it is not a prerequisite. Annotated photographs, a sketch with dimensions, or a physical sample we can take apart are all workable starting points. If you have none of those, describe the product and the price point and we will propose a specification for you to react to.",
+  },
+  {
+    q: "How long does the whole process take, from enquiry to delivered goods?",
+    a: "Typically eight to fourteen weeks. Quoting takes two to five business days on a complete brief. First sample is ten to fourteen days for ODM and three to four weeks for OEM. Allow a round of revisions on the sample. Bulk production then runs three to six weeks depending on quantity and how many styles and colours are in the order, before shipping time.",
+  },
+  {
+    q: "Do you produce samples before I commit to a bulk order?",
+    a: "Always, and we would not accept a bulk order without one. You approve a physical pre-production sample before anything is cut in volume. Sample charges are quoted per product and are commonly credited against the first bulk order — confirm this in writing at quote stage, since it depends on the tooling involved.",
+  },
+  {
+    q: "Whose brand appears on the product and the packaging?",
+    a: "Yours, throughout. Embossing and debossing, foil and pigment fill, custom edge paint, woven and printed labels, hangtags, care cards, polybags and retail-ready boxing are all done in house. Nothing carries our name unless you ask for it. Dies are a one-off cost on the first order and are then stored and reused free on repeats.",
+  },
+  {
+    q: "Can you match a product I am currently buying from another supplier?",
+    a: "Usually yes. Send the physical product rather than photographs — we can measure the panels, identify the leather substance and finish, and match the hardware. We will tell you honestly where we can match it, where we would deviate, and where we think the original specification could be improved for the same money.",
+  },
+] as const
