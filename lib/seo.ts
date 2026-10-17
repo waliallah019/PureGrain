@@ -25,7 +25,7 @@ export const SITE_NAME = "Pure Grain Exports"
 export const DEFAULT_OG_IMAGE = "/hero-leather-warm.jpg"
 
 export const DEFAULT_DESCRIPTION =
-  "B2B leather wholesale from Lahore, Pakistan. Full-grain hides and finished leather goods supplied to manufacturers in 40+ countries, with lab-tested quality and full export documentation."
+  "B2B wholesale leather hides and OEM finished leather goods from Lahore, Pakistan. Full-grain cowhide, buffalo, goat. Free samples for verified trade buyers."
 
 type PageMetadataInput = {
   title: string

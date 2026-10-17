@@ -67,45 +67,59 @@ export const QUALITY_FAQS: readonly Faq[] = [
 ] as const
 
 /**
- * Homepage FAQ.
+ * Homepage FAQ — 10 buyer-intent questions.
  *
- * The homepage is the entity anchor for the whole site — it is the URL an AI
- * system resolves "Pure Grain Exports" to — yet it carried no question-based
- * heading, no self-contained definition of the company, and no FAQPage schema,
- * while /about and /quality had all three. These questions are deliberately the
- * entity-resolution ones ("who is this", "what do they sell", "where are they",
- * "how do I start") rather than a second copy of the About page's operational
- * detail, which stays where it is.
+ * These come directly from the Aug 2026 SEO/AEO strategy (Part 3) and are the
+ * "People Also Ask" style questions Google and generative-AI engines are
+ * demonstrably rewarding for wholesale-leather sourcing intent. Every answer is
+ * verifiable, uses concrete numbers where they exist, and stays inside what the
+ * business can defend under buyer scrutiny.
  *
- * Every figure here is stated elsewhere on the site. Country count is
- * deliberately omitted: the homepage trust strip says 40+ while the catalogue
- * and industries pages say 30+, and repeating either would harden a
- * contradiction rather than resolve it.
+ * IMPORTANT: This array is the single source of truth for both the visible FAQ
+ * accordion on the homepage and the FAQPage JSON-LD emitted in <head>. Editing
+ * the visible copy also updates the schema — that guarantee is what keeps the
+ * FAQPage markup valid under Google's "content must match" rule.
  */
 export const HOME_FAQS: readonly Faq[] = [
   {
-    q: "What is Pure Grain Exports?",
-    a: "Pure Grain Exports is a B2B leather supplier and exporter based in Lahore, Pakistan, operating continuously since 1999. We sell to manufacturers, brands and distributors — not to consumers. The business has two halves: bulk leather hides sold by the square foot to factories running their own production, and finished leather goods produced under a client's own label.",
-  },
-  {
     q: "What does Pure Grain Exports supply?",
-    a: "Two things. First, raw and finished leather hides — cow, buffalo, goat and sheep — in full-grain, top-grain, suede, nubuck, pebble and vegetable-tanned finishes, quoted per square foot against your thickness, temper and colour specification. Second, finished leather goods manufactured to your design: jackets, motorcycle apparel, bags, backpacks, wallets, belts and small leather goods, with in-house embossing, custom edge paint and retail-ready packaging.",
+    a: "Two categories. First, wholesale leather hides — cowhide, buffalo, and goat — sourced from tanneries in Kasur, Sialkot, and Lahore. Sold per square foot in your specified thickness, finish, and color. Second, OEM private-label leather goods — wallets, belts, bags, jackets, backpacks — manufactured under your brand and shipped with your labeling.",
   },
   {
-    q: "Does Pure Grain Exports sell to the public?",
-    a: "No. This is a wholesale export business and every order is a trade order. Hides are quoted per square foot and finished goods carry per-line minimums, so the smallest realistic order is still a business purchase rather than a single item. Sample orders are the exception and are open to any verified trade buyer.",
+    q: "What is the minimum order quantity for wholesale leather hides?",
+    a: "Our starting MOQ for wholesale hides is typically 100 sq ft per specification. This allows small brands and pilot production runs while ensuring the batch is large enough to maintain grain and color consistency. Higher volume orders (500+ sq ft) receive tiered pricing.",
   },
   {
-    q: "Which industries does Pure Grain Exports supply?",
-    a: "Footwear, gloves, motorcycle and powersports apparel, furniture and upholstery, automotive and marine trim, bags and luggage, belts and small leather goods, garments and apparel, and corporate gifting. Each of those has its own page setting out the substances, grades and minimums that apply to it, because a glove maker and a furniture maker need materially different leather.",
+    q: "How do I get leather hide samples before ordering?",
+    a: "Request samples through our sample request page. For verified trade buyers, the leather itself is free — you pay only international shipping (typically $80-$120 to USA/UK/UAE via DHL Express). Samples ship within 3-5 business days of order confirmation.",
   },
   {
-    q: "How do I get a sample before ordering?",
-    a: "Request one through the sample request page. The leather sample itself is free for verified trade buyers — you pay only international shipping — and samples carry no minimum. Sample dispatch is typically within 3 to 5 business days.",
+    q: "Do you ship leather hides to the USA?",
+    a: "Yes. We offer both FOB Karachi (you handle US customs) and DDP delivery to your US address (we handle freight, US customs clearance, duties, and final delivery). DDP quotations are itemized so you see every cost component before committing.",
   },
   {
-    q: "Where is Pure Grain Exports based, and do you handle export paperwork?",
-    a: "We are based in Lahore, Punjab, Pakistan, and ship worldwide. Every shipment includes a full export documentation package: commercial invoice, packing list, certificate of origin, and any certificates your country's import regulations require. Quality management is ISO 9001 certified and tannery chemistry is REACH-compliant, with lab certificates available per batch on request.",
+    q: "What payment terms do you offer for wholesale leather orders?",
+    a: "For wholesale orders, we accept Irrevocable Letter of Credit (LC) — bank-guaranteed protection for both parties, standard for first-time international B2B leather trade. For established buyers, TT (Telegraphic Transfer) with agreed deposit terms. PayPal is accepted for sample orders only.",
+  },
+  {
+    q: "What leather grades and finishes do you supply?",
+    a: "Full-grain cowhide (our standard for premium goods), top-grain, and vegetable-tanned options depending on end use. Finishes include aniline, semi-aniline, pigmented, pull-up, crazy horse, waxed, nappa, and embossed. Thicknesses from 0.6mm (goat nappa for wallets) to 4.0mm (buffalo hide for heritage belts).",
+  },
+  {
+    q: "Where is Pure Grain Exports located and where do you ship from?",
+    a: "Pure Grain Exports (SMC-Private) Limited is based in Lahore, Punjab, Pakistan. Leather hides and finished goods ship from Karachi seaport (FOB) or door-to-door via DHL/FedEx Express (DDP).",
+  },
+  {
+    q: "Can Pure Grain Exports produce leather goods under my own brand?",
+    a: "Yes. Our OEM/private-label service produces wallets, belts, bags, jackets, backpacks, and other leather goods to your designs and specifications, with your branding embossed or debossed, in your custom packaging. Full private-label from material selection through to retail-ready shipment.",
+  },
+  {
+    q: "Can you handle custom finish and thickness requirements for leather hides?",
+    a: "Yes. This is standard for our wholesale orders. You specify thickness (in mm), finish type, color, and any special treatment. We source to your specification and ship physical swatches for your approval before beginning bulk production.",
+  },
+  {
+    q: "What documentation do you provide with leather hide shipments?",
+    a: "Every shipment includes: commercial invoice, packing list, certificate of origin, and HTS classification appropriate for your destination country (typically HS Code 4104 for tanned hides, 4106 for split hides, 4107 for finished leather).",
   },
 ] as const
 
