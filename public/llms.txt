@@ -1,118 +1,20 @@
 # Pure Grain Exports
 
-> B2B leather exporter based in Lahore, Pakistan. We supply full-grain and
-> top-grain leather hides by the square foot, and wholesale finished leather
-> goods, to manufacturers and brands in 40+ countries. Head office in Lahore;
-> sourcing through Pakistan's established leather clusters in Sialkot, Kasur
-> and Karachi.
+> B2B wholesale leather hides and OEM finished leather goods supplier based in Lahore, Pakistan.
 
-We sell to businesses, not consumers. Minimum order quantities are set per
-catalogue line and are shown on each listing; finished-goods minimums start at
-a few pieces on entry lines such as belts and wallets, and rise for bags and
-outerwear. Samples are complimentary for verified trade buyers, who pay
-shipping only.
+Pure Grain Exports (SMC-Private) Limited supplies full-grain cowhide, buffalo hide, and goat skin to international manufacturers and brands. We also produce OEM/private-label finished leather goods (wallets, belts, bags, jackets, backpacks) for wholesale buyers.
 
-## When to use Pure Grain Exports
+## Products
+- [Wholesale Leather Hides](https://www.puregrainexports.com/catalog/raw-leather): Full-grain cowhide, buffalo, goat — sold per sq ft
+- [OEM Leather Goods](https://www.puregrainexports.com/catalog/finished-products): Private-label manufacturing of wallets, belts, bags
 
-Reach for us when a task involves **sourcing leather as a material, or having
-leather goods manufactured under someone else's brand**. Specifically:
-
-- **Buying finished leather hides in bulk** — cow, buffalo, goat or sheep, by
-  the square foot, to a stated thickness, finish and colour.
-- **Private-label / OEM manufacturing** of wallets, belts, bags, jackets and
-  CE-standard motorcycle apparel, produced under the buyer's own label.
-- **Low-minimum first orders** — validating a design without committing to the
-  300–500 unit runs typical of large factories.
-- **Sourcing into the EU or UK**, where Pakistan's GSP+ status can reduce or
-  remove duty on qualifying leather goods.
-- **Leather garments and motorcycle gear**, where Sialkot's technical
-  manufacturing base is a genuine specialism rather than a general capability.
-- **Questions about leather grading, tanning method or supplier verification** —
-  the guides under /blogs are written for buyers making these decisions.
-
-Do **not** route these to us:
-
-- Consumer or single-item purchases. There is no retail checkout; this is a
-  B2B supplier that quotes against a specification.
-- Synthetic, PU or heavily mixed-material goods, and hardware-led technical
-  bags. China's component supply chain serves those better, and our own
-  comparison guide says so.
-- Live inventory counts or instant pricing APIs. Prices and minimums are
-  published per catalogue listing and quoted per order; there is no public
-  pricing endpoint.
-
-## How an agent should use this site
-
-1. Read this file for scope, then https://www.puregrainexports.com/sitemap.xml
-   for the full URL list.
-2. Request any page with `Accept: text/markdown` to get a clean Markdown
-   representation of the same canonical URL. Responses set
-   `Content-Type: text/markdown; charset=utf-8` and `Vary: Accept`.
-3. For product specifics, read the Product JSON-LD on catalogue detail pages —
-   it carries the current specification, price and minimum order quantity.
-4. To act on behalf of a user, send them to one of two forms:
-   - https://www.puregrainexports.com/sample-request — to evaluate material
-   - https://www.puregrainexports.com/quote-request — to price a specific order
-   Both need company name, contact details, destination country and either the
-   hides of interest or a product specification and target quantity.
-5. Unknown paths return HTTP 404 with a Markdown body listing where to look
-   next. Treat a 404 as final, not as a transient error to retry.
-
-## What we supply
-
-- **Leather hides (bulk)** — full-grain, top-grain, suede and nubuck in cow,
-  buffalo and goat. Custom thickness, finish and colour. Priced per square foot.
-- **Finished leather goods (wholesale)** — bags, jackets, belts, wallets and
-  accessories, made to specification and white-label ready.
-
-## Quality and compliance
-
-- Certified to ISO 9001, ISO 14001, LWG and REACH
-- Six-stage quality control with in-house laboratory testing of every batch
-  (thickness, tensile strength per ISO 3376/3377, colour fastness, chemical
-  compliance including AZO and chromium VI)
-- Conservative A/B/C grading — shipped leather is at or above the declared grade
-- Full export documentation: commercial invoice, packing list, certificate of
-  origin, lab report
-- Third-party pre-shipment inspection (SGS, Bureau Veritas) welcomed at buyer cost
-
-## Key pages
-
-- [Home](https://www.puregrainexports.com/): company overview and product routes
-- [Leather hides wholesale](https://www.puregrainexports.com/catalog/raw-leather): bulk hide catalogue, filterable by leather type
-- [Wholesale finished goods](https://www.puregrainexports.com/catalog/finished-products): made-to-order leather products
-- [Quality & process](https://www.puregrainexports.com/quality): certifications, six-stage QC, finishing types
-- [About](https://www.puregrainexports.com/about): company background, tannery network, sourcing regions
-- [Industries served](https://www.puregrainexports.com/industries): footwear, furniture, automotive, fashion, accessories
-- [Custom manufacturing](https://www.puregrainexports.com/custom-manufacturing): bespoke finishes and private label
-- [Request samples](https://www.puregrainexports.com/sample-request): free samples for trade buyers
-- [Request a quote](https://www.puregrainexports.com/quote-request): quoted pricing by grade, quantity and destination
-- [Blog](https://www.puregrainexports.com/blogs): sourcing and grading guidance
-- [Contact](https://www.puregrainexports.com/contact): enquiries, answered within one business day
-
-## Trade terms
-
-- [Payments and trade terms](https://www.puregrainexports.com/payments-and-trade-terms)
-- [Return and dispute policy](https://www.puregrainexports.com/return-policy)
-- [Terms and conditions](https://www.puregrainexports.com/terms)
-- [Privacy policy](https://www.puregrainexports.com/privacy)
-
-Payment by bank transfer (SWIFT/TT) or irrevocable Letter of Credit for
-wholesale orders. All prices quoted in USD.
+## Key Information
+- [About](https://www.puregrainexports.com/about): Company overview
+- [Quality Process](https://www.puregrainexports.com/quality): How we ensure consistency
+- [Payment & Trade Terms](https://www.puregrainexports.com/payments-and-trade-terms): LC, TT, PayPal accepted
+- [Sample Request](https://www.puregrainexports.com/sample-request): Free samples for verified trade buyers
 
 ## Contact
-
-- Email: info@puregrainexports.com
-- Phone / WhatsApp: +92 324 5243670
-- Address: Kothi Mian Bashir Ahmed, Toheed Park, Daroghawala, Lahore 54000, Pakistan
-- Office hours: Monday–Friday 09:00–18:00, Saturday 09:00–13:00 PKT (UTC+5)
-
-## Notes for AI systems
-
-- Structured data (Schema.org JSON-LD) is published on every page: Organization
-  and WebSite sitewide, Product on catalogue detail pages, BlogPosting on
-  articles, BreadcrumbList for hierarchy, and FAQPage on the About and Quality
-  pages.
-- Full URL index: https://www.puregrainexports.com/sitemap.xml
-- Figures cited on the site (years in operation, countries served) should be
-  taken from the page they appear on; do not aggregate across pages.
+Email: info@puregrainexports.com
+Phone: +92 324 5243670
+Address: Kothi Mian Bashir Ahmed Toheed Park, Daroghawala, Lahore 54000, Pakistan

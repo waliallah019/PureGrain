@@ -15,7 +15,6 @@ import {
   Globe,
   Globe2,
   Layers,
-  Quote,
   Scissors,
   Shield,
   Sofa,
@@ -29,7 +28,6 @@ import { Footer } from "@/components/layout/footer"
 import { Header } from "@/components/layout/header"
 import { HeroSlider, type HeroSlide } from "@/components/landing/HeroSlider"
 import {
-  CountUp,
   Reveal,
   SectionHeading,
   Stagger,
@@ -45,126 +43,139 @@ import { JsonLd, faqPageSchema } from "@/lib/schema"
 /* Static content                                                             */
 /* -------------------------------------------------------------------------- */
 
+// Single hero slide. The previous three-slide rotation carried two fabricated
+// legacy claims ("25+ years of expertise", "exports to 40+ countries") that the
+// Aug 2026 audit flagged as unverifiable — they cannot be replaced without
+// inventing new copy, so the rotation collapses to the one defensible slide.
+// HeroSlider suppresses autoplay when slides.length <= 1, so the counter and
+// paging chrome degrade cleanly.
 const HERO_SLIDES: HeroSlide[] = [
   {
     image: "/hero-leather-warm.jpg",
     imageAlt: "Full-grain leather hide with a warm natural finish",
-    label: "Premium B2B Leather Supply",
-    headline: "Premium Leather for Serious Manufacturers",
+    label: "B2B Wholesale Leather Supplier — Lahore, Pakistan",
+    headline: "Wholesale Leather Hides & OEM Leather Goods Supplier from Pakistan",
     description:
-      "Source exceptional quality leather at scale. From full grain to custom finishes, we supply discerning brands with materials that define craftsmanship.",
-    primaryCta: { label: "Explore Collection", href: "/catalog" },
-    secondaryCta: { label: "Request Free Samples", href: "/sample-request" },
-  },
-  {
-    image: "/hero-leather-tan.jpg",
-    imageAlt: "Stacked tan leather hides showing consistent colour across a batch",
-    label: "Artisan Craftsmanship",
-    headline: "Exceptional Finishes, Unmatched Quality",
-    description:
-      "Vegetable-tanned, aniline-dyed and custom finishes, crafted for furniture, fashion and automotive applications — matched to your specification.",
-    primaryCta: { label: "View Finishes", href: "/catalog/raw-leather" },
-    secondaryCta: { label: "Contact Sales", href: "/contact" },
-  },
-  {
-    image: "/hero-leather-espresso.jpg",
-    imageAlt: "Dark espresso leather hide with a fine natural grain",
-    label: "Global Leather Partner",
-    headline: "Trusted by Manufacturers Worldwide",
-    description:
-      "25+ years of expertise and exports to 40+ countries. We deliver consistent quality leather that powers leading brands across industries.",
-    primaryCta: { label: "Browse Catalog", href: "/catalog" },
-    secondaryCta: { label: "Get a Quote", href: "/quote-request" },
+      "Full-grain cowhide, buffalo hide, and goat skin sourced from vetted tanneries in Kasur, Sialkot, and Lahore. Custom finish, thickness, and color to your production specification. Finished leather goods produced under your label — wallets, belts, bags, jackets, backpacks. Free samples for verified trade buyers. DDP shipping to USA, UK, UAE, Canada, and beyond.",
+    primaryCta: { label: "Request Free Leather Samples", href: "/sample-request" },
+    secondaryCta: { label: "Browse Wholesale Catalog", href: "/catalog" },
   },
 ]
 
 /**
- * Trust strip. `value` drives the count-up; credentials that aren't numbers
- * (ISO 9001) pass `display` instead and render statically — animating a
- * certification number would read as decorative rather than factual.
+ * Trust strip.
+ *
+ * The previous version rendered four count-ups — "25+ Years / 40+ Countries /
+ * ISO 9001 / 500K+ Sq Ft" — every one of which the Aug 2026 audit flagged as
+ * fabricated or unverifiable. Replaced with four qualitative pillars whose
+ * every claim is defensible: sourcing regions we do use, documents we do
+ * provide, a sample workflow we do run, and payment rails we do accept.
  */
-const TRUST_STATS: Array<{
-  value?: number
-  suffix?: string
-  display?: string
-  label: string
-  detail: string
-}> = [
-  { value: 25, suffix: "+", label: "Years Exporting", detail: "Continuous operation since 1999" },
-  { value: 40, suffix: "+", label: "Countries Served", detail: "Across six continents" },
-  { display: "ISO 9001", label: "Quality Certified", detail: "Audited quality management" },
-  { value: 500, suffix: "K+", label: "Sq. Ft. Monthly", detail: "Sustained supply capacity" },
+const TRUST_PILLARS: Array<{ title: string; detail: string }> = [
+  {
+    title: "Direct Tannery Access",
+    detail:
+      "Vetted partners in Kasur, Sialkot, and Lahore — Pakistan's three leather production hubs.",
+  },
+  {
+    title: "Full Export Documentation",
+    detail:
+      "Commercial invoice, packing list, certificate of origin, HTS classification — provided with every shipment.",
+  },
+  {
+    title: "Sample-First Approach",
+    detail:
+      "Physical swatches shipped for approval before you commit to production.",
+  },
+  {
+    title: "Multiple Payment Terms",
+    detail:
+      "Letter of Credit for wholesale orders. PayPal for samples. TT for established buyers.",
+  },
 ]
 
 /**
- * The two ways a buyer can work with Pure Grain. This mirrors the real split in
- * the catalogue and the navigation ("Leather Hides" vs "Finished Products") and
- * matches the language used on the About page, so a first-time visitor can
- * self-select instead of guessing which half of the business they need.
+ * The two ways a buyer can work with Pure Grain — bulk hides sold by the sq ft,
+ * or OEM private-label goods produced under the buyer's brand. Copy matches the
+ * Aug 2026 SEO strategy's "What We Supply" section verbatim so search-intent and
+ * on-page language align. Card 2 routes to /custom-manufacturing (the OEM
+ * landing page) rather than the finished-products catalogue, because the CTA
+ * intent shifted from "browse ready-made SKUs" to "commission your own line".
  */
 const SUPPLY_PATHS = [
   {
     eyebrow: "Bulk Material",
-    title: "Leather Hides",
+    title: "Wholesale Leather Hides",
     description:
-      "Full hides and sides supplied by the square foot for manufacturers running their own production. Specify thickness, finish and colour; we match it batch to batch.",
-    points: ["Sold per sq ft", "Custom thickness & finish", "Consistent across large orders"],
+      "Full hides and sides supplied by the square foot for manufacturers running their own production. Cowhide, buffalo hide, and goat skin. Specify your thickness (1.0mm to 4.5mm), finish (aniline, semi-aniline, pigmented, pull-up, crazy horse, waxed, nappa, embossed), and color — we source to match your specification and dispatch samples for approval before bulk.",
+    points: [
+      "Sold per square foot",
+      "Custom thickness, finish, color to your production spec",
+      "Minimum order 100 sq ft to start",
+      "FOB Karachi or DDP to your address",
+    ],
     href: "/catalog/raw-leather",
-    cta: "Browse Leather Hides",
+    cta: "Browse Wholesale Leather Hides",
     icon: Layers,
     image: "/hero-leather-tan.jpg",
-    imageAlt: "Rolled and stacked leather hides ready for bulk despatch",
+    imageAlt:
+      "Stacked tan leather hides showing consistent color across a batch - wholesale leather export Pakistan",
   },
   {
-    eyebrow: "Wholesale Goods",
-    title: "Finished Products",
+    eyebrow: "Private Label",
+    title: "OEM / Private-Label Leather Goods",
     description:
-      "Ready-made leather goods produced to wholesale order — bags, jackets, belts and accessories — manufactured in our partner units and shipped under your labelling.",
-    points: ["Wholesale MOQ", "White-label ready", "Made to your specification"],
-    href: "/catalog/finished-products",
-    cta: "Browse Finished Products",
+      "Finished leather goods manufactured under your brand — wallets, belts, bags, jackets, backpacks, small leather goods. From your designs and specifications, produced in our vetted production units and shipped under your labeling. Custom hardware, branded packaging, and logo embossing/debossing included as standard capabilities.",
+    points: [
+      "Wholesale MOQ from 50-100 units per SKU",
+      "Full private-label — your brand, your packaging",
+      "Sample-first: approve before bulk",
+    ],
+    href: "/custom-manufacturing",
+    cta: "Explore OEM Manufacturing",
     icon: Scissors,
     image: "/hero-leather-espresso.jpg",
-    imageAlt: "Finished leather goods showing stitching and edge detail",
+    imageAlt:
+      "Dark espresso brown leather hide with fine natural grain - premium full-grain cowhide wholesale",
   },
 ]
 
 const WHY_CHOOSE_US = [
   {
-    icon: Shield,
-    title: "Consistent Quality at Scale",
-    description:
-      "Every batch meets exacting standards. Rigorous quality control ensures uniformity across large orders.",
-  },
-  {
     icon: Layers,
-    title: "Custom Finishes & Thickness",
+    title: "Direct Tannery Sourcing",
     description:
-      "From embossing to specialised treatments, we tailor leather specifications to your exact requirements.",
+      "No middlemen. We source hides directly from tannery partners in Kasur, Sialkot, and Lahore, giving you consistent grain and color across batches.",
   },
   {
-    icon: CheckCircle2,
-    title: "Ethical Sourcing",
+    icon: Scissors,
+    title: "Custom Specifications",
     description:
-      "Traceable supply chains with responsible tanning practices. Certified sustainable leather options available.",
+      "Thickness, finish, and color matched to your production spec. If we haven't worked with your exact specification before, we source samples first for your approval before committing to bulk.",
   },
   {
-    icon: Users,
-    title: "Long-term Partnership Mindset",
+    icon: Shield,
+    title: "Transparent Trade Terms",
     description:
-      "We invest in relationships, not transactions. Dedicated account managers for consistent service.",
+      "LC (Letter of Credit) for wholesale orders — bank-guaranteed protection for new buyers. PayPal accepted for sample orders. TT for established buyers.",
+  },
+  {
+    icon: Briefcase,
+    title: "Full Export Documentation",
+    description:
+      "Every shipment includes commercial invoice, packing list, certificate of origin, and HTS classification for smooth customs clearance in your destination country.",
   },
   {
     icon: Truck,
-    title: "Reliable Global Shipping",
+    title: "DDP Shipping to Key Markets",
     description:
-      "Established logistics networks for timely delivery. Export documentation and customs expertise included.",
+      "Delivered Duty Paid to USA, UK, Canada, UAE, and Europe — we handle freight, customs clearance, duties, and final delivery. FOB Karachi also available.",
   },
   {
-    icon: Globe2,
-    title: "Industry Expertise",
+    icon: FlaskConical,
+    title: "Sample-First Approach",
     description:
-      "Deep knowledge of footwear, furniture, automotive and fashion applications. We understand your needs.",
+      "Physical leather swatches or product samples shipped for your approval before you commit to production. You evaluate real material, not a promise.",
   },
 ]
 
@@ -213,32 +224,17 @@ const GLOBAL_REGIONS = [
   { name: "Africa", countries: "South Africa, Nigeria, Kenya" },
 ]
 
-const TESTIMONIALS = [
-  {
-    quote:
-      "PureGrain has been our primary leather supplier for over 8 years. Their consistency in quality across large orders is unmatched.",
-    author: "Marco Bianchi",
-    role: "Procurement Director",
-    company: "Bellissimo Calzature",
-    country: "Italy",
-  },
-  {
-    quote:
-      "The custom finishing options allowed us to create a signature leather for our furniture line that sets us apart in the market.",
-    author: "Sarah Thompson",
-    role: "Head of Materials",
-    company: "Heritage Furnishings",
-    country: "United Kingdom",
-  },
-  {
-    quote:
-      "From sample to bulk delivery, the process is seamless. Their automotive-grade leather meets our stringent quality requirements.",
-    author: "Hans Weber",
-    role: "Supply Chain Manager",
-    company: "Precision Auto Interiors",
-    country: "Germany",
-  },
-]
+/*
+ * Testimonials removed.
+ *
+ * The three prior quotes attributed to Marco Bianchi (Bellissimo Calzature),
+ * Sarah Thompson (Heritage Furnishings) and Hans Weber (Precision Auto
+ * Interiors) were fabricated — none of those companies exist. The Aug 2026
+ * audit flagged them as the single most trust-damaging item on the page,
+ * because a B2B buyer running due diligence verifies every named reference.
+ * The section is removed rather than replaced; a substitute will only be
+ * reintroduced once written client permission is on file for each quote.
+ */
 
 /* -------------------------------------------------------------------------- */
 /* Page                                                                       */
@@ -350,7 +346,6 @@ export default function PureGrainLanding() {
       <Industries />
       <Process reduce={Boolean(reduce)} />
       <GlobalReach />
-      <Testimonials />
       <HomeFaq />
       <ClosingCta />
 
@@ -364,20 +359,21 @@ export default function PureGrainLanding() {
 /* -------------------------------------------------------------------------- */
 
 /**
- * Numbers animate on arrival so they read as measured facts rather than
- * decoration, and each carries a one-line qualifier — an unexplained "500K+" is
- * a claim, "500K+ sq ft monthly, sustained supply capacity" is information.
+ * Trust strip — four qualitative pillars. Every claim below is verifiable and
+ * defensible; the previous count-up version carried four figures the Aug 2026
+ * audit found either fabricated ("25+ Years / since 1999") or unverifiable
+ * ("40+ Countries", "ISO 9001", "500K+ Sq Ft Monthly").
  */
 function TrustStrip() {
   return (
     <section className="border-y border-border bg-bone">
       <div className="container-wide py-12 lg:py-14">
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4 lg:gap-4">
-          {TRUST_STATS.map((stat, index) => (
+        <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+          {TRUST_PILLARS.map((pillar, index) => (
             <Reveal
-              key={stat.label}
+              key={pillar.title}
               delay={index * 0.08}
-              className="relative text-center lg:px-4 lg:text-left"
+              className="relative lg:px-4"
             >
               {/* Hairline separators between columns on desktop only. */}
               {index > 0 ? (
@@ -386,13 +382,10 @@ function TrustStrip() {
                   className="absolute -left-2 top-1 hidden h-[calc(100%-0.5rem)] w-px bg-border lg:block"
                 />
               ) : null}
-              <p className="font-serif text-4xl font-semibold text-leather dark:text-tan md:text-5xl">
-                {stat.display ?? (
-                  <CountUp value={stat.value ?? 0} suffix={stat.suffix ?? ""} />
-                )}
+              <p className="font-serif text-lg font-medium text-leather dark:text-tan md:text-xl">
+                {pillar.title}
               </p>
-              <p className="mt-2 text-sm font-medium text-foreground">{stat.label}</p>
-              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{stat.detail}</p>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{pillar.detail}</p>
             </Reveal>
           ))}
         </div>
@@ -420,8 +413,8 @@ function HomeFaq() {
       <div className="container-wide">
         <SectionHeading
           eyebrow="Common Questions"
-          title="What buyers ask before their first order"
-          lede="Short answers to the questions we field most often. For grading, testing and compliance detail, see Quality & Process."
+          title="Frequently Asked Questions About Wholesale Leather Sourcing"
+          lede="Short answers to the questions wholesale buyers ask before their first order — MOQs, samples, payment terms, DDP shipping, and documentation. For grading, testing and compliance detail, see Quality & Process."
         />
         <div className="mt-12 grid gap-x-12 lg:grid-cols-2">
           {HOME_FAQS.map((faq, index) => (
@@ -457,13 +450,12 @@ function SupplyPaths() {
       <div className="container-wide">
         <SectionHeading
           eyebrow="What We Supply"
-          title="Two ways to work with us"
-          /* Opens with a self-contained definition — who the company is, where,
-             since when — because this is the first prose on the page and the
-             H1 above it ("Premium Leather for Serious Manufacturers") is a
-             positioning line, not something that can be quoted back as a fact
-             about the business. */
-          lede="Pure Grain Exports is a B2B leather supplier and exporter based in Lahore, Pakistan, operating continuously since 1999. We supply bulk leather hides by the square foot to manufacturers, and wholesale finished leather goods to brands and distributors. Start with whichever fits your production."
+          title="Wholesale Leather Hides and Finished Leather Goods"
+          /* Self-contained definition of the business, straight from the Aug
+             2026 SEO strategy. Names the geographic sourcing clusters (Kasur,
+             Sialkot, Lahore) so entity-resolution systems have a concrete
+             anchor for where the company actually operates. */
+          lede="Pure Grain Exports is a Pakistan-registered B2B leather sourcing and private-label manufacturing partner. We supply two things to international buyers: bulk leather hides sold by the square foot to manufacturers running their own production, and finished leather goods produced under your brand label. Every hide is sourced directly from vetted tannery partners in Kasur, Sialkot, and Lahore — Pakistan's three most established leather production clusters."
         />
 
         <div className="mt-14 grid gap-6 lg:grid-cols-2 lg:gap-8">
@@ -578,8 +570,8 @@ function LeatherCategories({
         <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <SectionHeading
             eyebrow="Our Collection"
-            title="Leather Categories"
-            lede="From traditional tanning to modern finishes, explore the full range of premium leather we hold."
+            title="Full-Grain Cowhide, Buffalo Hide, and Goat Skin — Leather Types We Wholesale"
+            lede="Every category below is stocked in full-grain cowhide, buffalo hide, or goat skin, with custom thickness, finish, and color available on request."
           />
 
           <Reveal delay={0.2} className="flex shrink-0 items-center gap-2">
@@ -679,8 +671,8 @@ function WhyChooseUs() {
       <div className="container-wide relative">
         <SectionHeading
           eyebrow="Why PureGrain"
-          title="Built for Serious Buyers"
-          lede="We understand B2B leather procurement. Our processes are designed for manufacturers who demand consistency, reliability and expertise."
+          title="Why B2B Buyers Choose Pure Grain Exports for Leather Sourcing"
+          lede="Six commitments a wholesale buyer can check. Each is verifiable at quotation stage — payment terms, documentation, and the sample workflow are all defined in writing before the first order."
           onDark
         />
 
@@ -850,7 +842,7 @@ function FeaturedMaterials({
       <div className="container-wide">
         <SectionHeading
           eyebrow="Featured Materials"
-          title="Popular Selections"
+          title="Featured Leather Hides and Finished Products in Stock"
           lede="A live view of what buyers are specifying most this season, straight from the catalogue."
         />
 
@@ -905,8 +897,8 @@ function Industries() {
         <SectionHeading
           align="center"
           eyebrow="Industries"
-          title="Trusted Across Sectors"
-          lede="We supply leading manufacturers across multiple industries, and we understand the specific demands of each application."
+          title="Industries We Supply — Footwear, Bags, Belts, Jackets, Furniture, Automotive"
+          lede="Each industry we supply has its own substance, thickness, and grade requirements. Pick your sector to see the specifications we most commonly ship into it."
         />
 
         <Stagger className="mt-14 grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-5">
@@ -955,7 +947,7 @@ function Process({ reduce }: { reduce: boolean }) {
       <div className="container-wide">
         <SectionHeading
           eyebrow="How It Works"
-          title="From Inquiry to Delivery"
+          title="How to Source Leather from Pure Grain Exports — From Sample to Shipment"
           lede="Five steps, the same every time — so you always know where your order stands."
         />
 
@@ -1020,7 +1012,7 @@ function GlobalReach() {
           <div>
             <SectionHeading
               eyebrow="Global Export"
-              title="Delivering Excellence Worldwide"
+              title="Global Wholesale Leather Export — Markets We Ship To"
               onDark
               className="!max-w-none"
             />
@@ -1071,42 +1063,6 @@ function GlobalReach() {
             </div>
           </Reveal>
         </div>
-      </div>
-    </section>
-  )
-}
-
-function Testimonials() {
-  return (
-    <section className="section-padding">
-      <div className="container-wide">
-        <SectionHeading
-          align="center"
-          eyebrow="Client Testimonials"
-          title="Trusted by Leading Manufacturers"
-        />
-
-        <Stagger className="mt-14 grid gap-6 md:grid-cols-3 lg:gap-8">
-          {TESTIMONIALS.map((testimonial) => (
-            <StaggerItem key={testimonial.author} className="h-full">
-              <figure className="flex h-full flex-col border border-border bg-bone p-7 transition-all duration-300 hover:border-brass/40 hover:shadow-card-hover lg:p-8">
-                <Quote size={30} className="text-brass/35" strokeWidth={1} />
-                <blockquote className="mt-5 flex-1 leading-relaxed text-foreground">
-                  {testimonial.quote}
-                </blockquote>
-                <figcaption className="mt-7 border-t border-border pt-5">
-                  <p className="font-serif text-base font-medium text-foreground">
-                    {testimonial.author}
-                  </p>
-                  <p className="mt-1 text-sm text-muted-foreground">{testimonial.role}</p>
-                  <p className="mt-1 text-sm font-medium text-brass-ink">
-                    {testimonial.company}, {testimonial.country}
-                  </p>
-                </figcaption>
-              </figure>
-            </StaggerItem>
-          ))}
-        </Stagger>
       </div>
     </section>
   )

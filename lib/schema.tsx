@@ -45,21 +45,37 @@ export function organizationSchema() {
     "@id": ORG_ID,
     name: SITE_NAME,
     alternateName: SITE.shortName,
+    /*
+     * Full registered legal name of the entity. Publishing it in structured
+     * data lets Google, Bing and AI answer engines disambiguate the company
+     * from unrelated "Pure Grain" trademarks — the (SMC-Private) suffix is
+     * the Pakistan Companies Act 2017 signal that this is a real, registered
+     * business rather than an unincorporated trade name.
+     */
+    legalName: "Pure Grain Exports (SMC-Private) Limited",
     url: SITE_URL,
     logo: {
       "@type": "ImageObject",
       url: abs("/new_logo.png"),
+      // Actual file dimensions of new_logo.png. Not the values in the Aug 2026
+      // strategy (384x100), which were sketch-numbers — publishing wrong
+      // dimensions on a linked image is a validation error.
       width: 1159,
       height: 279,
     },
     image: abs("/hero-leather-warm.jpg"),
     description:
-      "B2B leather exporter supplying full-grain and top-grain hides and wholesale finished leather goods to manufacturers worldwide.",
+      "B2B wholesale leather hides and OEM finished leather goods supplier based in Lahore, Pakistan. Full-grain cowhide, buffalo, and goat skin sourced from vetted tanneries in Kasur, Sialkot, and Lahore.",
     email: SITE.email,
     telephone: SITE.phoneDisplay,
-    // Strengthens the brand entity for knowledge-panel style resolution.
-    // Backed by the homepage stat block ("Continuous operation since 1999").
-    foundingDate: "1999",
+    /*
+     * `foundingDate` deliberately absent. The August 2026 audit flagged the
+     * previously-published "operating continuously since 1999" claim as
+     * unverifiable, and Phase 1 of the SEO strategy removed every instance of
+     * it from visible copy. Restating it here would recreate the contradiction
+     * in structured data. Re-add only when a founding year is confirmed from
+     * the company registration.
+     */
     /*
      * Named person behind the entity. AI systems disambiguate organisations far
      * more confidently when a founder resolves alongside the company, and this
@@ -87,17 +103,24 @@ export function organizationSchema() {
         contactType: "sales",
         email: SITE.email,
         telephone: SITE.phoneDisplay,
-        areaServed: "Worldwide",
+        // Enumerated by ISO 3166 alpha-2. These are the markets we actively
+        // quote DDP delivery into; broader shipments are still handled as FOB.
+        // Specific codes are more useful to AI-answer engines than "Worldwide"
+        // because they participate in country-scoped citation matching.
+        areaServed: ["US", "GB", "CA", "AE", "SA", "AU", "DE", "FR", "IT"],
         availableLanguage: ["English", "Urdu"],
       },
     ],
     sameAs: [SITE.social.instagram, SITE.social.linkedin, SITE.social.facebook],
     areaServed: { "@type": "Place", name: "Worldwide" },
     knowsAbout: [
-      "Leather hides wholesale",
-      "Full-grain leather",
-      "Vegetable tanning",
-      "Leather export documentation",
+      "Wholesale leather hides",
+      "Full-grain cowhide",
+      "Buffalo hide",
+      "Goat skin",
+      "OEM leather manufacturing",
+      "Private-label leather goods",
+      "Leather export Pakistan",
     ],
   })
 }

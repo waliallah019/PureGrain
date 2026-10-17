@@ -45,18 +45,14 @@ const fontSerif = Cormorant_Garamond({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Pure Grain Exports — Premium B2B Leather Wholesale",
+    // Homepage title is 59 chars — includes the primary keyword phrase, brand,
+    // and geo, in the order Google reads left-to-right.
+    default: "Wholesale Leather Hides Supplier Pakistan | Pure Grain Exports",
     template: `%s | ${SITE_NAME}`,
   },
   description: DEFAULT_DESCRIPTION,
-  keywords: [
-    "leather hides wholesale",
-    "B2B leather supplier",
-    "leather exporter Pakistan",
-    "full grain leather wholesale",
-    "finished leather goods wholesale",
-    "bulk leather supplier",
-  ],
+  // `keywords` intentionally omitted. Google has ignored the tag since 2009 and
+  // publishing a curated list only signals to competitors what we are targeting.
   applicationName: SITE_NAME,
   alternates: {
     canonical: "/",
@@ -72,20 +68,20 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     locale: "en_US",
     url: SITE_URL,
-    title: "Pure Grain Exports — Premium B2B Leather Wholesale",
+    title: "Wholesale Leather Hides Supplier Pakistan | Pure Grain Exports",
     description: DEFAULT_DESCRIPTION,
     images: [
       {
         url: DEFAULT_OG_IMAGE,
         width: 1200,
         height: 630,
-        alt: "Full-grain leather hide supplied by Pure Grain Exports",
+        alt: "Wholesale full-grain leather hides supplied by Pure Grain Exports",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Pure Grain Exports — Premium B2B Leather Wholesale",
+    title: "Wholesale Leather Hides Supplier Pakistan | Pure Grain Exports",
     description: DEFAULT_DESCRIPTION,
     images: [DEFAULT_OG_IMAGE],
   },
