@@ -38,17 +38,16 @@ import type { IProduct } from "@/types/product"
 import { getRawLeatherTypes } from "@/lib/taxonomy"
 import { HOME_FAQS } from "@/lib/content/faqs"
 import { JsonLd, faqPageSchema } from "@/lib/schema"
+import Image from "next/image"
+import { SafeImage } from "@/components/ui/safe-image"
 
 /* -------------------------------------------------------------------------- */
 /* Static content                                                             */
 /* -------------------------------------------------------------------------- */
 
-// Single hero slide. The previous three-slide rotation carried two fabricated
-// legacy claims ("25+ years of expertise", "exports to 40+ countries") that the
-// Aug 2026 audit flagged as unverifiable — they cannot be replaced without
-// inventing new copy, so the rotation collapses to the one defensible slide.
-// HeroSlider suppresses autoplay when slides.length <= 1, so the counter and
-// paging chrome degrade cleanly.
+// Three-slide rotation. Slides 2 and 3 carry the "25+ years" and "40+ countries"
+// claims, which the owner confirmed in Nov 2026 after the Aug 2026 audit had
+// cut them. The first slide is the LCP image and is preloaded.
 const HERO_SLIDES: HeroSlide[] = [
   {
     image: "/hero-leather-warm.jpg",
@@ -59,6 +58,26 @@ const HERO_SLIDES: HeroSlide[] = [
       "Full-grain cowhide, buffalo hide, and goat skin sourced from vetted tanneries in Kasur, Sialkot, and Lahore. Custom finish, thickness, and color to your production specification. Finished leather goods produced under your label — wallets, belts, bags, jackets, backpacks. Free samples for verified trade buyers. DDP shipping to USA, UK, UAE, Canada, and beyond.",
     primaryCta: { label: "Request Free Leather Samples", href: "/sample-request" },
     secondaryCta: { label: "Browse Wholesale Catalog", href: "/catalog" },
+  },
+  {
+    image: "/hero-leather-tan.jpg",
+    imageAlt: "Stacked tan leather hides with consistent color across the batch",
+    label: "25+ Years of Leather Expertise",
+    headline: "Raw Leather Hides Graded and Finished to Your Specification",
+    description:
+      "More than 25 years of sourcing and grading hides from Pakistan's leather clusters. Cowhide, buffalo, goat and sheep leather in the finish, thickness and color your production line needs, with documented grading on every batch.",
+    primaryCta: { label: "Browse Raw Leather", href: "/catalog/raw-leather" },
+    secondaryCta: { label: "Our Quality Process", href: "/quality" },
+  },
+  {
+    image: "/hero-leather-espresso.jpg",
+    imageAlt: "Dark espresso brown leather hide with fine natural grain",
+    label: "Exporting to 40+ Countries",
+    headline: "OEM Leather Goods Manufactured Under Your Label",
+    description:
+      "Wallets, belts, bags, jackets and backpacks produced to your design and shipped to buyers in more than 40 countries. Private labeling, custom packaging and DDP delivery to your warehouse.",
+    primaryCta: { label: "Start a Custom Order", href: "/custom-manufacturing" },
+    secondaryCta: { label: "Browse Finished Products", href: "/catalog/finished-products" },
   },
 ]
 
@@ -466,11 +485,13 @@ function SupplyPaths() {
                 className="group relative flex h-full flex-col overflow-hidden border border-border bg-card shadow-card transition-all duration-300 hover:border-brass/50 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2"
               >
                 <div className="relative h-52 overflow-hidden sm:h-60">
-                  <img
+                  <Image
                     src={path.image}
                     alt={path.imageAlt}
+                    width={1200}
+                    height={600}
+                    sizes="(min-width: 1024px) 570px, 100vw"
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    loading="lazy"
                   />
                   <div
                     aria-hidden="true"
@@ -626,11 +647,13 @@ function LeatherCategories({
                   className="group relative w-[74vw] shrink-0 snap-start overflow-hidden border border-border bg-card shadow-card transition-all duration-300 hover:border-brass/50 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 sm:w-[46%] lg:w-[31%] xl:w-[23.5%]"
                 >
                   <div className="relative aspect-[4/5] overflow-hidden">
-                    <img
+                    <Image
                       src={category.image}
                       alt={`${category.title} leather`}
+                      width={640}
+                      height={800}
+                      sizes="(min-width: 1280px) 290px, (min-width: 768px) 33vw, 50vw"
                       className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      loading="lazy"
                     />
                     {/* Permanent bottom scrim. The previous version faded in a
                         transparent overlay on hover, so the "View Collection"
@@ -719,11 +742,13 @@ function MaterialCard({
       className="group flex h-full flex-col border border-border bg-card shadow-card transition-all duration-300 hover:border-brass/50 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
-        <img
+        <SafeImage
           src={image}
           alt={title}
+          width={800}
+          height={600}
+          sizes="(min-width: 1024px) 290px, (min-width: 640px) 50vw, 100vw"
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-          loading="lazy"
         />
       </div>
       <div className="flex flex-1 flex-col p-4 sm:p-5">

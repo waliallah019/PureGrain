@@ -6,6 +6,7 @@ import "./industries.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { INDUSTRY_PAGE_LIST } from "@/lib/industries";
+import Image from "next/image";
 
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -538,12 +539,13 @@ export default function IndustriesPage() {
                 {/* ------- Industry-specific photography ------- */}
                 <div className="indSection__visual">
                   <div className="indVisual reveal">
-                    <img
+                    <Image
                       className="indVisual__image"
                       src={ind.imageUrl}
                       alt={ind.imageAlt}
-                      loading="lazy"
-                      decoding="async"
+                      width={1000}
+                      height={800}
+                      sizes="(min-width: 961px) 50vw, 100vw"
                       style={{ objectPosition: ind.imagePosition ?? "center" }}
                     />
                     <span className="indVisual__caption">{ind.caption}</span>

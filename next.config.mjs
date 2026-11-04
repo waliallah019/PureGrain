@@ -32,36 +32,34 @@ const nextConfig = {
   },
   images: {
     /*
-     * `unoptimized: true` was a leftover from the v0.dev scaffold. It disabled
-     * Next's image optimizer entirely, which is the actual root cause of two
-     * findings in the SEO audit:
-     *   - "All images served as JPEG/PNG — should be WebP"
-     *   - a large share of the 4.4s load time (hero JPEGs are 300–430KB each and
-     *     were being served at full size to every device)
-     *
-     * With it off, <Image> now emits a responsive srcset in AVIF/WebP. There is
-     * no `output: "export"` in this config, so nothing required it to be on.
-     *
-     * `sharp` is a devDependency and is what Next uses to do the transcoding —
-     * keep it installed or production builds fall back to a much slower path.
+     * Vercel's optimizer is bypassed with a custom loader: the Hobby quota was
+     * exhausted and `/_next/image` returned 402 for every uncached variant.
+     * Cloudinary now does the resizing/AVIF/WebP; /public files are served
+     * statically. See lib/image-loader.ts and CLOUDINARY_IMAGE_MIGRATION.md.
      */
-    formats: ["image/avif", "image/webp"],
+    loader: "custom",
+    loaderFile: "./lib/image-loader.ts",
     /*
-     * Every remote image in the database is Cloudinary (verified across
-     * raw-leather, finished-products and blogs — 523 URLs, all
-     * res.cloudinary.com). Any host NOT listed here will throw at runtime when
-     * passed to <Image>, so add new CDNs before using them.
+     * Each width a page can request is a separate Cloudinary derivative per
+     * image and format, and those count against the plan's monthly credits.
+     * Next's defaults (16 widths up to 3840) would put the site back on course
+     * for the quota problem this loader exists to escape, so keep this short.
+     * 1920 is the ceiling because no site image needs more at these layouts.
+     */
+    deviceSizes: [640, 828, 1080, 1280, 1600, 1920],
+    imageSizes: [64, 96, 128, 256, 384],
+    /*
+     * Every remote image in the database is on this Cloudinary cloud (verified
+     * across raw-leather, finished-products and blogs). The custom loader does
+     * not enforce this list; it applies if the default loader is ever restored.
      */
     remotePatterns: [
       {
         protocol: "https",
         hostname: "res.cloudinary.com",
-        pathname: "/**",
+        pathname: "/da1coaysi/**",
       },
     ],
-    // Product photography is immutable once uploaded (Cloudinary versions URLs),
-    // so cache the optimized variants for a month instead of the 60s default.
-    minimumCacheTTL: 2592000,
   },
 }
 

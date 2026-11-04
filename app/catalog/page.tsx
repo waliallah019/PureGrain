@@ -55,8 +55,8 @@ import { IRawLeather } from "@/types/rawLeather"
 import PriceDisplay from "@/components/PriceDisplay"
 import "./catalog.css"
 import { JsonLd, jsonLdGraph, breadcrumbSchema } from "@/lib/schema"
+import { SafeImage } from "@/components/ui/safe-image"
 
-const FALLBACK_IMAGE = "/placeholder-image.jpg"
 const INQUIRY_NOTES_MAX = 300
 
 const trustBar = [
@@ -484,7 +484,7 @@ export default function CatalogPage() {
                       <article key={item._id} className="catalogFeatureCard">
                         <Link href={`/catalog/raw-leather/${item._id}`}>
                           <div className="catalogFeatureCard__media">
-                            <img src={item.images?.[0] || FALLBACK_IMAGE} alt={item.name} />
+                            <SafeImage src={item.images?.[0]} alt={item.name} width={900} height={800} sizes="(min-width: 1101px) 25vw, (min-width: 601px) 50vw, 100vw" />
                           </div>
                           <div className="catalogFeatureCard__body">
                             <div className="catalogFeatureCard__top">
@@ -540,7 +540,7 @@ export default function CatalogPage() {
                       <article key={product._id} className="catalogFeatureCard">
                         <Link href={`/catalog/finished-products/${product._id}`}>
                           <div className="catalogFeatureCard__media">
-                            <img src={product.images?.[0] || FALLBACK_IMAGE} alt={product.name} />
+                            <SafeImage src={product.images?.[0]} alt={product.name} width={900} height={800} sizes="(min-width: 1101px) 25vw, (min-width: 601px) 50vw, 100vw" />
                           </div>
                           <div className="catalogFeatureCard__body">
                             <div className="catalogFeatureCard__top">

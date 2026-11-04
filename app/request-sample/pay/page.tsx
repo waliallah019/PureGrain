@@ -10,6 +10,7 @@ import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { countries } from "@/lib/config/shippingConfig";
+import { cloudinaryUrl } from "@/lib/cloudinary";
 
 // PayPal SDK is injected client-side; minimal types so we can call it.
 declare global {
@@ -498,7 +499,7 @@ function PayPageInner() {
                       <div className="pgProduct">
                         {productImage ? (
                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={productImage} alt={form.productName} className="pgProduct__img" />
+                          <img src={cloudinaryUrl(productImage, { width: 128 })} alt={form.productName} className="pgProduct__img" />
                         ) : (
                           <div className="pgProduct__img" aria-hidden="true" />
                         )}

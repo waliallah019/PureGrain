@@ -390,6 +390,7 @@ export default function PaymentConfirmationsSection({
                         src={selectedProof.proofUrl}
                         alt="Payment proof"
                         fill
+                        sizes="(max-width: 768px) 100vw, 768px"
                         className="object-contain"
                       />
                     </div>

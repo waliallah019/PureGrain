@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { cloudinaryUrl } from "@/lib/cloudinary";
 import "./custom.css";
 
 // --- Form Options (Mirroring backend schema enums where applicable) ---
@@ -346,8 +347,8 @@ export default function CustomManufacturingContent({ oemSlot }: { oemSlot?: Reac
 
               <div className="img-frame img-frame--accent reveal" aria-hidden="true">
                 <img
-                  src="https://images.unsplash.com/photo-1605518293941-cee0c8a3f7c1?auto=format&fit=crop&w=1200&q=80"
-                  alt="Stacked rolls of premium tanned leather hides"
+                  src={cloudinaryUrl("/premium-raw-leather-hide-texture.jpg", { width: 1200 })}
+                  alt="Premium raw leather hide texture"
                   loading="lazy"
                 />
               </div>

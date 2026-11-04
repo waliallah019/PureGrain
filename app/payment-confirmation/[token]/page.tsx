@@ -551,6 +551,7 @@ export default function PaymentConfirmationPage() {
                                   src={previewUrl}
                                   alt="Payment proof preview"
                                   fill
+                                  sizes="(max-width: 768px) 100vw, 640px"
                                   className="object-contain"
                                 />
                               </div>

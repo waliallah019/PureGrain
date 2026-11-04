@@ -17,6 +17,7 @@ import {
   Zap,
   ChevronRight
 } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import PriceDisplay from '@/components/PriceDisplay';
@@ -51,9 +52,12 @@ export default function ProductCard({ product, viewMode = 'grid' }: ProductCardP
           {/* Image */}
           <div className="w-full h-[180px] sm:h-[200px] md:h-[220px] overflow-hidden flex-shrink-0 bg-gradient-to-br from-amber-100 to-amber-200 dark:from-amber-900 dark:to-amber-800 relative">
             {images && images.length > 0 ? (
-              <img
+              <Image
                 src={images[0]}
                 alt={name}
+                width={800}
+                height={450}
+                sizes="(min-width: 1024px) 400px, 100vw"
                 className="w-full h-full object-cover object-center block transition-transform duration-700 group-hover:scale-110"
               />
             ) : (
@@ -171,9 +175,12 @@ export default function ProductCard({ product, viewMode = 'grid' }: ProductCardP
       <div className="flex gap-6">
         <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 flex-shrink-0 overflow-hidden rounded-lg">
           {images && images.length > 0 ? (
-            <img
+            <Image
               src={images[0]}
               alt={name}
+              width={192}
+              height={192}
+              sizes="192px"
               className="w-full h-full object-cover object-center block transition-transform duration-700 group-hover:scale-110"
             />
           ) : (
