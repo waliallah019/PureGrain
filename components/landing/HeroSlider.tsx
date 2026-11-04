@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import Image from "next/image"
+import Image, { getImageProps } from "next/image"
 import Link from "next/link"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { ArrowRight } from "lucide-react"
@@ -63,11 +63,16 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
     return () => clearTimeout(timer)
   }, [index, isPaused, reduce, next, slides.length])
 
-  // Preload the other slides so advancing never shows a blank frame.
+  // Preload the other slides so advancing never shows a blank frame. Uses the
+  // same srcset as the <Image> below so the browser reuses the file it picks
+  // instead of downloading a second, full-size copy.
   useEffect(() => {
     slides.forEach((slide) => {
+      const { props } = getImageProps({ src: slide.image, alt: "", fill: true, sizes: "100vw" })
       const img = new window.Image()
-      img.src = slide.image
+      img.sizes = props.sizes ?? ""
+      img.srcset = props.srcSet ?? ""
+      img.src = props.src
     })
   }, [slides])
 
@@ -133,7 +138,6 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
                 alt={item.imageAlt}
                 fill
                 sizes="100vw"
-                quality={80}
                 /* First slide is the LCP element — `priority` puts a
                    <link rel="preload" as="image"> in <head> with the full
                    responsive srcset. */

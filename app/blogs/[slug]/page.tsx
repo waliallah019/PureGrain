@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { optimizeArticleImages } from "@/lib/cloudinary";
 import { getPublishedPostBySlug } from "@/lib/blog-cache";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -252,7 +253,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
             <div className="min-w-0">
               <div
                 className="article-body"
-                dangerouslySetInnerHTML={{ __html: enhancedContent }}
+                dangerouslySetInnerHTML={{ __html: optimizeArticleImages(enhancedContent) }}
               />
             </div>
 

@@ -61,8 +61,8 @@ export default function LoginPage() {
       <Card className="w-full max-w-md border-none shadow-xl dark:bg-[#111] bg-white rounded-2xl">
   <CardHeader className="text-center space-y-2 py-4">
     <div className="flex justify-center">
-      <Image src="/logo.png" alt="Pure Grain" width={120} height={50} className="dark:hidden" />
-      <Image src="/logo-dark.png" alt="Pure Grain Dark" width={120} height={50} className="hidden dark:block" />
+      <Image src="/logo.png" alt="Pure Grain" width={120} height={120} priority className="dark:hidden" />
+      <Image src="/logo-dark.png" alt="Pure Grain Dark" width={120} height={120} priority className="hidden dark:block" />
     </div>
     <div>
       <CardTitle className="text-xl font-semibold">Welcome Back</CardTitle>

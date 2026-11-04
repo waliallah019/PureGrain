@@ -34,6 +34,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { useSampleTrayStore } from "@/lib/stores/sampleTrayStore";
+import { cloudinaryUrl } from "@/lib/cloudinary";
 
 declare global {
   interface Window {
@@ -550,7 +551,7 @@ function ReviewPageInner() {
                           className="reviewCard__img"
                           style={
                             it.image
-                              ? { backgroundImage: `url(${it.image})` }
+                              ? { backgroundImage: `url(${cloudinaryUrl(it.image, { width: 160 })})` }
                               : undefined
                           }
                           aria-hidden="true"
@@ -589,7 +590,7 @@ function ReviewPageInner() {
                           className="reviewCard__img"
                           style={
                             finished.image
-                              ? { backgroundImage: `url(${finished.image})` }
+                              ? { backgroundImage: `url(${cloudinaryUrl(finished.image, { width: 160 })})` }
                               : undefined
                           }
                           aria-hidden="true"

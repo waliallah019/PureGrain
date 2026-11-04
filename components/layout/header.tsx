@@ -229,8 +229,8 @@ export function Header() {
               otherwise the dark-ink logo sits on a dark hero and disappears. */}
           <Link href="/" className="flex items-center gap-2 min-w-0 lg:min-w-[180px]">
               <Image
-                src="/new_logo.png"
-                /* 1159x279 on disk (4.15:1). The previous 180x50 declared a
+                src="/ui/new_logo.png"
+                /* 4.15:1 on disk. The previous 180x50 declared a
                    3.6:1 ratio that did not match the file, which is what Next's
                    "width or height modified" warning was reporting. */
                 alt="Pure Grain"
@@ -242,8 +242,8 @@ export function Header() {
                 }`}
               />
               <Image
-                src="/temp_logo.png"
-                /* 1024x246 on disk (4.16:1). */
+                src="/ui/temp_logo.png"
+                /* 4.16:1 on disk. */
                 alt="Pure Grain"
                 width={187}
                 height={45}

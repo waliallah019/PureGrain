@@ -31,9 +31,9 @@ import { IProduct, IProductType } from "@/types/product"
 import PriceDisplay from "@/components/PriceDisplay"
 import "../catalog.css"
 import { JsonLd, jsonLdGraph, breadcrumbSchema } from "@/lib/schema"
+import { SafeImage } from "@/components/ui/safe-image"
 import { getProductTypes } from "@/lib/taxonomy"
 
-const FALLBACK_IMAGE = "/placeholder-image.jpg"
 
 type ProductCategory = {
   id: string
@@ -440,9 +440,12 @@ export default function FinishedProductsCatalog({ indexSlot }: { indexSlot?: Rea
                   <article key={product._id} className="catalogFeatureCard catalogFeatureCard--fp">
                     <Link href={`/catalog/finished-products/${product._id}`}>
                       <div className="catalogFeatureCard__media">
-                        <img
-                          src={product.images?.[0] || FALLBACK_IMAGE}
+                        <SafeImage
+                          src={product.images?.[0]}
                           alt={product.name}
+                          width={900}
+                          height={800}
+                          sizes={`(min-width: 901px) ${gridCols === 2 ? "50vw" : "33vw"}, (min-width: 601px) 50vw, 100vw`}
                         />
                       </div>
                       <div className="catalogFeatureCard__body">

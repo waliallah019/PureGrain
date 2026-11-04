@@ -108,7 +108,7 @@ export function FloatingSamplesSticker() {
           aria-hidden="true"
         />
         <Image
-          src="/sticker.png"
+          src="/ui/sticker.png"
           alt="Free Samples"
           width={112}
           height={112}

@@ -265,7 +265,6 @@ function AboutHero() {
           alt="Inside a working tannery — stacked hides and tanning drums on the plant floor"
           fill
           sizes="100vw"
-          quality={80}
           priority
           className="object-cover object-center"
         />
@@ -452,11 +451,13 @@ function Story() {
                 className={index % 2 === 1 ? "lg:order-2" : undefined}
               >
                 <div className="relative overflow-hidden border border-border shadow-card">
-                  <img
+                  <Image
                     src={chapter.image}
                     alt={chapter.alt}
+                    width={1200}
+                    height={800}
+                    sizes="(min-width: 1024px) 550px, 100vw"
                     className="aspect-[3/2] w-full object-cover"
-                    loading="lazy"
                   />
                 </div>
               </Reveal>
@@ -600,11 +601,13 @@ function ProductScope() {
                 className="group flex h-full flex-col overflow-hidden border border-border bg-card shadow-card transition-all duration-300 hover:border-brass/50 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2"
               >
                 <div className="relative h-52 overflow-hidden sm:h-60">
-                  <img
+                  <Image
                     src={s.image}
                     alt={s.alt}
+                    width={1200}
+                    height={600}
+                    sizes="(min-width: 1024px) 570px, 100vw"
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    loading="lazy"
                   />
                   <div
                     aria-hidden="true"
@@ -777,11 +780,13 @@ function ExportMap() {
             />
             <Reveal delay={0.25}>
               <div className="mt-8 overflow-hidden border border-border shadow-card">
-                <img
+                <Image
                   src="/local/sialkot-city.jpg"
                   alt="Sialkot, Punjab — one of the leather clusters Pure Grain sources from"
+                  width={1120}
+                  height={700}
+                  sizes="(min-width: 1024px) 520px, 100vw"
                   className="aspect-[16/10] w-full object-cover"
-                  loading="lazy"
                 />
                 <p className="border-t border-border bg-background p-4 text-xs text-muted-foreground">
                   Sialkot, Punjab — one of the established leather clusters our partner tanneries

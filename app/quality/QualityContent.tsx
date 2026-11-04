@@ -28,6 +28,7 @@ import {
 import { QUALITY_FAQS as FAQS } from "@/lib/content/faqs"
 import { Reveal, SectionHeading, Stagger, StaggerItem } from "@/components/landing/primitives"
 import { PolicyHero } from "@/components/layout/policy-hero"
+import Image from "next/image"
 
 /* -------------------------------------------------------------------------- */
 /* Content                                                                    */
@@ -400,11 +401,13 @@ function Certifications() {
 
           <Reveal y={20} delay={0.15}>
             <figure className="overflow-hidden border border-border shadow-card">
-              <img
+              <Image
                 src="/luxury-leather-craftsmanship-workshop-artisan.jpg"
                 alt="A leatherworker checking the finish and construction of a finished piece"
+                width={1120}
+                height={840}
+                sizes="(min-width: 1024px) 550px, 100vw"
                 className="aspect-[4/3] w-full object-cover"
-                loading="lazy"
               />
               <figcaption className="border-t border-border bg-background p-4 text-xs text-muted-foreground">
                 Final surface review and finishing quality checks.
@@ -491,11 +494,13 @@ function ProcessStages() {
 
                 <Reveal y={20} className={i % 2 === 1 ? "lg:order-2 lg:pl-14" : "lg:pr-14"}>
                   <figure className="overflow-hidden border border-border shadow-card">
-                    <img
+                    <Image
                       src={stage.image}
                       alt={stage.alt}
+                      width={1200}
+                      height={800}
+                      sizes="(min-width: 1024px) 550px, 100vw"
                       className="aspect-[3/2] w-full object-cover"
-                      loading="lazy"
                     />
                   </figure>
                 </Reveal>
@@ -565,11 +570,13 @@ function FinishingMastery() {
             <StaggerItem key={f.title} className="h-full">
               <div className="group flex h-full flex-col overflow-hidden border border-border bg-card shadow-card transition-all duration-300 hover:border-brass/50 hover:shadow-card-hover">
                 <div className="relative aspect-[4/3] overflow-hidden">
-                  <img
+                  <Image
                     src={f.image}
                     alt={f.alt}
+                    width={800}
+                    height={600}
+                    sizes="(min-width: 1024px) 270px, (min-width: 640px) 50vw, 100vw"
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    loading="lazy"
                   />
                   <span className="absolute left-3 top-3 border border-brass/50 bg-leather/70 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-brass backdrop-blur-sm">
                     {f.badge}

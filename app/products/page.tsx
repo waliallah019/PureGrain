@@ -7,6 +7,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 
 import { Header } from "@/components/layout/header";
+import { cloudinaryUrl } from "@/lib/cloudinary";
 import { Footer } from "@/components/layout/footer";
 
 // ---------------------------------------------------------------------------
@@ -43,7 +44,7 @@ const PRODUCTS: ProductCategory[] = [
     shortLabel: "Jackets & Apparel",
     pillIcon: "fa-tshirt",
     imageUrl:
-      "https://images.unsplash.com/photo-1551028719-00167b16ebc5?auto=format&fit=crop&w=1200&q=80",
+      "https://res.cloudinary.com/da1coaysi/image/upload/v1786390935/pure-grain-exports/finished-products/urban-biker-leather-jacket/01-02_11-1-1.jpg",
     imageAlt: "Premium leather jacket photographed for an editorial fashion catalogue.",
     caption: "Leather Apparel",
     label: "Category 01",
@@ -263,8 +264,8 @@ const PRODUCTS: ProductCategory[] = [
     id: "gloves",
     shortLabel: "Gloves",
     pillIcon: "fa-mitten",
-    imageUrl:
-      "https://images.unsplash.com/photo-1587372915701-e8b3e7deefd4?auto=format&fit=crop&w=1200&q=80",
+    // No gloves in the catalogue yet; the frame shows its caption until there is a real photo.
+    imageUrl: "",
     imageAlt: "Pair of leather gloves photographed in a commercial studio.",
     caption: "Leather Gloves",
     label: "Category 07",
@@ -300,8 +301,8 @@ const PRODUCTS: ProductCategory[] = [
     id: "sports",
     shortLabel: "Sports Goods",
     pillIcon: "fa-futbol",
-    imageUrl:
-      "https://images.unsplash.com/photo-1597332677041-8ec7b0b9d55f?auto=format&fit=crop&w=1200&q=80",
+    // No sports goods in the catalogue yet; the frame shows its caption until there is a real photo.
+    imageUrl: "",
     imageAlt: "Leather boxing gloves representing sports goods manufacturing.",
     caption: "Sports Equipment",
     label: "Category 08",
@@ -704,14 +705,16 @@ export default function ProductsPage() {
                 {/* ------------------- Product photography ------------------- */}
                 <div className="prSection__visual">
                   <div className="prVisual reveal">
-                    <img
-                      className="prVisual__image"
-                      src={p.imageUrl}
-                      alt={p.imageAlt}
-                      loading="lazy"
-                      decoding="async"
-                      style={{ objectPosition: p.imagePosition ?? "center" }}
-                    />
+                    {p.imageUrl ? (
+                      <img
+                        className="prVisual__image"
+                        src={cloudinaryUrl(p.imageUrl, { width: 1200 })}
+                        alt={p.imageAlt}
+                        loading="lazy"
+                        decoding="async"
+                        style={{ objectPosition: p.imagePosition ?? "center" }}
+                      />
+                    ) : null}
                     <span className="prVisual__caption">{p.caption}</span>
                   </div>
                 </div>

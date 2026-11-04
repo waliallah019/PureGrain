@@ -3,6 +3,8 @@
 import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { SafeImage } from "@/components/ui/safe-image";
+import { IMAGE_FALLBACK } from "@/lib/cloudinary";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -28,7 +30,7 @@ export default function ProductDetailContent({
   product,
   relatedProducts,
 }: ProductDetailContentProps) {
-  const primaryImage = product.images?.[0] || "/placeholder-image.jpg";
+  const primaryImage = product.images?.[0] || IMAGE_FALLBACK;
   const images = product.images && product.images.length > 0 ? product.images : [primaryImage];
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
@@ -116,11 +118,12 @@ export default function ProductDetailContent({
                   aria-label="Open full size image"
                   className="absolute inset-0 z-10 cursor-zoom-in"
                 />
-                <Image
+                <SafeImage
                   src={selectedImage}
                   alt={product.name}
                   width={1200}
                   height={1200}
+                  sizes="(min-width: 1024px) 560px, 100vw"
                   className="w-full h-full object-cover"
                   priority
                 />
@@ -167,6 +170,7 @@ export default function ProductDetailContent({
                         alt={`${product.name} thumbnail`}
                         width={160}
                         height={160}
+                        sizes="(min-width: 640px) 80px, 25vw"
                         className="h-full w-full object-cover"
                       />
                     </button>
@@ -306,11 +310,12 @@ export default function ProductDetailContent({
                       card instead. Fixed heights are kept from `sm:` up, where
                       the multi-column widths already suit them. */}
                   <div className="w-full aspect-[4/3] sm:aspect-auto sm:h-[200px] md:h-[220px] overflow-hidden flex-shrink-0">
-                    <Image
-                      src={p.images?.[0] || "/placeholder-image.jpg"}
+                    <SafeImage
+                      src={p.images?.[0]}
                       alt={p.name}
                       width={800}
                       height={800}
+                      sizes="(min-width: 1024px) 270px, (min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
                       className="w-full h-full object-cover object-center block transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
